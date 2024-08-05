@@ -8,7 +8,8 @@
         <link rel="icon" type="image/x-icon" href="{{ asset('assets/images/favicon.png') }}">
         <link href="css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
-        
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+
     </head>
 
     <body x-data="main" class="relative overflow-x-hidden font-nunito text-sm font-normal antialiased" :class="[ $store.app.sidebar ? 'toggle-sidebar' : '', $store.app.theme === 'dark' || $store.app.isDarkMode ?  'dark' : '', $store.app.menu, $store.app.layout,$store.app.rtlClass]">
@@ -52,119 +53,14 @@
         <script defer="" src="assets/js/alpine-ui.min.js"></script>
         <script defer="" src="assets/js/alpine-focus.min.js"></script>
         <script defer="" src="assets/js/alpine.min.js"></script>
-
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
         <script src="assets/js/custom.js"></script>
-
+        <script src="assets/js/notifications.js"></script>
         <script>
-            // main section
-            document.addEventListener('alpine:init', () => {
-                Alpine.data('scrollToTop', () => ({
-                    showTopButton: false,
-                    init() {
-                        window.onscroll = () => {
-                            this.scrollFunction();
-                        };
-                    },
-
-                    scrollFunction() {
-                        if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
-                            this.showTopButton = true;
-                        } else {
-                            this.showTopButton = false;
-                        }
-                    },
-
-                    goToTop() {
-                        document.body.scrollTop = 0;
-                        document.documentElement.scrollTop = 0;
-                    },
-                }));
-
-                Alpine.data('auth', () => ({
-                    languages: [
-                        {
-                            id: 1,
-                            key: 'Khmer',
-                            value: 'kh',
-                        },
-                        {
-                            id: 2,
-                            key: 'Danish',
-                            value: 'da',
-                        },
-                        {
-                            id: 3,
-                            key: 'English',
-                            value: 'en',
-                        },
-                        {
-                            id: 4,
-                            key: 'French',
-                            value: 'fr',
-                        },
-                        {
-                            id: 5,
-                            key: 'German',
-                            value: 'de',
-                        },
-                        {
-                            id: 6,
-                            key: 'Greek',
-                            value: 'el',
-                        },
-                        {
-                            id: 7,
-                            key: 'Hungarian',
-                            value: 'hu',
-                        },
-                        {
-                            id: 8,
-                            key: 'Italian',
-                            value: 'it',
-                        },
-                        {
-                            id: 9,
-                            key: 'Japanese',
-                            value: 'ja',
-                        },
-                        {
-                            id: 10,
-                            key: 'Polish',
-                            value: 'pl',
-                        },
-                        {
-                            id: 11,
-                            key: 'Portuguese',
-                            value: 'pt',
-                        },
-                        {
-                            id: 12,
-                            key: 'Russian',
-                            value: 'ru',
-                        },
-                        {
-                            id: 13,
-                            key: 'Spanish',
-                            value: 'es',
-                        },
-                        {
-                            id: 14,
-                            key: 'Swedish',
-                            value: 'sv',
-                        },
-                        {
-                            id: 15,
-                            key: 'Turkish',
-                            value: 'tr',
-                        },
-                        {
-                            id: 16,
-                            key: 'Arabic',
-                            value: 'ae',
-                        },
-                    ],
-                }));
-            });
+            window.successMessage = @json(Session::get('success'));
+            window.errorMessage = @json(Session::get('error'));
+            window.errors = @json($errors->all());
         </script>
     </body>
 </html>

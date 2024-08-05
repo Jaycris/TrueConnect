@@ -38,6 +38,7 @@ class VerifyDeviceEmail extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
+        \Log::info('Sending 2FA email with code: ' . $this->code);
         return (new MailMessage)
                     ->subject('Your login verification code')
                     ->greeting('Hello!')

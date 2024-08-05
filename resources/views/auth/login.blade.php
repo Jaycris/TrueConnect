@@ -21,9 +21,6 @@
                                 </svg>
                             </span>
                         </div>
-                        @error('email')
-                            <span class="text-red-500">{{ $message }}</span>
-                        @enderror
                     </div>
                     <div>
                         <label for="Password">Password</label>
@@ -39,9 +36,6 @@
                                 </svg>
                             </span>
                         </div>
-                        @error('password')
-                            <span class="text-red-500">{{ $message }}</span>
-                        @enderror
                     </div>
                     <div class="flex items-center justify-between">
                         <label for="remember_me" class="inline-flex items-center cursor-pointer">

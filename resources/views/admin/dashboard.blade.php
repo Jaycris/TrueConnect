@@ -9,7 +9,6 @@
                 <span>Sales</span>
             </li>
         </ul>
-
         <div class="pt-5">
             <div class="mb-6 grid gap-6 xl:grid-cols-3">
                 <div class="panel h-full xl:col-span-2">

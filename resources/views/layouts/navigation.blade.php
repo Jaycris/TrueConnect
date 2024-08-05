@@ -99,22 +99,6 @@
                 </a>
             </div>
 
-            <div class="dropdown shrink-0" x-data="dropdown" @click.outside="open = false">
-                <a href="javascript:;" class="block rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60" @click="toggle">
-                    <img :src="`assets/images/flags/${$store.app.locale.toUpperCase()}.svg`" alt="image" class="h-5 w-5 rounded-full object-cover">
-                </a>
-                <ul x-cloak="" x-show="open" x-transition="" x-transition.duration.300ms="" class="top-11 grid w-[280px] grid-cols-2 gap-y-2 !px-2 font-semibold text-dark ltr:-right-14 rtl:-left-14 dark:text-white-dark dark:text-white-light/90 sm:ltr:-right-2 sm:rtl:-left-2">
-                    <template x-for="item in languages">
-                        <li>
-                            <a href="javascript:;" class="hover:text-primary" @click="$store.app.toggleLocale(item.value),toggle()" :class="{'bg-primary/10 text-primary' : $store.app.locale == item.value}">
-                                <img class="h-5 w-5 rounded-full object-cover" :src="`assets/images/flags/${item.value.toUpperCase()}.svg`" alt="image">
-                                <span class="ltr:ml-3 rtl:mr-3" x-text="item.key"></span>
-                            </a>
-                        </li>
-                    </template>
-                </ul>
-            </div>
-
             <div class="dropdown" x-data="dropdown" @click.outside="open = false">
                 <a href="javascript:;" class="block rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60" @click="toggle">
                     <svg width="20" height="20" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -245,17 +229,17 @@
             </div>
             <div class="dropdown flex-shrink-0" x-data="dropdown" @click.outside="open = false">
                 <a href="javascript:;" class="group relative" @click="toggle()">
-                    <span><img class="h-9 w-9 rounded-full object-cover saturate-50 group-hover:saturate-100" src="assets/images/user-profile.jpeg" alt="image"></span>
+                    <span><img class="h-9 w-9 rounded-full object-cover saturate-50 group-hover:saturate-100" src="{{ asset('storage/' . Auth::user()->profile->avatar) }}" alt="image"></span>
                 </a>
                 <ul x-cloak x-show="open" x-transition x-transition.duration.300ms class="top-11 w-[230px] !py-0 font-semibold text-dark ltr:right-0 rtl:left-0 dark:text-white-dark dark:text-white-light/90">
                     <li>
                         <div class="flex items-center px-4 py-4">
                             <div class="flex-none">
-                                <img class="h-10 w-10 rounded-md object-cover" src="assets/images/user-profile.jpeg" alt="image">
+                                <img class="h-10 w-10 rounded-md object-cover" src="{{ asset('storage/' . Auth::user()->profile->avatar) }}" alt="image">
                             </div>
                             <div class="truncate ltr:pl-4 rtl:pr-4">
                                 <h4 class="text-base">
-                                    StarCode Kh <span class="rounded bg-success-light px-1 text-xs text-success ltr:ml-2 rtl:ml-2">Pro</span>
+                                    {{ $user->profile->fullname() }}
                                 </h4>
                                 <a class="text-black/60 hover:text-primary dark:text-dark-light/60 dark:hover:text-white" href="javascript:;">starcodekh@gmail.com</a>
                             </div>
@@ -277,20 +261,6 @@
                                 <path d="M6 8L8.1589 9.79908C9.99553 11.3296 10.9139 12.0949 12 12.0949C13.0861 12.0949 14.0045 11.3296 15.8411 9.79908L18 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
                             </svg>
                             Inbox
-                        </a>
-                    </li>
-                    <li>
-                        <a href="auth-boxed-lockscreen.html" class="flex items-center px-4 py-3 dark:hover:text-white" @click="toggle">
-                            <svg class="h-4.5 w-4.5 shrink-0 ltr:mr-2 rtl:ml-2" width="18" height="18" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M2 16C2 13.1716 2 11.7574 2.87868 10.8787C3.75736 10 5.17157 10 8 10H16C18.8284 10 20.2426 10 21.1213 10.8787C22 11.7574 22 13.1716 22 16C22 18.8284 22 20.2426 21.1213 21.1213C20.2426 22 18.8284 22 16 22H8C5.17157 22 3.75736 22 2.87868 21.1213C2 20.2426 2 18.8284 2 16Z" stroke="currentColor" stroke-width="1.5"></path>
-                                <path opacity="0.5" d="M6 10V8C6 4.68629 8.68629 2 12 2C15.3137 2 18 4.68629 18 8V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
-                                <g opacity="0.5">
-                                    <path d="M9 16C9 16.5523 8.55228 17 8 17C7.44772 17 7 16.5523 7 16C7 15.4477 7.44772 15 8 15C8.55228 15 9 15.4477 9 16Z" fill="currentColor"></path>
-                                    <path d="M13 16C13 16.5523 12.5523 17 12 17C11.4477 17 11 16.5523 11 16C11 15.4477 11.4477 15 12 15C12.5523 15 13 15.4477 13 16Z" fill="currentColor"></path>
-                                    <path d="M17 16C17 16.5523 16.5523 17 16 17C15.4477 17 15 16.5523 15 16C15 15.4477 15.4477 15 16 15C16.5523 15 17 15.4477 17 16Z" fill="currentColor"></path>
-                                </g>
-                            </svg>
-                            Lock Screen
                         </a>
                     </li>
                     <li class="border-t border-white-light dark:border-white-light/10">

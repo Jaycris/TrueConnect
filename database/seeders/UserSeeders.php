@@ -33,8 +33,8 @@ class UserSeeders extends Seeder
             'middle_name' => null,
             'last_name' => 'Cristobal',
             'gender' => 'Male',
-            'position' => 'Chief Executive Officer',
-            'department' => 'Management'
+            'designation' => '1',
+            'department' => '1'
         ]);
     }
 }

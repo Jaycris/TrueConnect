@@ -2,6 +2,9 @@
 
 namespace App\Traits;
 
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cookie;
+
 trait DeviceIdentifier
 {
     /**
@@ -9,8 +12,18 @@ trait DeviceIdentifier
      *
      * @return string
      */
-    public function deviceIdentifier()
+    protected function deviceIdentifier()
     {
-        return hash('sha256', request()->userAgent()); // Using a hashed user-agent as device identifier for better security
+        // Add a random salt to differentiate between normal and private/incognito browsing
+        $salt = request()->cookie('device_salt', Str::random(16));
+        Cookie::queue('device_salt', $salt, 60); // Store salt in a cookie
+
+        // Use additional browser-specific information
+        $userAgent = request()->userAgent();
+        $ipAddress = request()->ip();
+        $browserLanguage = request()->server('HTTP_ACCEPT_LANGUAGE', 'unknown');
+        $screenResolution = request()->server('HTTP_SEC_CH_UA', 'unknown');
+
+        return hash('sha256', $userAgent . $ipAddress . $browserLanguage . $screenResolution . $salt);
     }
 }

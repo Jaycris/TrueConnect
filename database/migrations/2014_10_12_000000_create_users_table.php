@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('password');
             $table->enum('user_type', ['Admin', 'Employee']);
             $table->enum('user_status', ['Active', 'Inactive']);
-            $table->string('two_factor_secret')->nullable();
+            $table->boolean('two_factor_verified')->default(false);
             $table->string('two_factor_code')->nullable();
             $table->timestamp('two_factor_expires_at')->nullable();
             $table->json('familiar_devices')->nullable();

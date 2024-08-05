@@ -4,11 +4,16 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use App\Traits\DeviceIdentifier;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Auth\Events\Lockout;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter; // Add this import
+use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Http\Request;
+use \Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Cookie;
+use App\Traits\DeviceIdentifier;
 
 
 class AuthenticatedSessionController extends Controller
@@ -32,30 +37,47 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request)
     {
         try {
-            $request->authenticate();
-
+            $user = $request->authenticate();
             $request->session()->regenerate();
 
-            $user = Auth::user();
+            // Generate or get the device identifier
+            $deviceIdentifier = $this->deviceIdentifier();
+            $existingIdentifier = Cookie::get('device_identifier');
 
-            if (! $user->isDeviceFamiliar($this->deviceIdentifier())) {
-                // Device is unfamiliar, redirect to 2FA verification
-                return redirect()->route('auth.2fa');
+            // Log device identifier and existing identifier for debugging
+            \Log::info("Device identifier: $deviceIdentifier");
+            \Log::info("Existing identifier: $existingIdentifier");
+
+            // Set or update the device identifier cookie
+            Cookie::queue('device_identifier', $deviceIdentifier, 60);
+
+            // Check if the device is familiar
+            if (! $user->isDeviceFamiliar($deviceIdentifier)) {
+                \Log::info("Device not familiar. Triggering 2FA.");
+                $user->sendTwoFactorCode();
+                // Use session flash data to store the 2FA redirection flag
+                session()->flash('2fa_required', true);
+                return redirect()->route('auth.2fa')->with('error', 'Please enter the 2FA code sent to your email.');
             }
 
-            // Redirect based on user type
+            RateLimiter::clear($request->throttleKey());
+
             if ($user->user_type == 'Admin') {
-                return redirect()->intended('/admin');
+                return redirect()->intended('/admin')->with('success', 'Successfully Logged In');
             } else if ($user->user_type == 'Employee') {
-                return redirect()->intended('/employee');
+                return redirect()->intended('/employee')->with('success', 'Successfully Logged In');
             }
 
-            return redirect()->intended('/');
+            return redirect()->intended('/')->with('success', 'Successfully Logged In');
         } catch (ValidationException $e) {
-            // Handle 2FA verification redirect
-            return redirect()->route('auth.2fa')->withErrors($e->errors());
+            return redirect()->back()->withErrors($e->errors())->withInput();
+            // return redirect()->route('auth.2fa')->with('error', 'Please enter the 2FA code sent to your email.');
+        } catch (AuthenticationException $e) {
+            return redirect()->back()->with('error', 'Invalid credentials.');
         }
     }
+
+
 
     /**
      * Show the 2FA verification form.
@@ -82,6 +104,7 @@ class AuthenticatedSessionController extends Controller
         $user = Auth::user();
 
         if ($user->twoFactorCodeIsValid($request->input('two_factor_code'))) {
+            $user->markTwoFactorVerified();
             $user->resetTwoFactorCode();
 
             // Mark current device as familiar
@@ -89,18 +112,14 @@ class AuthenticatedSessionController extends Controller
 
             // Redirect based on user type
             if ($user->user_type == 'Admin') {
-                \Log::info('Redirecting to admin dashboard'); // Debugging line
                 return redirect()->intended('/admin');
             } else if ($user->user_type == 'Employee') {
-                \Log::info('Redirecting to employee dashboard'); // Debugging line
                 return redirect()->intended('/employee');
             }
 
-            \Log::info('Redirecting to home'); // Debugging line
             return redirect()->intended('/');
         }
 
-        \Log::error('Invalid 2FA code'); // Debugging line
         return back()->withErrors(['two_factor_code' => 'Invalid 2FA code.']);
     }
 
@@ -115,8 +134,11 @@ class AuthenticatedSessionController extends Controller
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
+        
+        // Clear the device identifier cookie
+        Cookie::queue(Cookie::forget('device_identifier'));
+        \Log::info('Device identifier cookie:', ['cookie' => Cookie::get('device_identifier')]);
 
         return redirect('/');
     }

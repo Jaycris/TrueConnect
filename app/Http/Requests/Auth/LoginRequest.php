@@ -7,13 +7,10 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
-use App\Traits\DeviceIdentifier;
-use App\Models\User;
 use Illuminate\Support\Str;
 
 class LoginRequest extends FormRequest
 {
-    use DeviceIdentifier; // Use the trait
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -45,9 +42,8 @@ class LoginRequest extends FormRequest
         $this->ensureIsNotRateLimited();
 
         $credentials = $this->only('password');
-
-        // Attempt to authenticate with email or username
         $emailOrUsername = $this->input('email');
+
         if (filter_var($emailOrUsername, FILTER_VALIDATE_EMAIL)) {
             $credentials['email'] = $emailOrUsername;
         } else {
@@ -57,18 +53,8 @@ class LoginRequest extends FormRequest
         if (Auth::attempt($credentials, $this->boolean('remember'))) {
             $user = Auth::user();
 
-            if (! $user->isDeviceFamiliar($this->deviceIdentifier())) {
-                // Device is unfamiliar, send 2FA code via email
-                $user->sendTwoFactorCode();
-
-                // Redirect to verification page
-                throw ValidationException::withMessages([
-                    'email' => 'Please enter the 2FA code sent to your email.',
-                ])->redirectTo(route('verify.2fa')); // Ensure redirect to 2FA page
-            }
-
-            RateLimiter::clear($this->throttleKey());
-            return;
+            // Authentication should happen here and be handled by the controller
+            return $user;
         }
 
         RateLimiter::hit($this->throttleKey());
@@ -103,7 +89,6 @@ class LoginRequest extends FormRequest
         ]);
     }
 
-
     /**
      * Get the rate limiting throttle key for the request.
      *
@@ -114,13 +99,4 @@ class LoginRequest extends FormRequest
         return Str::lower($this->input('email')) . '|' . $this->ip();
     }
 
-    /**
-     * Get a unique identifier for the device.
-     *
-     * @return string
-     */
-    protected function deviceIdentifier()
-    {
-        return hash('sha256', request()->userAgent()); // Using a hashed user-agent as device identifier for better security
-    }
 }
