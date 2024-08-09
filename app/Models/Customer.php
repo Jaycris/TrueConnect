@@ -23,7 +23,8 @@ class Customer extends Model
         'notes',
         'verified_by',
         'comment',
-        'assign_to'
+        'assign_to',
+        'is_viewed'
     ];
 
     public function contactNumbers()

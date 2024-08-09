@@ -6,6 +6,8 @@ use App\Models\Customer;
 use App\Models\ContactNumber;
 use App\Models\Book;
 use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
@@ -15,6 +17,44 @@ class CustomerController extends Controller
         $customers = Customer::with('contactNumbers', 'books', 'employees')->get();
         $employees = User::where('user_type', 'Employee')->get();
         return view('customers.index', compact('customers', 'employees'));
+    }
+
+    public function show($id)
+    {
+        $customer = Customer::with('contactNumbers', 'books')->findOrFail($id);
+
+        return response()->json([
+            'success' => true,
+            'customer' => [
+                'name' => $customer->fullName(),
+                'email' => $customer->email,
+                'address' => $customer->address,
+                'website' => $customer->website,
+                'contact_numbers' => $customer->contactNumbers->map(function($contact) {
+                    return [
+                        'contact_number' => $contact->contact_number,
+                        'status' => $contact->status,
+                    ];
+                }),
+                'books' => $customer->books->map(function($book) {
+                    return [
+                        'title' => $book->title,
+                        'link' => $book->link,
+                    ];
+                }),
+                'assign_to' => $customer->assign_to,
+                'is_viewed' => $customer->is_viewed,
+            ],
+        ]);
+
+    }
+
+    public function markAsViewed($id)
+    {
+        $customer = Customer::findOrFail($id);
+        $customer->is_viewed = true;
+        $customer->save();
+        return response()->json(['success' => true]);
     }
 
     public function create()
@@ -38,43 +78,50 @@ class CustomerController extends Controller
             'assign_to' => 'nullable|string|max:255',
             'comment' => 'nullable|string',
             'contact_numbers' => 'required|array',
-            'contact_numbers.*' => 'required|string|max:255',
+            'contact_numbers.*' => 'nullable|string|max:255',
             'books' => 'nullable|array',
             'books.*.title' => 'required|string|max:255',
             'books.*.link' => 'nullable|url|max:255'
         ]);
 
-        $today = Carbon::now()->toDateString();
+        try {
 
-        $user = Auth::user();
+            $today = Carbon::now()->toDateString();
+    
+            $user = Auth::user();
+    
+            $customers = Customer::create([
+                'date_created' => $today,
+                'first_name' => $request->first_name,
+                'middle_name' => $request->middle_name,
+                'last_name' => $request->last_name,
+                'email' => $request->email,
+                'address' => $request->address,
+                'website' => $request->website,
+                'lead_miner' => $user->profile->fullName(),
+                'type' => $request->type,
+                'deals' => $request->deals,
+                'notes' => $request->notes,
+                'verified_by' => $request->verified_by,
+                'assign_to' => $request->assign_to,
+                'comment' => $request->comment,
+    
+            ]);
 
-        $customers = Customer::create([
-            'date_created' => $today,
-            'first_name' => $request->first_name,
-            'middle_name' => $request->middle_name,
-            'last_name' => $request->last_name,
-            'email' => $request->email,
-            'address' => $request->address,
-            'website' => $request->website,
-            'lead_miner' => $user->profile->fullName(),
-            'type' => $request->type,
-            'deals' => $request->deals,
-            'notes' => $request->notes,
-            'verified_by' => $request->verified_by,
-            'assign_to' => $request->assign_to,
-            'comment' => $request->comment,
-        ]);
-
-        foreach ($request->contact_numbers as $contact_number) {
-            $customer->contactNumbers()->create(['contact_number' => $contact_number, 'status' => 'Not Verified']);
+        } catch ( ValidationException $e ) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
         }
-
+        
+        foreach ($request->contact_numbers as $contact_number) {
+            $customers->contactNumbers()->create(['contact_number' => $contact_number, 'status' => 'Not Verified']);
+        }
+        
         if ($request->books) {
             foreach ($request->books as $book) {
-                $customer->books()->create(['title' => $book['title'], 'link' => $book['link']]);
+                $customers->books()->create(['title' => $book['title'], 'link' => $book['link']]);
             }
         }
-
+        
         return redirect()->route('customers.index')->with('success', 'Customer created successfully.');
     }
 

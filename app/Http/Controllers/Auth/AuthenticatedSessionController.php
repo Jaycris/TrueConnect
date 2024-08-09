@@ -45,18 +45,21 @@ class AuthenticatedSessionController extends Controller
             $existingIdentifier = Cookie::get('device_identifier');
 
             // Log device identifier and existing identifier for debugging
-            \Log::info("Device identifier: $deviceIdentifier");
-            \Log::info("Existing identifier: $existingIdentifier");
+            // \Log::info("Device identifier: $deviceIdentifier");
+            // \Log::info("Existing identifier: $existingIdentifier");
 
             // Set or update the device identifier cookie
             Cookie::queue('device_identifier', $deviceIdentifier, 60);
 
             // Check if the device is familiar
             if (! $user->isDeviceFamiliar($deviceIdentifier)) {
-                \Log::info("Device not familiar. Triggering 2FA.");
+                // \Log::info("Device not familiar. Triggering 2FA.");
                 $user->sendTwoFactorCode();
+
                 // Use session flash data to store the 2FA redirection flag
                 session()->flash('2fa_required', true);
+                // Optional delay to address asynchronous issues
+                sleep(1); // 1 second delay
                 return redirect()->route('auth.2fa')->with('error', 'Please enter the 2FA code sent to your email.');
             }
 
@@ -70,9 +73,11 @@ class AuthenticatedSessionController extends Controller
 
             return redirect()->intended('/')->with('success', 'Successfully Logged In');
         } catch (ValidationException $e) {
+            // Handle validation errors
             return redirect()->back()->withErrors($e->errors())->withInput();
             // return redirect()->route('auth.2fa')->with('error', 'Please enter the 2FA code sent to your email.');
         } catch (AuthenticationException $e) {
+            // Handle authentication errors
             return redirect()->back()->with('error', 'Invalid credentials.');
         }
     }
@@ -138,7 +143,7 @@ class AuthenticatedSessionController extends Controller
         
         // Clear the device identifier cookie
         Cookie::queue(Cookie::forget('device_identifier'));
-        \Log::info('Device identifier cookie:', ['cookie' => Cookie::get('device_identifier')]);
+        // \Log::info('Device identifier cookie:', ['cookie' => Cookie::get('device_identifier')]);
 
         return redirect('/');
     }

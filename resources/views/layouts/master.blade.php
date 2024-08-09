@@ -9,6 +9,8 @@
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('assets/css/perfect-scrollbar.min.css') }}">
     <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('assets/css/style.css') }}">
@@ -90,6 +92,7 @@
     <script src="assets/js/custom.js"></script>
     <script src="{{ asset('assets/js/customize.js') }}"></script>
     <script src="{{ asset('assets/js/leads.js') }}"></script> 
+    <script src="{{ asset('assets/js/notifications.js') }}"></script>
     <script>
         window.successMessage = @json(Session::get('success'));
         window.errorMessage = @json(Session::get('error'));

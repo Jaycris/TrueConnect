@@ -67,7 +67,7 @@ class User extends Authenticatable
         $this->two_factor_verified = true;
         $this->save();
 
-        \Log::info('Two-factor verified status updated:', ['user_id' => $this->id, 'status' => $this->two_factor_verified]);
+        // \Log::info('Two-factor verified status updated:', ['user_id' => $this->id, 'status' => $this->two_factor_verified]);
     }
 
     /**
@@ -75,7 +75,7 @@ class User extends Authenticatable
      */
     public function sendTwoFactorCode()
     {
-        \Log::info('Sending 2FA code'); // Debugging line
+        // \Log::info('Sending 2FA code'); // Debugging line
         $code = rand(100000, 999999); // Generate a random 6-digit code
         $this->two_factor_code = $code;
         $this->two_factor_expires_at = now()->addMinutes(10); // Code expires in 10 minutes
@@ -110,8 +110,8 @@ class User extends Authenticatable
     public function isDeviceFamiliar(string $deviceIdentifier): bool
     {
         $familiarDevices = json_decode($this->familiar_devices, true) ?? [];
-        \Log::info("Checking device: $deviceIdentifier");
-        \Log::info("Familiar devices: " . implode(', ', $familiarDevices));
+        // \Log::info("Checking device: $deviceIdentifier");
+        // \Log::info("Familiar devices: " . implode(', ', $familiarDevices));
         return in_array($deviceIdentifier, $familiarDevices);
     }
     
@@ -125,7 +125,7 @@ class User extends Authenticatable
         $familiarDevices[] = $deviceIdentifier;
         $this->familiar_devices = json_encode(array_unique($familiarDevices));
         $this->save();
-        \Log::info("Familiar devices updated: " . implode(', ', $familiarDevices));
+        // \Log::info("Familiar devices updated: " . implode(', ', $familiarDevices));
     }
 
 }

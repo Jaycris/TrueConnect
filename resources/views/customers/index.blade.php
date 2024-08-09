@@ -7,8 +7,8 @@
         </li>
     </ul>
     <div class="pt-5">
-        <div class="mb-5 grid grid-cols-1 gap-5 lg:grid-cols-3 xl:grid-cols-4">
-            <div class="panel">
+        <div class="mb-5 grid grid-cols-1 gap-5 lg:grid-cols-3 xl:grid-cols-3">
+            <div class="panel lead-info">
                 <div class="mb-5 flex items-center justify-between">
                     <h5 class="text-lg font-semibold dark:text-white-light">Leads Information</h5>
                     <a href="users-account-settings.html" class="btn btn-primary rounded-full p-2 ltr:ml-auto rtl:mr-auto">
@@ -19,51 +19,13 @@
                         </svg>
                     </a>
                 </div>
-                <div class="mb-5">
+                <div class="details-container mb-5">
                     <ul class="mt-5 flex max-w-[160px] flex-col space-y-4 font-semibold text-white-dark">
-                        <li class="flex items-center gap-2">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5">
-                                <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.5"></circle>
-                                <path d="M4 20C4 16.6863 7.68629 14 12 14C16.3137 14 20 16.6863 20 20" stroke="currentColor" stroke-width="1.5"></path>
-                            </svg>
-                            Web Developer
-                        </li>
-                        <li class="flex items-center gap-2">
-                            <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0">
-                                <path d="M2 12C2 8.22876 2 6.34315 3.17157 5.17157C4.34315 4 6.22876 4 10 4H14C17.7712 4 19.6569 4 20.8284 5.17157C22 6.34315 22 8.22876 22 12V14C22 17.7712 22 19.6569 20.8284 20.8284C19.6569 22 17.7712 22 14 22H10C6.22876 22 4.34315 22 3.17157 20.8284C2 19.6569 2 17.7712 2 14V12Z" stroke="currentColor" stroke-width="1.5"></path>
-                                <path opacity="0.5" d="M7 4V2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
-                                <path opacity="0.5" d="M17 4V2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
-                                <path opacity="0.5" d="M2 9H22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
-                            </svg>
-                            Jan 20, 1995
-                        </li>
-                        <li class="flex items-center gap-2">
-                            <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0">
-                                <path opacity="0.5" d="M4 10.1433C4 5.64588 7.58172 2 12 2C16.4183 2 20 5.64588 20 10.1433C20 14.6055 17.4467 19.8124 13.4629 21.6744C12.5343 22.1085 11.4657 22.1085 10.5371 21.6744C6.55332 19.8124 4 14.6055 4 10.1433Z" stroke="currentColor" stroke-width="1.5"></path>
-                                <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.5"></circle>
-                            </svg>
-                            Phnom Penh
-                        </li>
-                        <li>
-                            <a href="javascript:;" class="flex items-center gap-2">
-                                <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0">
-                                    <path opacity="0.5" d="M2 12C2 8.22876 2 6.34315 3.17157 5.17157C4.34315 4 6.22876 4 10 4H14C17.7712 4 19.6569 4 20.8284 5.17157C22 6.34315 22 8.22876 22 12C22 15.7712 22 17.6569 20.8284 18.8284C19.6569 20 17.7712 20 14 20H10C6.22876 20 4.34315 20 3.17157 18.8284C2 17.6569 2 15.7712 2 12Z" stroke="currentColor" stroke-width="1.5"></path>
-                                    <path d="M6 8L8.1589 9.79908C9.99553 11.3296 10.9139 12.0949 12 12.0949C13.0861 12.0949 14.0045 11.3296 15.8411 9.79908L18 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
-                                </svg>
-                                <span class="truncate text-primary">starcodekh@gmail.com</span></a>
-                        </li>
-                        <li class="flex items-center gap-2">
-                            <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5">
-                                <path d="M16.1007 13.359L16.5562 12.9062C17.1858 12.2801 18.1672 12.1515 18.9728 12.5894L20.8833 13.628C22.1102 14.2949 22.3806 15.9295 21.4217 16.883L20.0011 18.2954C19.6399 18.6546 19.1917 18.9171 18.6763 18.9651M4.00289 5.74561C3.96765 5.12559 4.25823 4.56668 4.69185 4.13552L6.26145 2.57483C7.13596 1.70529 8.61028 1.83992 9.37326 2.85908L10.6342 4.54348C11.2507 5.36691 11.1841 6.49484 10.4775 7.19738L10.1907 7.48257" stroke="currentColor" stroke-width="1.5"></path>
-                                <path opacity="0.5" d="M18.6763 18.9651C17.0469 19.117 13.0622 18.9492 8.8154 14.7266C4.81076 10.7447 4.09308 7.33182 4.00293 5.74561" stroke="currentColor" stroke-width="1.5"></path>
-                                <path opacity="0.5" d="M16.1007 13.3589C16.1007 13.3589 15.0181 14.4353 12.0631 11.4971C9.10807 8.55886 10.1907 7.48242 10.1907 7.48242" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
-                            </svg>
-                            <span class="whitespace-nowrap" dir="ltr">+1 (530) 555-12121</span>
-                        </li>
+                        <li>No data selected</li>
                     </ul>
                 </div>
             </div>
-            <div class="panel lg:col-span-2 xl:col-span-3">
+            <div class="panel lg:col-span-2 xl:col-span-10 ">
                 <div class="mb-5 flex items-center justify-between">
                     <h5 class="text-lg font-semibold dark:text-white-light">Leads</h5>
                     <a href="{{ route('customers.create') }}" class="btn btn-primary">Add Leads</a>
@@ -73,21 +35,22 @@
                         <table class="whitespace-nowrap">
                             <thead>
                                 <tr>
+                                    <th>Date</th>
                                     <th>Name</th>
                                     <th>Email</th>
                                     <th>Address</th>
-                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody class="dark:text-white-dark">
                             @foreach($customers as $customer)
-                                <tr>
+                                <tr class="customer-row" data-id="{{ $customer->id }}">
+                                    <td>
+                                    {!! \Carbon\Carbon::parse($customer->date_created)->format('d M, Y') ?? 'N/A' !!}
+                                    </td>
                                     <td>{{ $customer->fullName() }}</td>
                                     <td>{{ $customer->email }}</td>
                                     <td>{{ $customer->address }}</td>
-                                    <td>{{ $customer->status }}</td>
                                 </tr>
-                            </tbody>
                             @endforeach
                         </table>
                     </div>
@@ -96,5 +59,4 @@
         </div>
     </div>
 </div>
-
 @endsection

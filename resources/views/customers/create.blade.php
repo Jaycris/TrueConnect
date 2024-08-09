@@ -14,7 +14,7 @@
                 <h5 class="text-lg font-semibold dark:text-white-light">Add Leads</h5>
             </div>
             <div class="mb-5">
-                <form action="{{ route('admin.users.post') }}" method="POST" enctype="multipart/form-data" class="mb-5 rounded-md border border-[#ebedf2] bg-white p-4 dark:border-[#191e3a] dark:bg-[#0e1726]">
+                <form action="{{ route('customers.store') }}" method="POST" enctype="multipart/form-data" class="mb-5 rounded-md border border-[#ebedf2] bg-white p-4 dark:border-[#191e3a] dark:bg-[#0e1726]">
                     @csrf
                     <h6 class="mb-5 text-lg font-bold">Leads Information</h6>
                     <div class="flex flex-col sm:flex-row">

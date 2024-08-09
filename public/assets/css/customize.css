@@ -130,3 +130,12 @@
 #books_container .book-input-group {
     margin-bottom: 10px; /* Space between fields */
 }
+
+
+.customer-row {
+    cursor: pointer; /* Optional: shows pointer cursor on hover */
+}
+
+.customer-row.bg-gray-200 {
+    background-color: #e2e8f0; /* Light gray background for selected row */
+}

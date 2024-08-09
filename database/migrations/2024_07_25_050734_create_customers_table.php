@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('verified_by')->nullable();
             $table->text('comment')->nullable();
             $table->string('assign_to')->nullable();
+            $table->boolean('is_viewed')->default(false);
             $table->timestamps();
         });
       

@@ -70,6 +70,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/customers/create', [CustomerController::class, 'create'])->name('customers.create')->middleware('2fa');
     Route::post('/customers', [CustomerController::class, 'store'])->name('customers.store');
     Route::get('/customers/{customer}/assign', [CustomerController::class, 'showAssignForm'])->name('customers.assign');
+    Route::get('/customers/{id}', [CustomerController::class, 'show']);
+    Route::post('/customers/{id}/view', [CustomerController::class, 'markAsViewed']);
     Route::post('/customers/{customer}/assign', [CustomerController::class, 'assignEmployees'])->name('customers.assignEmployees');
     Route::post('/customers/{customer}/return', [CustomerController::class, 'returnToLeadMiner'])->name('customers.return');
     Route::post('/customers/{customer}/reassign', [CustomerController::class, 'reassignToEmployee'])->name('customers.reassign');
