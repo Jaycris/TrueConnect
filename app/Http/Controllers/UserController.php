@@ -41,8 +41,8 @@ class UserController extends Controller
             'middle_name' => 'nullable|string|max:255',
             'last_name' => 'required|string|max:255',
             'gender' => 'required|string|max:255',
-            'position' => 'required|string|max:255',
-            'department' => 'required|string|max:255',
+            'des_id' => 'required|string|max:255',
+            'department_id' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
             'username' => 'required|string|unique:users',
             'password' => 'required|min:8|confirmed',
@@ -80,8 +80,8 @@ class UserController extends Controller
             'middle_name' => $validatedData['middle_name'],
             'last_name' => $validatedData['last_name'],
             'gender' => $validatedData['gender'],
-            'position' => $validatedData['position'],
-            'department' => $validatedData['department'],
+            'des_id' => $validatedData['des_id'],
+            'department_id' => $validatedData['department_id'],
         ]);
     
         $profile->save();
@@ -117,7 +117,7 @@ class UserController extends Controller
             'middle_name'       => 'nullable|string|max:255',
             'last_name'         => 'required|string|max:255',
             'gender'            => 'required|string|max:255',
-            'designation'       => 'required|string|max:255',
+            'des_id'            => 'required|string|max:255',
             'department'        => 'required|string|max:255',
             'email'             => 'required|email|unique:users,email,' . $id,
             'username'          => 'required|unique:users,username,' . $id,
@@ -139,8 +139,8 @@ class UserController extends Controller
         $profile->middle_name = $request->input('middle_name');
         $profile->last_name = $request->input('last_name');
         $profile->gender = $request->input('gender');
-        $profile->des_id = $request->input('designation');
-        $profile->department_id = $request->input('department');
+        $profile->des_id = $request->input('des_id');
+        $profile->department_id = $request->input('department_id');
 
         if ($request->hasFile('avatar')) {
             $image = $request->file('avatar');

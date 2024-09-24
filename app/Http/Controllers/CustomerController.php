@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\ContactNumber;
+use App\Models\CustomerReturnReason;
 use App\Models\Book;
 use App\Models\User;
 use Carbon\Carbon;
@@ -14,14 +15,71 @@ class CustomerController extends Controller
 {
     public function index()
     {
-        $customers = Customer::with('contactNumbers', 'books', 'employees')->get();
+        $customers = Customer::with(['contactNumbers', 'books']) // Eager load relationships
+                            ->whereHas('contactNumbers', function($query) {
+                        $query->where('status', 'Not Verified');
+                        })->get();        
+    
+        // Query to get verified customers
+        $verifiedCustomers = Customer::with(['contactNumbers', 'books'])
+                                    ->whereHas('contactNumbers', function ($query) {
+                                $query->whereIn('status', ['Verified', 'DNC', 'VM']);
+                                })
+                                    ->whereDoesntHave('contactNumbers', function ($query) {
+                                $query->whereNotIn('status', ['Verified', 'DNC', 'VM']);
+                                })
+                                ->whereNull('assign_to')  // Only include customers who are not assigned
+                                ->get();
+
+        $assignedCustomers = Customer::with(['contactNumbers', 'books'])
+                                ->whereNotNull('assign_to')  // Only include customers who are assigned
+                                ->where('return_lead', false)
+                                ->get();
+
+        $returnCustomers = Customer::with(['contactNumbers', 'books'])
+                                ->whereNotNull('assign_to')  // Only include customers who are assigned
+                                ->where('return_lead', true)
+                                ->get();
+
+        $brandingSpecialists = User::whereHas('profile', function ($query) {
+                                $query->where('des_id', function ($subQuery) {
+                                $subQuery->select('id')->from('designations')->where('name', 'Branding Specialist');
+                                });
+                                })->get();
+
+                                
+
+        $selectedCustomer = null;
         $employees = User::where('user_type', 'Employee')->get();
-        return view('customers.index', compact('customers', 'employees'));
+        
+        return view('customers.index', compact('customers', 'selectedCustomer', 'employees', 'verifiedCustomers', 'assignedCustomers', 'brandingSpecialists', 'returnCustomers'));
+    }
+
+    public function userCustomer()
+    {
+        $userId = Auth::user()->id;
+
+        // \Log::info('Logged-in User ID:', ['id' => $userId]);        
+        $assignedCustomers = Customer::with(['contactNumbers', 'books'])
+        ->where('assign_to', $userId)  // Ensure $userId is an integer
+        ->where('return_lead', false)
+        ->get();
+
+        // \Log::info('Assigned Customers:', $assignedCustomers->toArray());        
+        return view('employee.mycustomer', compact('assignedCustomers'));
     }
 
     public function show($id)
     {
         $customer = Customer::with('contactNumbers', 'books')->findOrFail($id);
+        $currentUserName = Auth::user()->profile->fullName();
+
+        // Retrieve the assigned employee's name based on the 'assign_to' user_id
+        $assignedEmployeeName = null;
+        if ($customer->assign_to) {
+            $assignedEmployee = User::find($customer->assign_to);
+            $assignedEmployeeName = $assignedEmployee ? $assignedEmployee->profile->fullName() : null;
+        }
 
         return response()->json([
             'success' => true,
@@ -42,8 +100,9 @@ class CustomerController extends Controller
                         'link' => $book->link,
                     ];
                 }),
-                'assign_to' => $customer->assign_to,
+                'assign_to' => $assignedEmployeeName,
                 'is_viewed' => $customer->is_viewed,
+                'current_user_name' => $currentUserName,
             ],
         ]);
 
@@ -88,7 +147,7 @@ class CustomerController extends Controller
 
             $today = Carbon::now()->toDateString();
     
-            $user = Auth::user();
+            $user = Auth::user()->id;
     
             $customers = Customer::create([
                 'date_created' => $today,
@@ -98,7 +157,7 @@ class CustomerController extends Controller
                 'email' => $request->email,
                 'address' => $request->address,
                 'website' => $request->website,
-                'lead_miner' => $user->profile->fullName(),
+                'lead_miner' => $user,
                 'type' => $request->type,
                 'deals' => $request->deals,
                 'notes' => $request->notes,
@@ -124,54 +183,266 @@ class CustomerController extends Controller
         
         return redirect()->route('customers.index')->with('success', 'Customer created successfully.');
     }
-
-    public function verifyContactNumber(ContactNumber $contactNumber)
+    
+    public function edit($id)
     {
-        $contactNumber->update(['status' => 'Verified']);
+        $customer = Customer::with('contactNumbers', 'books')->findOrFail($id);
+        $statuss = ContactNumber::distinct()->pluck('status')->toArray();
 
-        return redirect()->route('customers.index')->with('success', 'Contact number verified successfully.');
+        return view('customers.edit', compact('customer', 'statuss'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'first_name' => 'required|string|max:255',
+            'middle_name' => 'nullable|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'nullable|string|email|max:255|unique:customers,email,' . $id,
+            'address' => 'nullable|string|max:255',
+            'website' => 'nullable|string|max:255',
+            'type' => 'nullable|string|max:255',
+            'deals' => 'nullable|string|max:255',
+            'notes' => 'nullable|string|max:255',
+            'assign_to' => 'nullable|string|max:255',
+            'comment' => 'nullable|string',
+            'contact_numbers' => 'required|array',
+            'contact_numbers.*.contact_number' => 'required|string|max:255',
+            'contact_numbers.*.status' => 'required|string|max:255',
+            'books' => 'nullable|array',
+            'books.*.title' => 'required|string|max:255',
+            'books.*.link' => 'nullable|url|max:255'
+        ]);
+
+        try {
+            
+            $customer = Customer::findOrFail($id);
+
+            $verifiedBy = Auth::user()->profile->fullName();
+
+            $customer->update([
+                'first_name'    => $request->first_name,
+                'middle_name'   => $request->middle_name,
+                'last_name'     => $request->last_name,
+                'email'         => $request->email,
+                'address'       => $request->address,
+                'website'       => $request->website,
+                'type'          => $request->type,
+                'deals'         => $request->deals,
+                'notes'         => $request->notes,
+                'assign_to'     => $request->assign_to,
+                'comment'       => $request->comment,
+
+            ]);
+
+            $statusUpdated = false;
+
+            // Update contact numbers
+            if ($request->has('contact_numbers')) {
+                // Get existing contact numbers
+                $existingContacts = $customer->contactNumbers->keyBy('contact_number');
+    
+                foreach ($request->contact_numbers as $contact) {
+                    $contactNumber = $contact['contact_number'];
+                    $status = $contact['status'] ?? 'Not Verified';
+    
+                    if (isset($existingContacts[$contactNumber])) {
+                        $existingContact = $existingContacts[$contactNumber];
+                        
+                        if ($existingContact->status !== $status) {
+                            // Status changed
+                            $existingContact->update(['status' => $status]);
+                            $statusUpdated = true;
+                        }
+                    } else {
+                        // Add new contact number
+                        $customer->contactNumbers()->create([
+                            'contact_number' => $contactNumber,
+                            'status' => $status
+                        ]);
+                    }
+                }
+
+                $contactNumbersInRequest = collect($request->contact_numbers)->pluck('contact_number')->toArray();
+                $contactsToDelete = $customer->contactNumbers->whereNotIn('contact_number', $contactNumbersInRequest);
+                foreach ($contactsToDelete as $contact) {
+                    $contact->delete();
+                }
+            }
+
+            if ($statusUpdated) {
+                $customer->update([
+                    'verified_by' => auth()->user()->name // Assuming the user is logged in and has a 'name' attribute
+                ]);
+            }
+
+            // Update books
+            if ($request->has('books')) {
+                $existingBooks = $customer->books->keyBy('title');
+
+                foreach ($request->books as $book) {
+                    $title = $book['title'];
+                    $link = $book['link'];
+
+                    if (isset($existingBooks[$title])) {
+                        //update existing book
+                        $existingBooks[$title]->update(['link' => $link]);
+                    } else {
+                        // Add new book
+                        $customer->books()->create([
+                            'title' => $title,
+                            'link'  => $link
+                        ]);
+                    }
+                }
+                $booksInRequest = collect($request->books)->pluck('title')->toArray();
+                $booksToDelete = $customer->books->whereNotIn('title', $booksInRequest);
+                foreach ($booksToDelete as $book) {
+                    $book->delete();
+                }
+            }
+
+
+        } catch (validationException $e ) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        }
+
+        return redirect()->route('customers.index')->with('success', 'Customer updated successfully.');
+    }
+
+    public function updateStatus(Request $request)
+    {
+
+        $request->validate([
+            'customer_id' => 'required|integer',
+            'contact_numbers.*.number' => 'required|string',
+            'contact_numbers.*.status' => 'required|string|in:Not Verified,Verified',
+            'contact_numbers.*.id' => 'required|integer'
+        ]);
+
+        foreach ($request->contact_numbers as $contact) {
+            $contactNumber = ContactNumber::findOrFail($contact['id']);
+            $contactNumber->update(['status' => $contact['status']]);
+        }
+
+        $customer = Customer::findOrFail($request->customer_id);
+        $customer->update(['verified_by' => auth()->user()->id]);
+
+        return redirect()->route('customers.index')->with('success', 'Status updated successfully.');
     }
 
     public function showAssignForm(Customer $customer)
     {
-        $employees = User::where('user_type', 'Employee')->get();
-        return view('customers.assign', compact('customer', 'employees'));
+        $brandingSpecialists = User::whereHas('profile', function ($query) {
+            $query->where('des_id', function ($subQuery) {
+                $subQuery->select('id')->from('designations')->where('name', 'Branding Specialist');
+            });
+        })->get();
+
+        return view('customers.assign', compact('customer', 'brandingSpecialists'));
     }
 
-    public function assignEmployees(Request $request, Customer $customer)
+    public function assignEmployees(Request $request)
     {
         $request->validate([
-            'employees' => 'nullable|array',
+            'customers' => 'required|array',
+            'customers.*' => 'exists:customers,id',
+            'employees' => 'required|array',
             'employees.*' => 'exists:users,id',
         ]);
 
-        $customer->employees()->sync($request->employees);
-        $customer->update(['status' => 'Assigned']);
 
-        return redirect()->route('customers.index')->with('success', 'Customer assigned successfully.');
+        $employees = User::whereIn('id', $request->employees)->get();
+
+        if ($employees->isEmpty()) {
+            return redirect()->route('customers.index')->with('error', 'No valid employees found.');
+        }
+
+        $employee = $employees->first();
+
+
+        // Assign each customer to the selected employee
+        foreach ($request->customers as $customerId) {
+            $customer = Customer::find($customerId);
+    
+            if ($customer) {
+                // Update the `assign_to` field with the employee's ID
+                $customer->update(['assign_to' => $employee->id]);
+            }
+        }
+
+
+        return redirect()->route('customers.index')->with('success', 'Leads assigned successfully.');
     }
 
     public function returnToLeadMiner(Request $request, Customer $customer)
     {
         $request->validate([
-            'correction_reason' => 'required|string|max:255',
+            'customers' => 'required|array',
+            'customers.*' => 'exists:customers,id',
+            'return_reason' => 'required|string|max:255',
         ]);
 
-        $customer->update(['status' => 'Needs Correction', 'correction_reason' => $request->correction_reason]);
+        foreach ($request->customers as $customerId) {
+            $customer = Customer::find($customerId);
+            
+            // Record return reason
+            CustomerReturnReason::create([
+                'customer_id' => $customerId,
+                'reason' => $request->return_reason,
+            ]);
+    
+            // Mark lead as returned without changing the assign_to field
+            $customer->return_lead = true;
+            $customer->save();
+        }
 
-        return redirect()->route('customers.index')->with('success', 'Customer returned to lead miner for correction.');
+        return redirect()->route('employee.mycustomer')->with('success', 'Leads returned to lead miner for correction.');
     }
 
     public function reassignToEmployee(Request $request, Customer $customer)
     {
         $request->validate([
-            'employees' => 'nullable|array',
-            'employees.*' => 'exists:users,id',
+            'employee' => 'required|exists:users,id',
+            'customers' => 'required|array',
+            'customers.*' => 'exists:customers,id', // Validate customer IDs
         ]);
 
-        $customer->employees()->sync($request->employees);
-        $customer->update(['status' => 'Reassigned']);
+        // Check if the request contains more than one selected customer
+        if (count($validatedData['selected_customers']) > 1) {
+            return redirect()->back()->withErrors(['error' => 'You can only assign one branding specialist at a time.']);
+        }
 
-        return redirect()->route('customers.index')->with('success', 'Customer reassigned successfully.');
+        $customer->employees()->sync($request->employees);
+        $customer->update(['return_lead' => false]);
+
+        return redirect()->route('customers.index')->with('success', 'Leads reassigned successfully.');
+    }
+
+    public function showReassignModal(Request $request)
+    {
+        $selectedCustomerIds = $request->input('customers');
+        
+        // Fetch the selected customers
+        $customers = Customer::whereIn('id', $selectedCustomerIds)->get();
+        
+        // Ensure customers and 'assign_to' field exist
+        if ($customers->isNotEmpty() && $customers->first()->assign_to) {
+            $brandingSpecialistId = $customers->first()->assign_to; 
+            $brandingSpecialist = User::find($brandingSpecialistId);
+
+            if ($brandingSpecialist && $brandingSpecialist->profile) {
+                $brandingSpecialistName = $brandingSpecialist->profile->fullName();
+            } else {
+                $brandingSpecialistName = 'Unknown Branding Specialist';
+            }
+        } else {
+            $brandingSpecialistName = 'No Branding Specialist Assigned';
+        }
+
+        // Return the total count of leads
+        $totalLeads = $customers->count();
+
+        return view('customers.reassign-modal', compact('customers', 'brandingSpecialistName', 'totalLeads'));
     }
 }

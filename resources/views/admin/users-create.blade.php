@@ -75,20 +75,20 @@
                                 @enderror
                             </div>
                             <div>
-                                <label for="position">Designation</label>
-                                <select id="position" name="position" class="form-select text-white-dark">
+                                <label for="designation">Designation</label>
+                                <select id="des_id" name="des_id" class="form-select text-white-dark">
                                     <option>Select Designation</option>
                                     @foreach($designations as $key => $designation)
                                     <option value="{{ $designation->id }}">{{ $designation->name }}</option>
                                     @endforeach
                                 </select>
-                                @error('position')
+                                @error('des_id')
                                     <p class="text-danger 500 italic">{{ $message }}</p>
                                 @enderror
                             </div>
                             <div>
                                 <label for="department">Department</label>
-                                <select id="department" name="department" class="form-select text-white-dark">
+                                <select id="department" name="department_id" class="form-select text-white-dark">
                                     <option class="text-white-light">Select Department</option>
                                     @foreach($departments as $key => $department)
                                     <option value="{{ $department->id }}">{{ $department->name }}</option>

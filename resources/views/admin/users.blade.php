@@ -16,10 +16,10 @@
         @endif
         <div class="mb-5">
             <div class="table-responsive">
-                <table>
+                <table id="users-table">
                     <thead>
                         <tr>
-                            <th><input type="checkbox" class="checkAll form-checkbox" /></th>
+                            <th><input type="checkbox" id="checkAllUsers" class="checkAll form-checkbox" /></th>
                             <th>Name</th>
                             <th>Email</th>
                             <th>Username</th>
@@ -32,7 +32,7 @@
                     @foreach($users as $user)
                         @if ($user->profile)
                         <tr>
-                            <td><input type="checkbox" class="form-checkbox" /></td>                            
+                            <td><input type="checkbox" class="form-checkbox" /></td>                           
                             <td class="whitespace-nowrap">
                                 <div class="flex items-center">
                                     <div class="avatar w-6 h-6 rounded-full overflow-hidden">

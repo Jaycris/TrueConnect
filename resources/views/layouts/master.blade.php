@@ -91,8 +91,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="assets/js/custom.js"></script>
     <script src="{{ asset('assets/js/customize.js') }}"></script>
-    <script src="{{ asset('assets/js/leads.js') }}"></script> 
     <script src="{{ asset('assets/js/notifications.js') }}"></script>
+    <script src="{{ asset('assets/js/leads.js') }}"></script> 
     <script>
         window.successMessage = @json(Session::get('success'));
         window.errorMessage = @json(Session::get('error'));

@@ -65,9 +65,15 @@ class AuthenticatedSessionController extends Controller
 
             RateLimiter::clear($request->throttleKey());
 
+            // Load the designation
+            $user->load('profile.designation');
+
+            // Store the user and their designation in the session
+            session(['user' => $user]);
+
             if ($user->user_type == 'Admin') {
                 return redirect()->intended('/admin')->with('success', 'Successfully Logged In');
-            } else if ($user->user_type == 'Employee') {
+            } elseif ($user->user_type == 'Employee') {
                 return redirect()->intended('/employee')->with('success', 'Successfully Logged In');
             }
 

@@ -20,10 +20,12 @@ trait DeviceIdentifier
 
         // Use additional browser-specific information
         $userAgent = request()->userAgent();
-        $ipAddress = request()->ip();
-        $browserLanguage = request()->server('HTTP_ACCEPT_LANGUAGE', 'unknown');
-        $screenResolution = request()->server('HTTP_SEC_CH_UA', 'unknown');
+        // $ipAddress = request()->ip();
+        // $browserLanguage = request()->server('HTTP_ACCEPT_LANGUAGE', 'unknown');
+        // $screenResolution = request()->server('HTTP_SEC_CH_UA', 'unknown');
 
-        return hash('sha256', $userAgent . $ipAddress . $browserLanguage . $screenResolution . $salt);
+        // return hash('sha256', $userAgent . $ipAddress . $browserLanguage . $screenResolution . $salt);
+        return hash('sha256', $userAgent . $salt);
+
     }
 }

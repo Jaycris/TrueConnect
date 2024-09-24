@@ -42,6 +42,11 @@ class Customer extends Model
         return $this->belongsToMany(User::class, 'customer_employee', 'customer_id', 'employee_id');
     }
 
+    public function returnReasons()
+    {
+        return $this->hasMany(CustomerReturnReason::class);
+    }
+
     public function fullName()
     {
         $middleInitial = $this->middle_name ? strtoupper($this->middle_name[0]) . '.' : '';

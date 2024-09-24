@@ -56,16 +56,42 @@
                         </svg>
                     </div>            
                 </button>
+                @php
+                    $designation = trim(strtolower(Auth::user()->profile->designation->name ?? ''));
+
+                    $allowedDesignations = [
+                        'chief executive officer',
+                        'chief operating officer',
+                        'human resources',
+                        'lead miners',
+                        'verifier'
+                    ];
+
+                    $adminDesignations =[
+                        'chief executive officer',
+                        'chief operating officer',
+                        'human resources',
+                    ];
+
+                    $hasAccess = in_array($designation, $allowedDesignations);
+                    $adminAccess = in_array($designation, $adminDesignations);
+                @endphp
                 <ul x-cloak x-show="activeDropdown === 'settings'" x-collapse="" class="sub-menu text-gray-500">
+                @if($hasAccess)                          
                     <li>
                         <a class="{{ request()->is('customers') ? 'active' : '' }}" href="{{ route('customers.index') }}">Leads</a>
                     </li>
                     <li>
                         <a class="{{ request()->is('admin/designations', 'admin/designations/create', 'admin/designations/*/edit') ? 'active' : '' }}" href="{{ route('admin.designations') }}">Clients</a>
                     </li>
+                @endif
+                    <li>
+                        <a class="{{ request()->is('mycustomers') ? 'active' : '' }}" href="{{ route('employee.mycustomer') }}">My Leads</a>
+                    </li>
                 </ul>
             </li>
 
+            @if($adminAccess)
             <h2 class="-mx-4 mb-1 flex items-center bg-white-light/30 py-3 px-7 font-extrabold uppercase dark:bg-dark dark:bg-opacity-[0.08]">
                 <svg class="hidden h-5 w-4 flex-none" viewbox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -109,6 +135,7 @@
                     </li>
                 </ul>
             </li>
+            @endif
         </ul>
     </div>
 </nav>

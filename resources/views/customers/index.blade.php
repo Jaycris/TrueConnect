@@ -11,7 +11,7 @@
             <div class="panel lead-info">
                 <div class="mb-5 flex items-center justify-between">
                     <h5 class="text-lg font-semibold dark:text-white-light">Leads Information</h5>
-                    <a href="users-account-settings.html" class="btn btn-primary rounded-full p-2 ltr:ml-auto rtl:mr-auto">
+                    <a id="edit-button" href="#" class="btn btn-primarycolor rounded-full p-2 ltr:ml-auto rtl:mr-auto">
                         <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5">
                             <path opacity="0.5" d="M4 22H20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
                             <path d="M14.6296 2.92142L13.8881 3.66293L7.07106 10.4799C6.60933 10.9416 6.37846 11.1725 6.17992 11.4271C5.94571 11.7273 5.74491 12.0522 5.58107 12.396C5.44219 12.6874 5.33894 12.9972 5.13245 13.6167L4.25745 16.2417L4.04356 16.8833C3.94194 17.1882 4.02128 17.5243 4.2485 17.7515C4.47573 17.9787 4.81182 18.0581 5.11667 17.9564L5.75834 17.7426L8.38334 16.8675L8.3834 16.8675C9.00284 16.6611 9.31256 16.5578 9.60398 16.4189C9.94775 16.2551 10.2727 16.0543 10.5729 15.8201C10.8275 15.6215 11.0583 15.3907 11.5201 14.929L11.5201 14.9289L18.3371 8.11195L19.0786 7.37044C20.3071 6.14188 20.3071 4.14999 19.0786 2.92142C17.85 1.69286 15.8581 1.69286 14.6296 2.92142Z" stroke="currentColor" stroke-width="1.5"></path>
@@ -24,35 +24,297 @@
                         <li>No data selected</li>
                     </ul>
                 </div>
+                <button id="update-status-button" class="btn btn-primarycolor btn-sm hidden">Update Status</button>
             </div>
             <div class="panel lg:col-span-2 xl:col-span-10 ">
-                <div class="mb-5 flex items-center justify-between">
-                    <h5 class="text-lg font-semibold dark:text-white-light">Leads</h5>
-                    <a href="{{ route('customers.create') }}" class="btn btn-primary">Add Leads</a>
-                </div>
                 <div class="mb-5">
-                    <div class="table-responsive font-semibold text-[#515365] dark:text-white-light">
-                        <table class="whitespace-nowrap">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Address</th>
-                                </tr>
-                            </thead>
-                            <tbody class="dark:text-white-dark">
-                            @foreach($customers as $customer)
-                                <tr class="customer-row" data-id="{{ $customer->id }}">
-                                    <td>
-                                    {!! \Carbon\Carbon::parse($customer->date_created)->format('d M, Y') ?? 'N/A' !!}
-                                    </td>
-                                    <td>{{ $customer->fullName() }}</td>
-                                    <td>{{ $customer->email }}</td>
-                                    <td>{{ $customer->address }}</td>
-                                </tr>
-                            @endforeach
-                        </table>
+                    <ul class="flex border-b">
+                        <li>
+                            <a href="#leads" class="tab-link py-2 px-4 block text-center dark:text-white-light tab-row">Leads</a>
+                        </li>
+                        <li>
+                            <a href="#verified-leads" class="tab-link py-2 px-4 block text-center dark:text-white-light tab-row">Verified Leads</a>
+                        </li>
+                        <li>
+                            <a href="#assigned-leads" class="tab-link py-2 px-4 block text-center dark:text-white-light">Assigned Leads</a>
+                        </li>
+                        <li>
+                            <a href="#return-leads" class="tab-link py-2 px-4 block text-center dark:text-white-light">Return Leads</a>
+                        </li>
+                    </ul>
+                </div>
+                <div id="leads" class="tab-content">
+                    <div class="mb-5 flex items-center justify-between">
+                        <h5 class="text-lg font-semibold dark:text-white-light">Leads</h5>
+                        <a href="{{ route('customers.create') }}" class="btn btn-primarycolor">Add Leads</a>
+                    </div>
+                    <div class="mb-5">
+                        <div class="table-responsive font-semibold text-[#515365] dark:text-white-light">
+                            <table id="leads-table" class="whitespace-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox" id="checkAllLeads" class="checkAll form-checkbox" /></th>
+                                        <th>Date</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Address</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="dark:text-white-dark">
+                                @foreach($customers as $customer)
+                                    <tr class="customer-row" data-id="{{ $customer->id }}" data-name="{{ $customer->fullName() }}" data-books="{{ $customer->books->toJson() }}" data-contact-numbers="{{ $customer->contactNumbers->toJson() }}">
+                                        <td><input type="checkbox" class="form-checkbox" /></td> 
+                                        <td>
+                                        {!! \Carbon\Carbon::parse($customer->date_created)->format('d M, Y') ?? 'N/A' !!}
+                                        </td>
+                                        <td>{{ $customer->fullName() }}</td>
+                                        <td>{{ $customer->email }}</td>
+                                        <td>{{ $customer->address }}</td>
+                                    </tr>
+                                @endforeach
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="verified-leads" class="tab-content hidden">
+                    <div class="mb-5 flex items-center justify-between">
+                        <h5 class="text-lg font-semibold dark:text-white-light">Verified Leads</h5>
+                    </div>
+                    <div class="mb-5">
+                        <div class="table-responsive font-semibold text-[#515365] dark:text-white-light">
+                            <table id="verified-leads-table" class="whitespace-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox" id="checkAllVerified" class="checkAll form-checkbox" /></th>
+                                        <th>Date</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Address</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="dark:text-white-dark">
+                                @foreach($verifiedCustomers as $customer)
+                                    <tr class="customer-row" data-id="{{ $customer->id }}" data-name="{{ $customer->fullName() }}" data-books="{{ $customer->books->toJson() }}" data-contact-numbers="{{ $customer->contactNumbers->toJson() }}">
+                                        <td><input type="checkbox" class="form-checkbox" /></td> 
+                                        <td>
+                                        {!! \Carbon\Carbon::parse($customer->date_created)->format('d M, Y') ?? 'N/A' !!}
+                                        </td>
+                                        <td>{{ $customer->fullName() }}</td>
+                                        <td>{{ $customer->email }}</td>
+                                        <td>{{ $customer->address }}</td>
+                                    </tr>
+                                @endforeach
+                            </table>
+                            <hr>
+                            <button id="assign-leads-btn" class="btn btn-primarycolor btn-sm mt-3" data-modal-target="open-assign-modal" disabled>Assign Leads</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="assigned-leads" class="tab-content hidden">
+                    <div class="mb-5 flex items-center justify-between">
+                        <h5 class="text-lg font-semibold dark:text-white-light">Assign Leads</h5>
+                    </div>
+                    <div class="mb-5">
+                        <div class="table-responsive font-semibold text-[#515365] dark:text-white-light">
+                            <table id="assign-leads-table" class="whitespace-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox" id="checkAllAssign" class="checkAll form-checkbox" /></th>
+                                        <th>Date</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Address</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="dark:text-white-dark">
+                                @forelse($assignedCustomers as $customer)
+                                    <tr class="customer-row" data-id="{{ $customer->id }}">
+                                        <td><input type="checkbox" class="form-checkbox" /></td>  
+                                        <td>
+                                        {!! \Carbon\Carbon::parse($customer->date_created)->format('d M, Y') ?? 'N/A' !!}
+                                        </td>
+                                        <td>{{ $customer->fullName() }}</td>
+                                        <td>{{ $customer->email }}</td>
+                                        <td>{{ $customer->address }}</td>
+                                    </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="5">No leads assigned</td>
+                                        </tr>
+                                @endforelse
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="return-leads" class="tab-content hidden">
+                    <div class="mb-5 flex items-center justify-between">
+                        <h5 class="text-lg font-semibold dark:text-white-light">Return Leads</h5>
+                    </div>
+                    <div class="mb-5">
+                        <div class="table-responsive font-semibold text-[#515365] dark:text-white-light">
+                            <table id="return-leads-table" class="whitespace-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox" id="checkAllReassign" class="checkAll form-checkbox" /></th>
+                                        <th>Date</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Address</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="dark:text-white-dark">
+                                @forelse($returnCustomers as $customer)
+                                    <tr class="customer-row" data-id="{{ $customer->id }}" data-name="{{ $customer->fullName() }}" data-books="{{ $customer->books->toJson() }}" data-contact-numbers="{{ $customer->contactNumbers->toJson() }}" data-employee-id="{{ $customer->assign_to }}">  <!-- Add employee ID here -->                                        
+                                        <td><input type="checkbox" class="form-checkbox" /></td> 
+                                        <td>
+                                        {!! \Carbon\Carbon::parse($customer->date_created)->format('d M, Y') ?? 'N/A' !!}
+                                        </td>
+                                        <td>{{ $customer->fullName() }}</td>
+                                        <td>{{ $customer->email }}</td>
+                                        <td>{{ $customer->address }}</td>
+                                    </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="5">No leads assigned</td>
+                                        </tr>
+                                @endforelse
+                            </table>
+                            <hr>
+                            <button id="reassign-leads-btn" class="btn btn-primarycolor btn-sm mt-3" data-modal-target="open-assign-modal" disabled>Reassign Leads</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="fixed inset-0 bg-[black]/60 z-[999] hidden overflow-y-auto" id="open-status-modal">
+            <div class="flex items-center justify-center min-h-screen px-4" @click.self="document.getElementById('open-status-modal').classList.add('hidden')">
+                <div class="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg my-8 animate__animated animate__fadeIn">
+                    <div class="flex bg-[#fbfbfb] dark:bg-[#121c2c] items-center justify-between px-5 py-3">
+                        <h5 class="font-bold text-lg">Update Contact Status</h5>
+                        <button type="button" class="text-white-dark hover:text-dark" @click="document.getElementById('open-status-modal').classList.add('hidden')">
+                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">    
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>                            
+                        </button>
+                    </div>
+                    <div class="p-5">
+                        <form id="status-update-form" method="POST" action="{{ route('update.status') }}">
+                            @csrf
+                            <input type="hidden" id="customer-id" name="customer_id">
+                            
+                            <div class="mb-4">
+                                <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+                                <input type="text" id="name" name="name" class="form-input mt-1 block w-full" readonly>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="books" class="block text-sm font-medium text-gray-700">Books</label>
+                                <textarea id="books" name="books" class="form-textarea mt-1 block w-full" readonly></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="contact_numbers_container" class="block text-sm font-medium text-gray-700">Contact Numbers</label>
+                                <div id="contact_numbers_container">
+                                    <!-- Contact numbers will be appended here -->
+                                </div>
+                            </div>
+
+                            <div class="flex justify-end items-center mt-8">
+                                <button type="button" class="btn btn-outline-danger" @click="document.getElementById('open-status-modal').classList.add('hidden')">Cancel</button>
+                                <button type="submit" class="btn btn-primary ltr:ml-4 rtl:mr-4">Update Status</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Assign Leads Modal -->
+        <div class="fixed inset-0 bg-[black]/60 z-[999] hidden overflow-y-auto" id="open-assign-modal">
+            <div class="flex items-center justify-center min-h-screen px-4" @click.self="document.getElementById('open-assign-modal').classList.add('hidden')">
+                <div class="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg my-8 animate__animated animate__fadeIn">
+                    <div class="flex bg-[#fbfbfb] dark:bg-[#121c2c] items-center justify-between px-5 py-3">
+                        <h5 class="font-bold text-lg">Assign Leads</h5>
+                        <button type="button" class="text-white-dark hover:text-dark" @click="document.getElementById('open-assign-modal').classList.add('hidden')">
+                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-5">
+                        <form id="assign-leads-form" method="POST" action="{{ route('customers.assignEmployees') }}">
+                            @csrf
+                            <input type="hidden" id="selected-customer-ids" name="customers[]">
+
+                            <div class="mb-4">
+                                <label for="total-selected-leads" class="block text-sm font-medium text-gray-700">Total Leads Selected</label>
+                                <input type="text" id="total-selected-leads" name="total_leads" class="form-input mt-1 block w-full" readonly>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="employee-select" class="block text-sm font-medium text-gray-700">Assign to</label>
+                                <select id="employee-select" name="employees[]" class="form-select text-white-dark">
+                                    <option class="text-white-light">Select Branding Specialist</option>
+                                    @foreach($brandingSpecialists as $specialist)
+                                        @if($specialist->profile)
+                                        <option value="{{ $specialist->id }}">{{ $specialist->profile->fullName() }}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                            </div>
+                            
+                            <div class="flex justify-end items-center mt-8">
+                                <button type="button" class="btn btn-outline-danger" @click="document.getElementById('open-assign-modal').classList.add('hidden')">Cancel</button>
+                                <button type="submit" class="btn btn-primary ltr:ml-4 rtl:mr-4">Assign Leads</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reassign Leads Modal -->
+        <div class="fixed inset-0 bg-[black]/60 z-[999] hidden overflow-y-auto" id="open-reassign-modal">
+            <div class="flex items-center justify-center min-h-screen px-4" @click.self="document.getElementById('open-reassign-modal').classList.add('hidden')">
+                <div class="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg my-8 animate__animated animate__fadeIn">
+                    <div class="flex bg-[#fbfbfb] dark:bg-[#121c2c] items-center justify-between px-5 py-3">
+                        <h5 class="font-bold text-lg">Reassign Leads</h5>
+                        <button type="button" class="text-white-dark hover:text-dark" @click="document.getElementById('open-reassign-modal').classList.add('hidden')">
+                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-5">
+                        <form id="reassign-leads-form" method="POST" action="{{ route('customers.reassign') }}">
+                            @csrf
+                            <input type="hidden" id="selected-customer-ids" name="customers[]">
+
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700" id="reassign-modal-text"></label> <!-- Unique element for the reassign modal -->
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="total-leads" class="block text-sm font-medium text-gray-700">Total Leads Selected</label>
+                                <input type="text" id="total-leads" name="total_leads" class="form-input mt-1 block w-full" value="{{ $totalLeads ?? '0' }}" readonly>
+                            </div>
+                
+                            <div class="mb-4">
+                                <label for="employee-select" class="block text-sm font-medium text-gray-700">Assign to</label>
+                                <input type="text" id="employee-select" name="employees" class="form-input mt-1 block w-full" value="{{ $brandingSpecialists->first()->profile->fullName() ?? 'N/A' }}" readonly>
+                            </div>
+                           
+                            <div class="flex justify-end items-center mt-8">
+                                <button type="button" class="btn btn-outline-danger" @click="document.getElementById('open-reassign-modal').classList.add('hidden')">Cancel</button>
+                                <button type="submit" class="btn btn-primary ltr:ml-4 rtl:mr-4">Reassign Leads</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

@@ -241,7 +241,7 @@
                                 <h4 class="text-base">
                                     {{ $user->profile->fullname() }}
                                 </h4>
-                                <a class="text-black/60 hover:text-primary dark:text-dark-light/60 dark:hover:text-white" href="javascript:;">starcodekh@gmail.com</a>
+                                <a class="text-black/60 hover:text-primary dark:text-dark-light/60 dark:hover:text-white">{{ $user->profile->designation->name }}</a>
                             </div>
                         </div>
                     </li>

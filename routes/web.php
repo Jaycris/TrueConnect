@@ -67,17 +67,20 @@ Route::middleware(['auth'])->group(function () {
 
     //Customer
     Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index')->middleware('2fa');
+    Route::get('/mycustomers', [CustomerController::class, 'userCustomer'])->name('employee.mycustomer')->middleware('2fa');
     Route::get('/customers/create', [CustomerController::class, 'create'])->name('customers.create')->middleware('2fa');
-    Route::post('/customers', [CustomerController::class, 'store'])->name('customers.store');
-    Route::get('/customers/{customer}/assign', [CustomerController::class, 'showAssignForm'])->name('customers.assign');
+    Route::get('/customers/{id}/edit', [CustomerController::class, 'edit'])->name('customers.edit')->middleware('2fa');
+    Route::post('/customers', [CustomerController::class, 'store'])->name('customers.store','checkRole');
+    Route::post('/customers/{id}/update', [CustomerController::class, 'update'])->name('customers.update',);
     Route::get('/customers/{id}', [CustomerController::class, 'show']);
+    Route::get('/customers/{id}/status', [CustomerController::class, 'getCustomerData'])->name('customers.data');
+    Route::post('/update-status', [CustomerController::class, 'updateStatus'])->name('update.status');
     Route::post('/customers/{id}/view', [CustomerController::class, 'markAsViewed']);
-    Route::post('/customers/{customer}/assign', [CustomerController::class, 'assignEmployees'])->name('customers.assignEmployees');
-    Route::post('/customers/{customer}/return', [CustomerController::class, 'returnToLeadMiner'])->name('customers.return');
-    Route::post('/customers/{customer}/reassign', [CustomerController::class, 'reassignToEmployee'])->name('customers.reassign');
-
-    Route::get('/contact_numbers/{contactNumber}/verify', [CustomerController::class, 'verifyContactNumber'])->name('contact_numbers.verify');
-    Route::put('/contact_numbers/{contactNumber}/verify', [CustomerController::class, 'verifyContactNumber'])->name('contact_numbers.verify');
+    Route::get('/customers/{customer}/assign', [CustomerController::class, 'showAssignForm'])->name('customers.assign');
+    Route::get('/customers/{customer}/assign', [CustomerController::class, 'showAssignForm'])->name('customers.assign');
+    Route::post('/customers/assign', [CustomerController::class, 'assignEmployees'])->name('customers.assignEmployees');
+    Route::post('/customers/return', [CustomerController::class, 'returnToLeadMiner'])->name('customers.return');    
+    Route::post('/customers/reassign', [CustomerController::class, 'reassignToEmployee'])->name('customers.reassign');
     
 
     // 2FA routes
