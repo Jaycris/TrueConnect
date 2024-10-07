@@ -21,12 +21,9 @@ return new class extends Migration
             $table->string('address')->nullable(); 
             $table->string('website')->nullable();
             $table->string('lead_miner')->nullable();
-            $table->string('type')->nullable();
-            $table->string('deals')->nullable();
-            $table->string('notes')->nullable();
             $table->string('verified_by')->nullable();
-            $table->text('comment')->nullable();
             $table->string('assign_to')->nullable();
+            $table->boolean('return_lead')->default(false);
             $table->boolean('is_viewed')->default(false);
             $table->timestamps();
         });

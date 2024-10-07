@@ -135,7 +135,6 @@ class CustomerController extends Controller
             'notes' => 'nullable|string|max:255',
             'verified_by' => 'nullable|string|max:255',
             'assign_to' => 'nullable|string|max:255',
-            'comment' => 'nullable|string',
             'contact_numbers' => 'required|array',
             'contact_numbers.*' => 'nullable|string|max:255',
             'books' => 'nullable|array',
@@ -205,7 +204,6 @@ class CustomerController extends Controller
             'deals' => 'nullable|string|max:255',
             'notes' => 'nullable|string|max:255',
             'assign_to' => 'nullable|string|max:255',
-            'comment' => 'nullable|string',
             'contact_numbers' => 'required|array',
             'contact_numbers.*.contact_number' => 'required|string|max:255',
             'contact_numbers.*.status' => 'required|string|max:255',
@@ -375,7 +373,7 @@ class CustomerController extends Controller
         return redirect()->route('customers.index')->with('success', 'Leads assigned successfully.');
     }
 
-    public function returnToLeadMiner(Request $request, Customer $customer)
+    public function returnToLeadMiner(Request $request)
     {
         $request->validate([
             'customers' => 'required|array',
@@ -385,13 +383,13 @@ class CustomerController extends Controller
 
         foreach ($request->customers as $customerId) {
             $customer = Customer::find($customerId);
-            
-            // Record return reason
+
+            // Record the return reason
             CustomerReturnReason::create([
                 'customer_id' => $customerId,
                 'reason' => $request->return_reason,
             ]);
-    
+
             // Mark lead as returned without changing the assign_to field
             $customer->return_lead = true;
             $customer->save();
@@ -400,49 +398,65 @@ class CustomerController extends Controller
         return redirect()->route('employee.mycustomer')->with('success', 'Leads returned to lead miner for correction.');
     }
 
-    public function reassignToEmployee(Request $request, Customer $customer)
+    public function reassignToEmployee(Request $request)
     {
+        \Log::info($request->all());
+
+        // Validate the customers array
         $request->validate([
-            'employee' => 'required|exists:users,id',
             'customers' => 'required|array',
-            'customers.*' => 'exists:customers,id', // Validate customer IDs
+            'customers.*' => 'exists:customers,id',  // Ensure each customer ID exists
         ]);
 
-        // Check if the request contains more than one selected customer
-        if (count($validatedData['selected_customers']) > 1) {
-            return redirect()->back()->withErrors(['error' => 'You can only assign one branding specialist at a time.']);
-        }
+        // Get the array of customer IDs
+        $customerIds = $request->input('customers');
 
-        $customer->employees()->sync($request->employees);
-        $customer->update(['return_lead' => false]);
+        if ($customerIds && is_array($customerIds)) {
+            foreach ($customerIds as $customerId) {
+                $customer = Customer::find($customerId);
 
-        return redirect()->route('customers.index')->with('success', 'Leads reassigned successfully.');
-    }
+                if ($customer) {
+                    $employeeId = $customer->assign_to;
 
-    public function showReassignModal(Request $request)
-    {
-        $selectedCustomerIds = $request->input('customers');
-        
-        // Fetch the selected customers
-        $customers = Customer::whereIn('id', $selectedCustomerIds)->get();
-        
-        // Ensure customers and 'assign_to' field exist
-        if ($customers->isNotEmpty() && $customers->first()->assign_to) {
-            $brandingSpecialistId = $customers->first()->assign_to; 
-            $brandingSpecialist = User::find($brandingSpecialistId);
-
-            if ($brandingSpecialist && $brandingSpecialist->profile) {
-                $brandingSpecialistName = $brandingSpecialist->profile->fullName();
-            } else {
-                $brandingSpecialistName = 'Unknown Branding Specialist';
+                    if ($employeeId) {
+                        $customer->update(['return_lead' => false]);  // Set return_lead to false
+                        \Log::info("Customer ID {$customerId} reassigned to employee {$employeeId} and return_lead set to false.");
+                    }
+                } else {
+                    \Log::error("Customer ID {$customerId} not found.");
+                }
             }
-        } else {
-            $brandingSpecialistName = 'No Branding Specialist Assigned';
+
+            return back()->with('success', 'Leads reassigned successfully.');
         }
 
-        // Return the total count of leads
-        $totalLeads = $customers->count();
-
-        return view('customers.reassign-modal', compact('customers', 'brandingSpecialistName', 'totalLeads'));
+        return back()->with('error', 'No customers selected for reassignment.');
     }
+
+    // public function showReassignModal(Request $request)
+    // {
+    //     $selectedCustomerIds = $request->input('customers');
+        
+    //     // Fetch the selected customers
+    //     $customers = Customer::whereIn('id', $selectedCustomerIds)->get();
+        
+    //     // Ensure customers and 'assign_to' field exist
+    //     if ($customers->isNotEmpty() && $customers->first()->assign_to) {
+    //         $brandingSpecialistId = $customers->first()->assign_to; 
+    //         $brandingSpecialist = User::find($brandingSpecialistId);
+
+    //         if ($brandingSpecialist && $brandingSpecialist->profile) {
+    //             $brandingSpecialistName = $brandingSpecialist->profile->fullName();
+    //         } else {
+    //             $brandingSpecialistName = 'Unknown Branding Specialist';
+    //         }
+    //     } else {
+    //         $brandingSpecialistName = 'No Branding Specialist Assigned';
+    //     }
+
+    //     // Return the total count of leads
+    //     $totalLeads = $customers->count();
+
+    //     return view('customers.reassign-modal', compact('customers', 'brandingSpecialistName', 'totalLeads'));
+    // }
 }

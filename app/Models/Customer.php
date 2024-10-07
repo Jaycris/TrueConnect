@@ -18,12 +18,9 @@ class Customer extends Model
         'address',
         'website',
         'lead_miner',
-        'type',
-        'deals',
-        'notes',
         'verified_by',
-        'comment',
         'assign_to',
+        'return_lead',
         'is_viewed'
     ];
 

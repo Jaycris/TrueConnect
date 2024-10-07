@@ -19,13 +19,13 @@ trait DeviceIdentifier
         Cookie::queue('device_salt', $salt, 60); // Store salt in a cookie
 
         // Use additional browser-specific information
-        $userAgent = request()->userAgent();
+        // $userAgent = request()->userAgent();
         // $ipAddress = request()->ip();
         // $browserLanguage = request()->server('HTTP_ACCEPT_LANGUAGE', 'unknown');
         // $screenResolution = request()->server('HTTP_SEC_CH_UA', 'unknown');
 
         // return hash('sha256', $userAgent . $ipAddress . $browserLanguage . $screenResolution . $salt);
-        return hash('sha256', $userAgent . $salt);
+        return hash('sha256',  $salt);
 
     }
 }

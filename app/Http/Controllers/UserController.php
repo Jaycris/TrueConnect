@@ -118,7 +118,7 @@ class UserController extends Controller
             'last_name'         => 'required|string|max:255',
             'gender'            => 'required|string|max:255',
             'des_id'            => 'required|string|max:255',
-            'department'        => 'required|string|max:255',
+            'department_id'     => 'required|string|max:255',
             'email'             => 'required|email|unique:users,email,' . $id,
             'username'          => 'required|unique:users,username,' . $id,
             'user_type'         => 'required|string|max:255',

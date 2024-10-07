@@ -96,7 +96,7 @@
                                 <tbody class="dark:text-white-dark">
                                 @foreach($verifiedCustomers as $customer)
                                     <tr class="customer-row" data-id="{{ $customer->id }}" data-name="{{ $customer->fullName() }}" data-books="{{ $customer->books->toJson() }}" data-contact-numbers="{{ $customer->contactNumbers->toJson() }}">
-                                        <td><input type="checkbox" class="form-checkbox" /></td> 
+                                        <td><input type="checkbox" class="form-checkbox select-lead" /></td> 
                                         <td>
                                         {!! \Carbon\Carbon::parse($customer->date_created)->format('d M, Y') ?? 'N/A' !!}
                                         </td>
@@ -131,7 +131,7 @@
                                 <tbody class="dark:text-white-dark">
                                 @forelse($assignedCustomers as $customer)
                                     <tr class="customer-row" data-id="{{ $customer->id }}">
-                                        <td><input type="checkbox" class="form-checkbox" /></td>  
+                                        <td><input type="checkbox" class="form-checkbox select-lead" /></td>  
                                         <td>
                                         {!! \Carbon\Carbon::parse($customer->date_created)->format('d M, Y') ?? 'N/A' !!}
                                         </td>
@@ -168,7 +168,8 @@
                                 <tbody class="dark:text-white-dark">
                                 @forelse($returnCustomers as $customer)
                                     <tr class="customer-row" data-id="{{ $customer->id }}" data-name="{{ $customer->fullName() }}" data-books="{{ $customer->books->toJson() }}" data-contact-numbers="{{ $customer->contactNumbers->toJson() }}" data-employee-id="{{ $customer->assign_to }}">  <!-- Add employee ID here -->                                        
-                                        <td><input type="checkbox" class="form-checkbox" /></td> 
+                                        <td>
+                                            <input type="checkbox" class="form-checkbox select-lead" /></td> 
                                         <td>
                                         {!! \Carbon\Carbon::parse($customer->date_created)->format('d M, Y') ?? 'N/A' !!}
                                         </td>
@@ -183,7 +184,7 @@
                                 @endforelse
                             </table>
                             <hr>
-                            <button id="reassign-leads-btn" class="btn btn-primarycolor btn-sm mt-3" data-modal-target="open-assign-modal" disabled>Reassign Leads</button>
+                            <button id="reassign-leads-btn" class="btn btn-primarycolor btn-sm mt-3" data-modal-target="open-reassign-modal" disabled>Reassign Leads</button>
                         </div>
                     </div>
                 </div>
@@ -292,29 +293,19 @@
                         </button>
                     </div>
                     <div class="p-5">
-                        <form id="reassign-leads-form" method="POST" action="{{ route('customers.reassign') }}">
-                            @csrf
-                            <input type="hidden" id="selected-customer-ids" name="customers[]">
+                    <form id="reassign-leads-form" method="POST" action="{{ route('customers.reassign') }}">
+                        @csrf
+                        <input type="hidden" id="selected-customer-ids" name="customers[]">
+                        
+                        <label id="reassign-modal-text">
+                            Reassigning <span id="total-selected-leads">0</span> lead(s) to their respective Branding Specialist(s).
+                        </label>
 
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium text-gray-700" id="reassign-modal-text"></label> <!-- Unique element for the reassign modal -->
-                            </div>
-
-                            <div class="mb-4">
-                                <label for="total-leads" class="block text-sm font-medium text-gray-700">Total Leads Selected</label>
-                                <input type="text" id="total-leads" name="total_leads" class="form-input mt-1 block w-full" value="{{ $totalLeads ?? '0' }}" readonly>
-                            </div>
-                
-                            <div class="mb-4">
-                                <label for="employee-select" class="block text-sm font-medium text-gray-700">Assign to</label>
-                                <input type="text" id="employee-select" name="employees" class="form-input mt-1 block w-full" value="{{ $brandingSpecialists->first()->profile->fullName() ?? 'N/A' }}" readonly>
-                            </div>
-                           
-                            <div class="flex justify-end items-center mt-8">
-                                <button type="button" class="btn btn-outline-danger" @click="document.getElementById('open-reassign-modal').classList.add('hidden')">Cancel</button>
-                                <button type="submit" class="btn btn-primary ltr:ml-4 rtl:mr-4">Reassign Leads</button>
-                            </div>
-                        </form>
+                        <div class="flex justify-end items-center mt-8">
+                            <button type="button" class="btn btn-outline-danger" @click="document.getElementById('open-reassign-modal').classList.add('hidden')">Cancel</button>
+                            <button type="submit" class="btn btn-primary ltr:ml-4 rtl:mr-4">Assign Leads</button>    
+                        </div>
+                    </form>
                     </div>
                 </div>
             </div>

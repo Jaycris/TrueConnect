@@ -176,7 +176,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     
         // Handle "Check All" checkbox changes
-        function handleCheckAll(checkAllId, tableId) {
+        function handleCheckAll(checkAllId, tableId, modalId) {
             const checkAllCheckbox = document.getElementById(checkAllId);
             if (checkAllCheckbox) {
                 checkAllCheckbox.addEventListener('change', function () {
@@ -186,24 +186,24 @@ document.addEventListener('DOMContentLoaded', function() {
                         checkbox.checked = isChecked;
                     });
                     updateButtonState(tableId); // Update button state after checking all
-                    updateSelectedCustomerIds(tableId);
+                    updateSelectedCustomerIds(tableId, modalId); // Update selected customer IDs
                 });
             }
         }
     
         // Function to update the state of the buttons based on the table ID
         function updateButtonState(tableId) {
-            const checkboxes = getCheckboxes(tableId); // Get all checkboxes in the specified table
-            const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked); // Check if any checkbox is checked
-    
+            const checkboxes = getCheckboxes(tableId); 
+            const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked); 
+
             // Mapping table IDs to their respective buttons
             const buttonMapping = {
                 'verified-leads-table': 'assign-leads-btn',
                 'my-leads-table': 'return-leads-btn',
-                'return-leads-table': 'reassign-leads-btn',  // Added this for reassign leads
-                'leads-table': 'some-other-button-id', // Add other buttons here as needed
+                'return-leads-table': 'reassign-leads-btn',  
+                'leads-table': 'some-other-button-id', 
             };
-    
+
             const buttonId = buttonMapping[tableId];
             if (buttonId) {
                 const button = document.getElementById(buttonId);
@@ -213,42 +213,79 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     
-        // Update the selected customer IDs and total selected leads value
-        function updateSelectedCustomerIds(tableId) {
-            const checkboxes = getCheckboxes(tableId);
+        //Update the selected customer IDs and total selected leads value
+        // function updateSelectedCustomerIds(tableId) {
+        //     const checkboxes = getCheckboxes(tableId);
+        //     const selectedIds = Array.from(checkboxes)
+        //         .filter(checkbox => checkbox.checked)
+        //         .map(checkbox => checkbox.closest('tr').dataset.id);
+
+        //     const totalSelectedLeads = document.getElementById('total-selected-leads');
+        //     if (totalSelectedLeads) {
+        //         totalSelectedLeads.value = selectedIds.length;
+        //     }
+
+        //     const selectedCustomerIdsInput = document.getElementById('selected-customer-ids');
+        //     if (selectedCustomerIdsInput) {
+        //         selectedCustomerIdsInput.value = selectedIds.join(',');
+        //     }
+        // }
+
+        function updateSelectedCustomerIds(tableId, modalId) {
+            const checkboxes = getCheckboxes(tableId); // Get checkboxes for the specific table
             const selectedIds = Array.from(checkboxes)
                 .filter(checkbox => checkbox.checked)
                 .map(checkbox => checkbox.closest('tr').dataset.id);
-
-            const totalSelectedLeads = document.getElementById('total-selected-leads');
+    
+            // Update the total number of selected leads in the specific modal
+            const totalSelectedLeads = document.querySelector(`#${modalId} #total-selected-leads`);
             if (totalSelectedLeads) {
-                totalSelectedLeads.value = selectedIds.length;
+                if (totalSelectedLeads.tagName === 'INPUT') {
+                    totalSelectedLeads.value = selectedIds.length;  // Update the lead count in the modal
+                } else {
+                    // If it's not an input (likely a span), update the innerText for Reassign Leads modal
+                    totalSelectedLeads.innerText = selectedIds.length;  // Update the text for Reassign Leads modal
+                }
+            }
+    
+            // Update the hidden input field for selected customer IDs in the specific modal
+            const selectedCustomerIdsInput = document.querySelector(`#${modalId} #selected-customer-ids`);
+            if (selectedCustomerIdsInput) {
+                selectedCustomerIdsInput.value = selectedIds.join(',');  // Set selected IDs in hidden input
             }
 
-            const selectedCustomerIdsInput = document.getElementById('selected-customer-ids');
-            if (selectedCustomerIdsInput) {
-                selectedCustomerIdsInput.value = selectedIds.join(',');
-            }
+            // Clear any previously created hidden inputs for customer IDs
+            const selectedCustomerIdsContainer = document.querySelector(`#${modalId} #selected-customer-ids`);
+            selectedCustomerIdsContainer.innerHTML = '';  // Clear existing inputs
+
+            // Create a hidden input for each selected customer ID
+            selectedIds.forEach(customerId => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'customers[]';  // Send as an array
+                input.value = customerId;
+                selectedCustomerIdsContainer.appendChild(input);  // Append the input to the container
+            });
         }
     
         // Function to handle individual checkbox change events
-        function handleIndividualCheckboxes(tableId) {
+        function handleIndividualCheckboxes(tableId, modalId) {
             const checkboxes = getCheckboxes(tableId);
             checkboxes.forEach(checkbox => {
                 checkbox.addEventListener('change', function () {
-                    updateButtonState(tableId); // Update button state when an individual checkbox is changed
-                    updateSelectedCustomerIds(tableId); // Update selected customer IDs
+                    updateButtonState(tableId);  // Update the state of the "Reassign" button
+                    updateSelectedCustomerIds(tableId, modalId);  // Update selected customer count in the modal
                 });
             });
         }
     
         // Initialize the "Check All" functionality for specific tables
         function initializeCheckAll() {
-            handleCheckAll('checkAllVerified', 'verified-leads-table');
+            handleCheckAll('checkAllVerified', 'verified-leads-table', 'open-assign-modal'); // Assign Leads Modal
             handleCheckAll('checkAllLeads', 'leads-table');
             handleCheckAll('checkAllAssign', 'assign-leads-table');
-            handleCheckAll('checkAllreturn', 'my-leads-table');
-            handleCheckAll('checkAllReassign', 'return-leads-table'); // Added for reassign leads
+            handleCheckAll('checkAllreturn', 'my-leads-table', 'open-return-modal');
+            handleCheckAll('checkAllReassign', 'return-leads-table', 'open-reassign-modal'); // Reassign Leads Modal
         }
     
         // Open modal for a specific button
@@ -259,13 +296,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     const modal = document.getElementById(modalId);
                     if (modal) {
                         modal.classList.remove('hidden');
-        
-                        // Check if the modal being opened is the reassign modal
-                        if (modalId === 'open-reassign-modal') {
-                            updateReassignModalContent(modalId); // Specific function for reassign leads modal
-                        } else {
-                            updateModalContent(modalId); // General function for other modals
-                        }
                     }
                 });
             }
@@ -281,36 +311,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
             if (modalContent && totalSelectedLeads) {
                 modalContent.textContent = `You have selected ${totalSelectedLeads.value} customers.`;
-            }
-        }
-
-        // New function specifically for updating the Reassign Leads Modal content
-        function updateReassignModalContent(modalId) {
-            const selectedCustomerIdsInput = document.getElementById('selected-customer-ids');
-            const selectedCustomerIds = selectedCustomerIdsInput ? selectedCustomerIdsInput.value.split(',') : [];
-            
-            const totalSelectedLeads = selectedCustomerIds.length;
-            const modalTextElement = document.getElementById('reassign-modal-text');
-        
-            // Get the employee ID of the first selected customer
-            const firstCheckedCheckbox = document.querySelector('#return-leads-table input[type="checkbox"]:checked');
-            const employeeId = firstCheckedCheckbox ? firstCheckedCheckbox.closest('tr').dataset.employeeId : 'N/A';
-        
-            // Update modal content based on the number of leads and employee ID
-            if (modalTextElement && totalSelectedLeads > 0) {
-                modalTextElement.textContent = `Reassigning these ${totalSelectedLeads} leads to Employee ID: ${employeeId}`;
-            }
-        
-            // Update the total leads field in the modal
-            const totalLeadsInput = document.getElementById('total-leads');
-            if (totalLeadsInput) {
-                totalLeadsInput.value = totalSelectedLeads;
-            }
-        
-            // Set the Branding Specialist Name if needed
-            const brandingSpecialistInput = document.getElementById('employee-select');
-            if (brandingSpecialistInput) {
-                brandingSpecialistInput.value = employeeId; // Set employee ID here
             }
         }
     
@@ -331,11 +331,15 @@ document.addEventListener('DOMContentLoaded', function() {
             initializeCheckAll();
     
             // Attach event listeners to individual checkboxes to update the button state and selected IDs
-            handleIndividualCheckboxes('verified-leads-table');
-            handleIndividualCheckboxes('return-leads-table');
+            // handleIndividualCheckboxes('verified-leads-table');
+            // handleIndividualCheckboxes('return-leads-table');
+            handleIndividualCheckboxes('verified-leads-table', 'open-assign-modal');  // Assign Leads Modal
+            handleIndividualCheckboxes('return-leads-table', 'open-reassign-modal');  // Reassign Leads Modal
+            handleIndividualCheckboxes('my-leads-table', 'open-return-modal');  // Reassign Leads Modal
     
             // Initially call the function to set the correct state on page load
             updateButtonState('verified-leads-table');
+            updateButtonState('my-leads-table');
             updateButtonState('return-leads-table');
     
             // Initialize modals
@@ -345,6 +349,13 @@ document.addEventListener('DOMContentLoaded', function() {
             closeModal('open-assign-modal');
             closeModal('open-return-modal');
             closeModal('open-reassign-modal'); // Added for reassign leads modal
+
+            // document.querySelectorAll('#return-leads-table .select-lead').forEach(checkbox => {
+            //     checkbox.addEventListener('change', () => {
+            //         updateSelectedCustomerIds('return-leads-table'); // Replace 'your-table-id' with the actual ID of your table
+            //         console.log('Checkboxes found: ', checkboxes.length); // Check how many checkboxes are checked
+            //     });
+            // });
         }
     
         // Run the initialization

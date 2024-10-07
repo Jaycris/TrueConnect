@@ -89,7 +89,7 @@
                             </div>
                             <div>
                                 <label for="department">Department</label>
-                                <select id="department" name="department" class="form-select text-white-dark">
+                                <select id="department" name="department_id" class="form-select text-white-dark">
                                     <option>Select Department</option>
                                     @foreach ($departments as $department)
                                         <option value="{{ $department->id }}" {{ $user->profile->department_id == $department->id ? 'selected' : '' }}>{{ $department->name }}</option>

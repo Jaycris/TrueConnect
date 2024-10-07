@@ -33,8 +33,8 @@ class UserSeeders extends Seeder
             'middle_name' => null,
             'last_name' => 'Cristobal',
             'gender' => 'Male',
-            'designation' => '1',
-            'department' => '1'
+            'des_id' => '1',
+            'department_id' => '1'
         ]);
     }
 }

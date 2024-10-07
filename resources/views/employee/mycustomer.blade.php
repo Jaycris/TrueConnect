@@ -45,7 +45,7 @@
                             <tbody class="dark:text-white-dark">
                             @forelse($assignedCustomers as $customer)
                                 <tr class="customer-row" data-id="{{ $customer->id }}" data-name="{{ $customer->fullName() }}" data-books="{{ $customer->books->toJson() }}" data-contact-numbers="{{ $customer->contactNumbers->toJson() }}">
-                                    <td><input type="checkbox" class="form-checkbox" /></td> 
+                                    <td><input type="checkbox" class="form-checkbox select-lead" /></td>  
                                     <td>
                                         {!! \Carbon\Carbon::parse($customer->date_created)->format('d M, Y') ?? 'N/A' !!}
                                     </td>
@@ -81,8 +81,10 @@
                         </button>
                     </div>
                     <div class="p-5">
-                        <form id="return-leads-form" method="POST" action="{{ route('customers.return') }}">                            @csrf
-                            <input type="hidden" id="selected-customer-ids" name="customers[]">
+                        <form id="return-leads-form" method="POST" action="{{ route('customers.return') }}">
+                            @csrf
+                            <!-- This container will hold dynamically created hidden inputs for each selected customer -->
+                            <div id="selected-customer-ids"></div>
 
                             <div class="mb-4">
                                 <label for="total-selected-leads" class="block text-sm font-medium text-gray-700">Total Leads Selected</label>
@@ -93,7 +95,7 @@
                                 <label for="return-reason" class="block text-sm font-medium text-gray-700">Reason for Return</label>
                                 <textarea id="return-reason" name="return_reason" class="form-textarea mt-1 block w-full"></textarea>
                             </div>
-                            
+
                             <div class="flex justify-end items-center mt-8">
                                 <button type="button" class="btn btn-outline-danger" @click="document.getElementById('open-return-modal').classList.add('hidden')">Cancel</button>
                                 <button type="submit" class="btn btn-primary ltr:ml-4 rtl:mr-4">Return Leads</button>
