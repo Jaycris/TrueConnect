@@ -108,14 +108,6 @@ class CustomerController extends Controller
 
     }
 
-    public function markAsViewed($id)
-    {
-        $customer = Customer::findOrFail($id);
-        $customer->is_viewed = true;
-        $customer->save();
-        return response()->json(['success' => true]);
-    }
-
     public function create()
     {
         return view('customers.create');
@@ -366,6 +358,9 @@ class CustomerController extends Controller
             if ($customer) {
                 // Update the `assign_to` field with the employee's ID
                 $customer->update(['assign_to' => $employee->id]);
+
+                // Broadcast an event to update the front-end in real-time
+                event(new LeadAssignedToEmployee($customer, $employee->id));
             }
         }
 
@@ -433,30 +428,86 @@ class CustomerController extends Controller
         return back()->with('error', 'No customers selected for reassignment.');
     }
 
-    // public function showReassignModal(Request $request)
-    // {
-    //     $selectedCustomerIds = $request->input('customers');
-        
-    //     // Fetch the selected customers
-    //     $customers = Customer::whereIn('id', $selectedCustomerIds)->get();
-        
-    //     // Ensure customers and 'assign_to' field exist
-    //     if ($customers->isNotEmpty() && $customers->first()->assign_to) {
-    //         $brandingSpecialistId = $customers->first()->assign_to; 
-    //         $brandingSpecialist = User::find($brandingSpecialistId);
 
-    //         if ($brandingSpecialist && $brandingSpecialist->profile) {
-    //             $brandingSpecialistName = $brandingSpecialist->profile->fullName();
-    //         } else {
-    //             $brandingSpecialistName = 'Unknown Branding Specialist';
-    //         }
-    //     } else {
-    //         $brandingSpecialistName = 'No Branding Specialist Assigned';
-    //     }
+    public function checkNewLeads()
+    {
+        // Fetch customers who haven't been viewed yet (for example)
+        $newCustomers = Customer::where('is_viewed', false)->get();
+        return response()->json(['new_customers' => $newCustomers]);
+    }
 
-    //     // Return the total count of leads
-    //     $totalLeads = $customers->count();
+    public function checkVerifiedLeads()
+    {
+        // Fetch verified customers
+        $verifiedCustomers = Customer::where('verified', true)->get();
+        return response()->json(['verified_customers' => $verifiedCustomers]);
+    }
 
-    //     return view('customers.reassign-modal', compact('customers', 'brandingSpecialistName', 'totalLeads'));
-    // }
+    public function checkAssignedLeads()
+    {
+        // Fetch assigned customers
+        $assignedCustomers = Customer::where('is_assigned', true)->get();
+        return response()->json(['assigned_customers' => $assignedCustomers]);
+    }
+
+    public function checkReturnLeads()
+    {
+        // Fetch returned leads
+        $returnCustomers = Customer::where('is_returned', true)->get();
+        return response()->json(['return_customers' => $returnCustomers]);
+    }
+
+    public function markAsViewed(Request $request, Customer $customer)
+    {
+        // Update the customer's 'is_viewed' field to true
+        $customer->update(['is_viewed' => true]);
+
+        return response()->json(['success' => true]);
+    }
+
+
+    public function fetchAssignedLeads()
+    {
+        $assignedCustomers = Customer::with(['contactNumbers', 'books'])
+                                    ->whereNotNull('assign_to') // Only include customers who are assigned
+                                    ->where('return_lead', false)
+                                    ->get();
+
+        return response()->json(['assigned_customers' => $assignedCustomers]);
+    }
+
+    public function fetchVerifiedLeads()
+    {
+        // Fetch verified customers that are not yet assigned
+        $verifiedCustomers = Customer::with(['contactNumbers', 'books'])
+                                    ->whereHas('contactNumbers', function ($query) {
+                                        $query->whereIn('status', ['Verified', 'DNC', 'VM']);
+                                    })
+                                    ->whereNull('assign_to')
+                                    ->get();
+
+        // Return the data in JSON format for AJAX polling
+        return response()->json(['verified_customers' => $verifiedCustomers]);
+    }
+
+    public function fetchReturnedLeads()
+    {
+        $returnCustomers = Customer::with(['contactNumbers', 'books'])
+                                ->where('return_lead', true)
+                                ->get();
+
+        return response()->json(['return_customers' => $returnCustomers]);
+    }
+
+    public function fetchEmployeeAssignedLeads()
+    {
+        $userId = Auth::user()->id;
+
+        $assignedCustomers = Customer::with(['contactNumbers', 'books'])
+                                    ->where('assign_to', $userId)
+                                    ->where('return_lead', false)
+                                    ->get();
+
+        return response()->json(['assigned_customers' => $assignedCustomers]);
+    }
 }

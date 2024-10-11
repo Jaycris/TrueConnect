@@ -61,8 +61,8 @@
                                     </tr>
                                 </thead>
                                 <tbody class="dark:text-white-dark">
-                                @foreach($customers as $customer)
-                                    <tr class="customer-row" data-id="{{ $customer->id }}" data-name="{{ $customer->fullName() }}" data-books="{{ $customer->books->toJson() }}" data-contact-numbers="{{ $customer->contactNumbers->toJson() }}">
+                                @forelse($customers as $customer)
+                                    <tr class="customer-row" data-id="{{ $customer->id }}" data-name="{{ $customer->fullName() }}" data-books="{{ $customer->books->toJson() }}" data-contact-numbers="{{ $customer->contactNumbers->toJson() }}" onclick="markAsViewed({{ $customer->id }})">
                                         <td><input type="checkbox" class="form-checkbox" /></td> 
                                         <td>
                                         {!! \Carbon\Carbon::parse($customer->date_created)->format('d M, Y') ?? 'N/A' !!}
@@ -71,7 +71,11 @@
                                         <td>{{ $customer->email }}</td>
                                         <td>{{ $customer->address }}</td>
                                     </tr>
-                                @endforeach
+                                    @empty
+                                        <tr>
+                                            <td colspan="5">No leads</td>
+                                        </tr>
+                                @endforelse
                             </table>
                         </div>
                     </div>
@@ -94,8 +98,8 @@
                                     </tr>
                                 </thead>
                                 <tbody class="dark:text-white-dark">
-                                @foreach($verifiedCustomers as $customer)
-                                    <tr class="customer-row" data-id="{{ $customer->id }}" data-name="{{ $customer->fullName() }}" data-books="{{ $customer->books->toJson() }}" data-contact-numbers="{{ $customer->contactNumbers->toJson() }}">
+                                @forelse($verifiedCustomers as $customer)
+                                    <tr class="customer-row" data-id="{{ $customer->id }}" data-name="{{ $customer->fullName() }}" data-books="{{ $customer->books->toJson() }}" data-contact-numbers="{{ $customer->contactNumbers->toJson() }}" onclick="markAsViewed({{ $customer->id }})">
                                         <td><input type="checkbox" class="form-checkbox select-lead" /></td> 
                                         <td>
                                         {!! \Carbon\Carbon::parse($customer->date_created)->format('d M, Y') ?? 'N/A' !!}
@@ -104,7 +108,11 @@
                                         <td>{{ $customer->email }}</td>
                                         <td>{{ $customer->address }}</td>
                                     </tr>
-                                @endforeach
+                                    @empty
+                                        <tr>
+                                            <td colspan="5">No leads verified</td>
+                                        </tr>
+                                @endforelse
                             </table>
                             <hr>
                             <button id="assign-leads-btn" class="btn btn-primarycolor btn-sm mt-3" data-modal-target="open-assign-modal" disabled>Assign Leads</button>
@@ -130,7 +138,7 @@
                                 </thead>
                                 <tbody class="dark:text-white-dark">
                                 @forelse($assignedCustomers as $customer)
-                                    <tr class="customer-row" data-id="{{ $customer->id }}">
+                                    <tr class="customer-row" data-id="{{ $customer->id }}" onclick="markAsViewed({{ $customer->id }})">
                                         <td><input type="checkbox" class="form-checkbox select-lead" /></td>  
                                         <td>
                                         {!! \Carbon\Carbon::parse($customer->date_created)->format('d M, Y') ?? 'N/A' !!}
@@ -167,7 +175,7 @@
                                 </thead>
                                 <tbody class="dark:text-white-dark">
                                 @forelse($returnCustomers as $customer)
-                                    <tr class="customer-row" data-id="{{ $customer->id }}" data-name="{{ $customer->fullName() }}" data-books="{{ $customer->books->toJson() }}" data-contact-numbers="{{ $customer->contactNumbers->toJson() }}" data-employee-id="{{ $customer->assign_to }}">  <!-- Add employee ID here -->                                        
+                                    <tr class="customer-row" data-id="{{ $customer->id }}" data-name="{{ $customer->fullName() }}" data-books="{{ $customer->books->toJson() }}" data-contact-numbers="{{ $customer->contactNumbers->toJson() }}" data-employee-id="{{ $customer->assign_to }}" onclick="markAsViewed({{ $customer->id }})">  <!-- Add employee ID here -->                                        
                                         <td>
                                             <input type="checkbox" class="form-checkbox select-lead" /></td> 
                                         <td>
@@ -312,4 +320,13 @@
         </div>
     </div>
 </div>
+
+<script src="{{ asset('assets/js/polling.js') }}"></script>
+    <script>
+        // Start polling when the page loads
+        window.onload = function() {
+            pollForAssignedLeads();  // Start polling for assigned leads for admin
+            pollForReturnedLeads();  // Start polling for returned leads for admin
+        };
+    </script>
 @endsection

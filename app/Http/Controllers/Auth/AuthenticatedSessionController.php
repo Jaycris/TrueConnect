@@ -49,19 +49,19 @@ class AuthenticatedSessionController extends Controller
             // \Log::info("Existing identifier: $existingIdentifier");
 
             // Set or update the device identifier cookie
-            Cookie::queue('device_identifier', $deviceIdentifier, 60);
+            // Cookie::queue('device_identifier', $deviceIdentifier, 60);
 
-            // Check if the device is familiar
-            if (! $user->isDeviceFamiliar($deviceIdentifier)) {
-                // \Log::info("Device not familiar. Triggering 2FA.");
-                $user->sendTwoFactorCode();
+            // // Check if the device is familiar
+            // if (! $user->isDeviceFamiliar($deviceIdentifier)) {
+            //     // \Log::info("Device not familiar. Triggering 2FA.");
+            //     $user->sendTwoFactorCode();
 
-                // Use session flash data to store the 2FA redirection flag
-                session()->flash('2fa_required', true);
-                // Optional delay to address asynchronous issues
-                sleep(1); // 1 second delay
-                return redirect()->route('auth.2fa')->with('error', 'Please enter the 2FA code sent to your email.');
-            }
+            //     // Use session flash data to store the 2FA redirection flag
+            //     session()->flash('2fa_required', true);
+            //     // Optional delay to address asynchronous issues
+            //     sleep(1); // 1 second delay
+            //     return redirect()->route('auth.2fa')->with('error', 'Please enter the 2FA code sent to your email.');
+            // }
 
             RateLimiter::clear($request->throttleKey());
 

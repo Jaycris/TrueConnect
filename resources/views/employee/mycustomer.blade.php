@@ -44,12 +44,16 @@
                             </thead>
                             <tbody class="dark:text-white-dark">
                             @forelse($assignedCustomers as $customer)
-                                <tr class="customer-row" data-id="{{ $customer->id }}" data-name="{{ $customer->fullName() }}" data-books="{{ $customer->books->toJson() }}" data-contact-numbers="{{ $customer->contactNumbers->toJson() }}">
+                                <tr class="customer-row" data-id="{{ $customer->id }}" data-name="{{ $customer->fullName() }}" data-books="{{ $customer->books->toJson() }}" data-contact-numbers="{{ $customer->contactNumbers->toJson() }}" onclick="markAsViewed({{ $customer->id }})">
                                     <td><input type="checkbox" class="form-checkbox select-lead" /></td>  
                                     <td>
                                         {!! \Carbon\Carbon::parse($customer->date_created)->format('d M, Y') ?? 'N/A' !!}
                                     </td>
-                                    <td>{{ $customer->fullName() }}</td>
+                                    <td>{{ $customer->fullName() }}
+                                            @if (!$customer->is_viewed)
+                                                <span class="new-label">New</span>
+                                            @endif
+                                    </td>
                                     <td>{{ $customer->email }}</td>
                                     <td>{{ $customer->address }}</td>
                                 </tr>

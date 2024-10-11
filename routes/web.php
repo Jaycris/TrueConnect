@@ -73,6 +73,14 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/customers', [CustomerController::class, 'store'])->name('customers.store','checkRole');
     Route::post('/customers/{id}/update', [CustomerController::class, 'update'])->name('customers.update',);
     Route::get('/customers/{id}', [CustomerController::class, 'show']);
+    Route::get('/check-new-leads', [CustomerController::class, 'checkNewLeads']);
+    Route::get('/check-verified-leads', [CustomerController::class, 'checkVerifiedLeads']);
+    Route::get('/check-assigned-leads', [CustomerController::class, 'checkAssignedLeads']);
+    Route::get('/my-assigned-leads', [CustomerController::class, 'fetchEmployeeAssignedLeads'])->name('customers.fetchEmployeeAssigned');
+    Route::get('/assigned-leads', [CustomerController::class, 'fetchAssignedLeads'])->name('customers.fetchAssigned');    
+    Route::get('/verified-leads', [CustomerController::class, 'fetchVerifiedLeads'])->name('customers.index');
+    Route::get('/returned-leads', [CustomerController::class, 'fetchReturnedLeads'])->name('customers.fetchReturned');    
+    Route::get('/check-return-leads', [CustomerController::class, 'checkReturnLeads']);
     Route::get('/customers/{id}/status', [CustomerController::class, 'getCustomerData'])->name('customers.data');
     Route::post('/update-status', [CustomerController::class, 'updateStatus'])->name('update.status');
     Route::post('/customers/{id}/view', [CustomerController::class, 'markAsViewed']);
