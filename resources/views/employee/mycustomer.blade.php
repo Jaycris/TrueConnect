@@ -111,4 +111,12 @@
         </div>
     </div>
 </div>
+
+    <script src="{{ asset('assets/js/polling.js') }}"></script>
+    <script>
+        // Start polling when the page loads for employee
+        window.onload = function() {
+            pollForEmployeeAssignedLeads();  // Start polling for assigned leads for employee
+        };
+    </script>
 @endsection

@@ -490,13 +490,18 @@ class CustomerController extends Controller
         return response()->json(['verified_customers' => $verifiedCustomers]);
     }
 
-    public function fetchReturnedLeads()
+    public function fetchReturnedLeads(Request $request)
     {
-        $returnCustomers = Customer::with(['contactNumbers', 'books'])
-                                ->where('return_lead', true)
-                                ->get();
+        // Get the last check time from the request (if any)
+        $lastCheck = $request->input('last_check', now()->subMinute());
 
-        return response()->json(['return_customers' => $returnCustomers]);
+        // Fetch leads that were returned after the last check
+        $returnCustomers = Customer::with(['contactNumbers', 'books'])
+            ->where('return_lead', true)
+            ->where('updated_at', '>', $lastCheck) // Only fetch leads updated after the last check
+            ->get();
+
+        return response()->json(['return_customers' => $returnCustomers, 'last_check' => now()]);
     }
 
     public function fetchEmployeeAssignedLeads()

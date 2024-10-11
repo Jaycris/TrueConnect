@@ -1,7 +1,11 @@
+let lastCheck = new Date().toISOString();  // Keep track of last time we polled
+
 function pollForReturnedLeads() {
     setInterval(() => {
         console.log('Polling for returned leads...'); // Debugging
-        fetch('/returned-leads', {
+        
+        // Send the last check timestamp to fetch only new leads
+        fetch(`/returned-leads?last_check=${lastCheck}`, {
             method: 'GET',
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
@@ -11,8 +15,12 @@ function pollForReturnedLeads() {
         .then(data => {
             console.log('Returned leads response:', data); // Debugging
 
+            // Update the last check timestamp for the next poll
+            lastCheck = data.last_check;
+
+            // Add new returned leads to the table
             data.return_customers.forEach(customer => {
-                addNewCustomerRow(customer, 'return-leads-table'); // Update the returned leads table for admin
+                addNewCustomerRow(customer, 'return-leads-table'); // Update the return leads table
             });
         })
         .catch(error => console.error('Error fetching returned leads:', error));
@@ -21,7 +29,7 @@ function pollForReturnedLeads() {
 
 function pollForAssignedLeads() {
     setInterval(() => {
-        console.log('Polling for assigned leads...'); // Debugging
+        console.log('Polling for assigned leads...'); // Check if polling is happening
         fetch('/assigned-leads', {
             method: 'GET',
             headers: {
@@ -30,10 +38,11 @@ function pollForAssignedLeads() {
         })
         .then(response => response.json())
         .then(data => {
-            console.log('Assigned leads response:', data); // Debugging
+            console.log('Assigned leads response:', data); // Log the data returned by the server
 
             data.assigned_customers.forEach(customer => {
-                addNewCustomerRow(customer, 'assign-leads-table'); // Update the assigned leads table for admin
+                console.log(`Processing customer ID: ${customer.id}`); // Log customer ID before adding the row
+                addNewCustomerRow(customer, 'assign-leads-table'); // Ensure correct table ID
             });
         })
         .catch(error => console.error('Error fetching assigned leads:', error));
@@ -51,10 +60,11 @@ function pollForEmployeeAssignedLeads() {
         })
         .then(response => response.json())
         .then(data => {
-            console.log('Employee assigned leads response:', data); // Debugging
+            console.log('Employee assigned leads response:', data); // Log the server response
 
             data.assigned_customers.forEach(customer => {
-                addNewCustomerRow(customer, 'my-leads-table'); // Update the employee's assigned leads table
+                console.log(`Processing customer ID: ${customer.id}`); // Debugging
+                addNewCustomerRow(customer, 'my-leads-table'); // Ensure correct table
             });
         })
         .catch(error => console.error('Error fetching employee assigned leads:', error));

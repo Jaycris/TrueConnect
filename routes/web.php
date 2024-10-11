@@ -78,7 +78,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/check-assigned-leads', [CustomerController::class, 'checkAssignedLeads']);
     Route::get('/my-assigned-leads', [CustomerController::class, 'fetchEmployeeAssignedLeads'])->name('customers.fetchEmployeeAssigned');
     Route::get('/assigned-leads', [CustomerController::class, 'fetchAssignedLeads'])->name('customers.fetchAssigned');    
-    Route::get('/verified-leads', [CustomerController::class, 'fetchVerifiedLeads'])->name('customers.index');
+    Route::get('/verified-leads', [CustomerController::class, 'fetchVerifiedLeads'])->name('customers.VerifiedLeads');
     Route::get('/returned-leads', [CustomerController::class, 'fetchReturnedLeads'])->name('customers.fetchReturned');    
     Route::get('/check-return-leads', [CustomerController::class, 'checkReturnLeads']);
     Route::get('/customers/{id}/status', [CustomerController::class, 'getCustomerData'])->name('customers.data');
