@@ -41,14 +41,14 @@ class AuthenticatedSessionController extends Controller
             $request->session()->regenerate();
 
             // Generate or get the device identifier
-            $deviceIdentifier = $this->deviceIdentifier();
-            $existingIdentifier = Cookie::get('device_identifier');
+            // $deviceIdentifier = $this->deviceIdentifier();
+            // $existingIdentifier = Cookie::get('device_identifier');
 
-            // Log device identifier and existing identifier for debugging
+            // // Log device identifier and existing identifier for debugging
             // \Log::info("Device identifier: $deviceIdentifier");
             // \Log::info("Existing identifier: $existingIdentifier");
 
-            // Set or update the device identifier cookie
+            // // Set or update the device identifier cookie
             // Cookie::queue('device_identifier', $deviceIdentifier, 60);
 
             // // Check if the device is familiar
@@ -63,7 +63,7 @@ class AuthenticatedSessionController extends Controller
             //     return redirect()->route('auth.2fa')->with('error', 'Please enter the 2FA code sent to your email.');
             // }
 
-            RateLimiter::clear($request->throttleKey());
+            // RateLimiter::clear($request->throttleKey());
 
             // Load the designation
             $user->load('profile.designation');

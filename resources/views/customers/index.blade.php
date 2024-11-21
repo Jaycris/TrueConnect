@@ -11,7 +11,7 @@
             <div class="panel lead-info">
                 <div class="mb-5 flex items-center justify-between">
                     <h5 class="text-lg font-semibold dark:text-white-light">Leads Information</h5>
-                    <a id="edit-button" href="#" class="btn btn-primarycolor rounded-full p-2 ltr:ml-auto rtl:mr-auto">
+                    <a id="edit-button" href="#" class="btn btn-primarycolor rounded-full p-2">
                         <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5">
                             <path opacity="0.5" d="M4 22H20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
                             <path d="M14.6296 2.92142L13.8881 3.66293L7.07106 10.4799C6.60933 10.9416 6.37846 11.1725 6.17992 11.4271C5.94571 11.7273 5.74491 12.0522 5.58107 12.396C5.44219 12.6874 5.33894 12.9972 5.13245 13.6167L4.25745 16.2417L4.04356 16.8833C3.94194 17.1882 4.02128 17.5243 4.2485 17.7515C4.47573 17.9787 4.81182 18.0581 5.11667 17.9564L5.75834 17.7426L8.38334 16.8675L8.3834 16.8675C9.00284 16.6611 9.31256 16.5578 9.60398 16.4189C9.94775 16.2551 10.2727 16.0543 10.5729 15.8201C10.8275 15.6215 11.0583 15.3907 11.5201 14.929L11.5201 14.9289L18.3371 8.11195L19.0786 7.37044C20.3071 6.14188 20.3071 4.14999 19.0786 2.92142C17.85 1.69286 15.8581 1.69286 14.6296 2.92142Z" stroke="currentColor" stroke-width="1.5"></path>
@@ -35,12 +35,6 @@
                         <li>
                             <a href="#verified-leads" class="tab-link py-2 px-4 block text-center dark:text-white-light tab-row">Verified Leads</a>
                         </li>
-                        <li>
-                            <a href="#assigned-leads" class="tab-link py-2 px-4 block text-center dark:text-white-light">Assigned Leads</a>
-                        </li>
-                        <li>
-                            <a href="#return-leads" class="tab-link py-2 px-4 block text-center dark:text-white-light">Return Leads</a>
-                        </li>
                     </ul>
                 </div>
                 <div id="leads" class="tab-content">
@@ -60,8 +54,9 @@
                                         <th>Address</th>
                                     </tr>
                                 </thead>
-                                <tbody class="dark:text-white-dark">
+                                <tbody id="assigned-customers-list" class="dark:text-white-dark">
                                 @forelse($customers as $customer)
+                                @php Log::info('Customer ID:', ['id' => $customer->id]); @endphp
                                     <tr class="customer-row" data-id="{{ $customer->id }}" data-name="{{ $customer->fullName() }}" data-books="{{ $customer->books->toJson() }}" data-contact-numbers="{{ $customer->contactNumbers->toJson() }}" onclick="markAsViewed({{ $customer->id }})">
                                         <td><input type="checkbox" class="form-checkbox" /></td> 
                                         <td>
@@ -76,6 +71,7 @@
                                             <td colspan="5">No leads</td>
                                         </tr>
                                 @endforelse
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -120,82 +116,6 @@
                     </div>
                 </div>
 
-                <div id="assigned-leads" class="tab-content hidden">
-                    <div class="mb-5 flex items-center justify-between">
-                        <h5 class="text-lg font-semibold dark:text-white-light">Assign Leads</h5>
-                    </div>
-                    <div class="mb-5">
-                        <div class="table-responsive font-semibold text-[#515365] dark:text-white-light">
-                            <table id="assign-leads-table" class="whitespace-nowrap">
-                                <thead>
-                                    <tr>
-                                        <th><input type="checkbox" id="checkAllAssign" class="checkAll form-checkbox" /></th>
-                                        <th>Date</th>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Address</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="dark:text-white-dark">
-                                @forelse($assignedCustomers as $customer)
-                                    <tr class="customer-row" data-id="{{ $customer->id }}" onclick="markAsViewed({{ $customer->id }})">
-                                        <td><input type="checkbox" class="form-checkbox select-lead" /></td>  
-                                        <td>
-                                        {!! \Carbon\Carbon::parse($customer->date_created)->format('d M, Y') ?? 'N/A' !!}
-                                        </td>
-                                        <td>{{ $customer->fullName() }}</td>
-                                        <td>{{ $customer->email }}</td>
-                                        <td>{{ $customer->address }}</td>
-                                    </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="5">No leads assigned</td>
-                                        </tr>
-                                @endforelse
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="return-leads" class="tab-content hidden">
-                    <div class="mb-5 flex items-center justify-between">
-                        <h5 class="text-lg font-semibold dark:text-white-light">Return Leads</h5>
-                    </div>
-                    <div class="mb-5">
-                        <div class="table-responsive font-semibold text-[#515365] dark:text-white-light">
-                            <table id="return-leads-table" class="whitespace-nowrap">
-                                <thead>
-                                    <tr>
-                                        <th><input type="checkbox" id="checkAllReassign" class="checkAll form-checkbox" /></th>
-                                        <th>Date</th>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Address</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="dark:text-white-dark">
-                                @forelse($returnCustomers as $customer)
-                                    <tr class="customer-row" data-id="{{ $customer->id }}" data-name="{{ $customer->fullName() }}" data-books="{{ $customer->books->toJson() }}" data-contact-numbers="{{ $customer->contactNumbers->toJson() }}" data-employee-id="{{ $customer->assign_to }}" onclick="markAsViewed({{ $customer->id }})">  <!-- Add employee ID here -->                                        
-                                        <td>
-                                            <input type="checkbox" class="form-checkbox select-lead" /></td> 
-                                        <td>
-                                        {!! \Carbon\Carbon::parse($customer->date_created)->format('d M, Y') ?? 'N/A' !!}
-                                        </td>
-                                        <td>{{ $customer->fullName() }}</td>
-                                        <td>{{ $customer->email }}</td>
-                                        <td>{{ $customer->address }}</td>
-                                    </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="5">No leads assigned</td>
-                                        </tr>
-                                @endforelse
-                            </table>
-                            <hr>
-                            <button id="reassign-leads-btn" class="btn btn-primarycolor btn-sm mt-3" data-modal-target="open-reassign-modal" disabled>Reassign Leads</button>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
         <div class="fixed inset-0 bg-[black]/60 z-[999] hidden overflow-y-auto" id="open-status-modal">

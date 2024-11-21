@@ -3,7 +3,7 @@
 <div>
     <ul class="flex space-x-2 rtl:space-x-reverse">
         <li>
-            <span>Leads</span>
+            <span>Assign Leads</span>
         </li>
     </ul>
     <div class="pt-5">
@@ -26,46 +26,44 @@
                 </div>
                 <button id="update-status-button" class="btn btn-primarycolor btn-sm hidden">Update Status</button>
             </div>
-            <div class="panel lg:col-span-2 xl:col-span-10">
+            <div class="panel lg:col-span-2 xl:col-span-10 ">
                 <div class="mb-5">
                     <div class="mb-5 flex items-center justify-between">
-                        <h5 class="text-lg font-semibold dark:text-white-light">Leads</h5>
+                        <h5 class="text-lg font-semibold dark:text-white-light">Assign Leads</h5>
                     </div>
                     <div class="table-responsive font-semibold text-[#515365] dark:text-white-light">
-                        <table id="my-leads-table" class="whitespace-nowrap">
+                        <table id="return-leads-table" class="whitespace-nowrap">
                             <thead>
                                 <tr>
-                                    <th><input type="checkbox" id="checkAllreturn" class="checkAll form-checkbox" /></th>
+                                    <th><input type="checkbox" id="checkAllReassign" class="checkAll form-checkbox" /></th>
                                     <th>Date</th>
                                     <th>Name</th>
                                     <th>Email</th>
                                     <th>Address</th>
                                 </tr>
                             </thead>
-                            <tbody id="assigned-customers-list" class="dark:text-white-dark">
+                            <tbody id="returned-leads-body" class="dark:text-white-dark">
                             @forelse($assignedCustomers as $customer)
-                                <tr class="customer-row" data-id="{{ $customer->id }}" data-name="{{ $customer->fullName() }}" data-books="{{ $customer->books->toJson() }}" data-contact-numbers="{{ $customer->contactNumbers->toJson() }}" onclick="markAsViewed({{ $customer->id }})">
-                                    <td><input type="checkbox" class="form-checkbox select-lead" /></td>  
+                                <tr class="customer-row" data-id="{{ $customer->id }}" data-name="{{ $customer->fullName() }}" data-books="{{ $customer->books->toJson() }}" data-contact-numbers="{{ $customer->contactNumbers->toJson() }}" data-employee-id="{{ $customer->assign_to }}" onclick="markAsViewed({{ $customer->id }})">  <!-- Add employee ID here -->                                        
+                                     <td>
+                                        <input type="checkbox" class="form-checkbox select-lead" /></td> 
                                     <td>
-                                        {!! \Carbon\Carbon::parse($customer->date_created)->format('d M, Y') ?? 'N/A' !!}
+                                    {!! \Carbon\Carbon::parse($customer->date_created)->format('d M, Y') ?? 'N/A' !!}
                                     </td>
-                                    <td>{{ $customer->fullName() }}
-                                        @if (!$customer->is_viewed)
-                                            <span class="new-label">New</span>
-                                        @endif          
-                                    </td>
+                                    <td>{{ $customer->fullName() }}</td>
                                     <td>{{ $customer->email }}</td>
                                     <td>{{ $customer->address }}</td>
                                 </tr>
-                            @empty
-                                <tr id="no-customers-row">
-                                    <td colspan="5" class="text-center">No customers assigned</td>
-                                </tr>
+                                @empty
+                                    <tr id="no-returned-leads">
+                                        <td colspan="5">No leads return</td>
+                                    </tr>
                             @endforelse
                             </tbody>
                         </table>
                         <hr>
-                        <button id="return-leads-btn" class="btn btn-primarycolor btn-sm mt-3" data-modal-target="open-return-modal" disabled>Return Leads</button>
+                        <button id="reassign-leads-btn" class="btn btn-primarycolor btn-sm mt-3" data-modal-target="open-return-modal" disabled>Return Leads</button>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -116,7 +114,7 @@
     <script>
         // Start polling when the page loads for employee
         window.onload = function() {
-            pollForEmployeeAssignedLeads();  // Start polling for assigned leads for employee
+            pollForAssignedLeads();  // Start polling for assigned leads for admin
         };
     </script>
 @endsection

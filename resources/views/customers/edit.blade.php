@@ -16,6 +16,8 @@
             <div class="mb-5">
                 <form action="{{ route('customers.update', $customer->id) }}" method="POST" enctype="multipart/form-data" class="mb-5 rounded-md border border-[#ebedf2] bg-white p-4 dark:border-[#191e3a] dark:bg-[#0e1726]">
                     @csrf
+                    @method('PUT')
+                    <input type="hidden" name="redirect_to" value="{{ url()->previous() }}">
                     <h6 class="mb-5 text-lg font-bold">Leads Information</h6>
                     <div class="flex flex-col sm:flex-row">
                         <div class="grid flex-1 grid-cols-1 gap-5 sm:grid-cols-2">
@@ -89,9 +91,8 @@
                                             <select name="contact_numbers[{{ $index }}][status]" class="form-select text-white-dark w-1/3">
                                                 <option value="">Select Status</option>
                                                 @foreach ($statuss as $status)
-                                                    <option value="{{ $status }}" {{ $contact->status === $status ? 'selected' : '' }}>
-                                                        {{ $status }}
-                                                    </option>
+                                                    <option value="Not Verified" {{ $contact->status === 'Not Verified' ? 'selected' : '' }}>Not Verified</option>
+                                                    <option value="Verified" {{ $contact->status === 'Verified' ? 'selected' : '' }}>Verified</option>
                                                 @endforeach
                                             </select>        
                                         </div>

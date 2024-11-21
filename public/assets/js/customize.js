@@ -193,17 +193,17 @@ document.addEventListener('DOMContentLoaded', function() {
     
         // Function to update the state of the buttons based on the table ID
         function updateButtonState(tableId) {
-            const checkboxes = getCheckboxes(tableId); 
-            const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked); 
-
+            const checkboxes = getCheckboxes(tableId);
+            const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+    
             // Mapping table IDs to their respective buttons
             const buttonMapping = {
                 'verified-leads-table': 'assign-leads-btn',
-                'my-leads-table': 'return-leads-btn',
-                'return-leads-table': 'reassign-leads-btn',  
-                'leads-table': 'some-other-button-id', 
+                'my-leads-table': 'return-leads-btn',  // Link `my-leads-table` with `return-leads-btn`
+                'return-leads-table': 'reassign-leads-btn',
+                'leads-table': 'some-other-button-id',
             };
-
+    
             const buttonId = buttonMapping[tableId];
             if (buttonId) {
                 const button = document.getElementById(buttonId);
@@ -273,19 +273,19 @@ document.addEventListener('DOMContentLoaded', function() {
             const checkboxes = getCheckboxes(tableId);
             checkboxes.forEach(checkbox => {
                 checkbox.addEventListener('change', function () {
-                    updateButtonState(tableId);  // Update the state of the "Reassign" button
-                    updateSelectedCustomerIds(tableId, modalId);  // Update selected customer count in the modal
+                    updateButtonState(tableId); // Update button state for individual check
+                    updateSelectedCustomerIds(tableId, modalId); // Update selected customer count in the modal
                 });
             });
         }
     
         // Initialize the "Check All" functionality for specific tables
         function initializeCheckAll() {
-            handleCheckAll('checkAllVerified', 'verified-leads-table', 'open-assign-modal'); // Assign Leads Modal
+            handleCheckAll('checkAllVerified', 'verified-leads-table', 'open-assign-modal'); 
             handleCheckAll('checkAllLeads', 'leads-table');
             handleCheckAll('checkAllAssign', 'assign-leads-table');
             handleCheckAll('checkAllreturn', 'my-leads-table', 'open-return-modal');
-            handleCheckAll('checkAllReassign', 'return-leads-table', 'open-reassign-modal'); // Reassign Leads Modal
+            handleCheckAll('checkAllReassign', 'return-leads-table', 'open-reassign-modal');
         }
     
         // Open modal for a specific button
@@ -301,19 +301,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     
-        // Update modal content based on modal ID
-        function updateModalContent(modalId) {
-            const selectedCustomerIdsInput = document.getElementById('selected-customer-ids');
-            const selectedCustomerIds = selectedCustomerIdsInput ? selectedCustomerIdsInput.value : '';
-        
-            const totalSelectedLeads = document.getElementById('total-selected-leads');
-            const modalContent = document.getElementById(modalId).querySelector('#modal-content');
-        
-            if (modalContent && totalSelectedLeads) {
-                modalContent.textContent = `You have selected ${totalSelectedLeads.value} customers.`;
-            }
-        }
-    
         // Close modal when clicking outside
         function closeModal(modalId) {
             const modal = document.getElementById(modalId);
@@ -324,41 +311,31 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
             }
-        }    
+        }
     
         // Initialize the script
         function initialize() {
             initializeCheckAll();
     
-            // Attach event listeners to individual checkboxes to update the button state and selected IDs
-            // handleIndividualCheckboxes('verified-leads-table');
-            // handleIndividualCheckboxes('return-leads-table');
-            handleIndividualCheckboxes('verified-leads-table', 'open-assign-modal');  // Assign Leads Modal
-            handleIndividualCheckboxes('return-leads-table', 'open-reassign-modal');  // Reassign Leads Modal
-            handleIndividualCheckboxes('my-leads-table', 'open-return-modal');  // Reassign Leads Modal
+            // Attach event listeners to individual checkboxes
+            handleIndividualCheckboxes('verified-leads-table', 'open-assign-modal');
+            handleIndividualCheckboxes('return-leads-table', 'open-reassign-modal');
+            handleIndividualCheckboxes('my-leads-table', 'open-return-modal'); // Ensure `my-leads-table` is included here
     
-            // Initially call the function to set the correct state on page load
+            // Initial button state update on page load
             updateButtonState('verified-leads-table');
-            updateButtonState('my-leads-table');
+            updateButtonState('my-leads-table'); // Ensure `my-leads-table` button state is set
             updateButtonState('return-leads-table');
     
             // Initialize modals
             openModal('assign-leads-btn', 'open-assign-modal');
             openModal('return-leads-btn', 'open-return-modal');
-            openModal('reassign-leads-btn', 'open-reassign-modal'); // Added for reassign leads modal
+            openModal('reassign-leads-btn', 'open-reassign-modal');
             closeModal('open-assign-modal');
             closeModal('open-return-modal');
-            closeModal('open-reassign-modal'); // Added for reassign leads modal
-
-            // document.querySelectorAll('#return-leads-table .select-lead').forEach(checkbox => {
-            //     checkbox.addEventListener('change', () => {
-            //         updateSelectedCustomerIds('return-leads-table'); // Replace 'your-table-id' with the actual ID of your table
-            //         console.log('Checkboxes found: ', checkboxes.length); // Check how many checkboxes are checked
-            //     });
-            // });
+            closeModal('open-reassign-modal');
         }
     
-        // Run the initialization
         initialize();
     })();
 

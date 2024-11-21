@@ -31,15 +31,6 @@ class CustomerController extends Controller
                                 ->whereNull('assign_to')  // Only include customers who are not assigned
                                 ->get();
 
-        $assignedCustomers = Customer::with(['contactNumbers', 'books'])
-                                ->whereNotNull('assign_to')  // Only include customers who are assigned
-                                ->where('return_lead', false)
-                                ->get();
-
-        $returnCustomers = Customer::with(['contactNumbers', 'books'])
-                                ->whereNotNull('assign_to')  // Only include customers who are assigned
-                                ->where('return_lead', true)
-                                ->get();
 
         $brandingSpecialists = User::whereHas('profile', function ($query) {
                                 $query->where('des_id', function ($subQuery) {
@@ -52,7 +43,24 @@ class CustomerController extends Controller
         $selectedCustomer = null;
         $employees = User::where('user_type', 'Employee')->get();
         
-        return view('customers.index', compact('customers', 'selectedCustomer', 'employees', 'verifiedCustomers', 'assignedCustomers', 'brandingSpecialists', 'returnCustomers'));
+        return view('customers.index', compact('customers', 'selectedCustomer', 'employees', 'verifiedCustomers', 'brandingSpecialists'));
+    }
+
+    public function assignedLeads()
+    {
+        $assignedCustomers = Customer::with(['contactNumbers', 'books'])
+                                    ->whereNotNull('assign_to')
+                                    ->get();
+        return view('customers.assigned', compact('assignedCustomers'));
+    }
+
+    public function returnedLeads()
+    {
+        $returnCustomers = Customer::with(['contactNumbers', 'books'])
+                                ->whereNotNull('assign_to')  // Only include customers who are assigned
+                                ->where('return_lead', true)
+                                ->get();
+        return view('customers.returned', compact('returnCustomers'));
     }
 
     public function userCustomer()
@@ -84,6 +92,7 @@ class CustomerController extends Controller
         return response()->json([
             'success' => true,
             'customer' => [
+                'id' => $customer->id, // Ensure 'id' is included
                 'name' => $customer->fullName(),
                 'email' => $customer->email,
                 'address' => $customer->address,
@@ -220,8 +229,7 @@ class CustomerController extends Controller
                 'type'          => $request->type,
                 'deals'         => $request->deals,
                 'notes'         => $request->notes,
-                'assign_to'     => $request->assign_to,
-                'comment'       => $request->comment,
+                'assign_to'     => $request->assign_to ?? $customer->assign_to, // Retain existing value if null
 
             ]);
 
@@ -296,8 +304,9 @@ class CustomerController extends Controller
         } catch (validationException $e ) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
+        $redirectTo = $request->input('redirect_to', route('customers.index'));
 
-        return redirect()->route('customers.index')->with('success', 'Customer updated successfully.');
+        return redirect($redirectTo)->with('success', 'Customer updated successfully.');
     }
 
     public function updateStatus(Request $request)
@@ -360,10 +369,9 @@ class CustomerController extends Controller
                 $customer->update(['assign_to' => $employee->id]);
 
                 // Broadcast an event to update the front-end in real-time
-                event(new LeadAssignedToEmployee($customer, $employee->id));
+                // event(new LeadAssignedToEmployee($customer, $employee->id));
             }
         }
-
 
         return redirect()->route('customers.index')->with('success', 'Leads assigned successfully.');
     }
@@ -470,7 +478,6 @@ class CustomerController extends Controller
     {
         $assignedCustomers = Customer::with(['contactNumbers', 'books'])
                                     ->whereNotNull('assign_to') // Only include customers who are assigned
-                                    ->where('return_lead', false)
                                     ->get();
 
         return response()->json(['assigned_customers' => $assignedCustomers]);

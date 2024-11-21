@@ -84,119 +84,236 @@ document.addEventListener('DOMContentLoaded', function(){
     // Leads information functionality
     (function() {
         console.log('Leads information functionality initialized');
-    
-        const rows = document.querySelectorAll('.customer-row');
+
         const leadInfoBox = document.querySelector('.lead-info');
         const detailsContainer = leadInfoBox.querySelector('.details-container');
         const editButton = document.getElementById('edit-button');
-    
+
         if (!leadInfoBox) {
             console.error('Lead info box not found');
             return;
         }
-    
+
+        function showLoading() {
+            detailsContainer.innerHTML = '<ul><li>Loading...</li></ul>';
+            if (editButton) editButton.style.display = 'none';
+        }
+
         function resetLeadInfo() {
             detailsContainer.innerHTML = '<ul><li>No data selected</li></ul>';
-            if (editButton) {
-                editButton.style.display = 'none'; // Hide edit button when no data is selected
+            if (editButton) editButton.style.display = 'none';
+        }
+
+        resetLeadInfo();
+
+        document.addEventListener('click', function(event) {
+            const clickedRow = event.target.closest('.customer-row');
+            if (!clickedRow) return;
+
+            console.log('Row clicked:', clickedRow);
+
+            const customerId = clickedRow.getAttribute('data-id');
+            if (!customerId) {
+                console.error('No customer ID found on clicked row');
+                return;
             }
 
+            showLoading();
+
+            document.querySelectorAll('.customer-row').forEach(row => row.classList.remove('bg-gray-200'));
+            clickedRow.classList.add('bg-gray-200');
+
+            //Fetch customer details
+            fetch(`/customers/${customerId}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Fetched customer data:', data); // Check the data received
+                    if (data.success && data.customer) {
+                        displayCustomerInfo(data.customer); // Call function to display data
+                    } else {
+                        console.error('Customer data not found in response');
+                        resetLeadInfo();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching customer details:', error);
+                    resetLeadInfo();
+                });
+            
+        });
+
+        // Display fetched customer data
+        function displayCustomerInfo(customer) {
+
+
+            let assignToField = '';
+            if (customer.assign_to && customer.assign_to !== customer.current_user_name) {
+                assignToField = `<li><strong>Assign To:</strong> ${customer.assign_to}</li>`;
+            }
+
+            detailsContainer.innerHTML = `
+                <ul class="m-auto mt-5 flex flex-col space-y-2 font-semibold text-white-dark">
+                    <li><strong>Name:</strong> ${customer.name}</li>
+                    <li><strong>Email:</strong> ${customer.email}</li>
+                    <li><strong>Address:</strong> ${customer.address || 'N/A'}</li>
+                    <li><strong>Website:</strong> ${customer.website || 'N/A'}</li>
+                    <li><strong>Books:</strong>
+                        <ul>
+                            ${customer.books.map(book => `<li><a href="${book.link}" target="_blank">${book.title}</a></li>`).join('')}
+                        </ul>
+                    </li>
+                    <li><strong>Contact #:</strong>
+                        <ul>
+                            ${customer.contact_numbers.map(contact => `
+                                <li>
+                                    ${contact.contact_number} - ${contact.status === 'Verified' ? '✔️' : '❌'}
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </li>
+                    ${assignToField}
+                </ul>
+            `;
+            if (editButton) {
+                console.log('Setting Edit Button URL:', `/customers/${customer.id}/edit`);
+                editButton.href = `/customers/${customer.id}/edit`; // Ensure customer ID is set
+                editButton.style.display = 'inline-block';
+            }
         }
-    
-        resetLeadInfo();
-    
-        rows.forEach(row => {
-            row.addEventListener('click', function() {
-                console.log('Row clicked:', this);
-    
-                const customerId = this.getAttribute('data-id');
-                if (!customerId) {
-                    console.error('No customer ID found on clicked row');
-                    return;
-                }
-    
-                rows.forEach(row => row.classList.remove('bg-gray-200'));
-                this.classList.add('bg-gray-200');
-    
-                fetch(`/customers/${customerId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            let assignToField = '';
-                            if (data.customer.assign_to && data.customer.assign_to !== data.customer.current_user_name) {
-                                assignToField = `<li><strong>Assign To:</strong> ${data.customer.assign_to}</li>`;
-                            }
-
-                            detailsContainer.innerHTML = `
-                                <ul class="m-auto mt-5 flex flex-col space-y-2 font-semibold text-white-dark">
-                                    <li class="flex items-center gap-2"><strong>Name:</strong> ${data.customer.name}</li>
-                                    <li class="flex items-center gap-2"><strong>Email:</strong> ${data.customer.email}</li>
-                                    <li class="flex items-center gap-2"><strong>Address:</strong> ${data.customer.address}</li>
-                                    <li class="flex items-center gap-2"><strong>Website:</strong> ${data.customer.website ? data.customer.website : 'N/A'}</li>
-                                    <li class="flex items-center gap-2"><strong>Viewed:</strong> ${data.customer.is_viewed ? 'Yes' : 'No'}</li>
-                                    <li class="flex gap-2"><strong>Books:</strong>
-                                        <ul>
-                                            ${data.customer.books.map(book => `<li class="flex items-center gap-2"><a href="${book.link}" target="_blank">${book.title}</a></li>`).join('')}
-                                        </ul>
-                                    </li>
-                                    <li class="flex gap-2"><strong>Contact #:</strong>
-                                        <ul class="flex flex-col space-y-1 ml-6">
-                                        ${data.customer.contact_numbers.map(contact => `
-                                            <li class="flex items-center gap-2">
-                                                ${contact.contact_number}
-                                                <span class="status-icon" 
-                                                      title="${contact.status}">
-                                                    ${contact.status === 'Verified' 
-                                                        ? '<i class="fas fa-check-circle" gap-2 style="color: green;"></i>'
-                                                        : '<i class="fas fa-times-circle" gap-2 style="color: red;"></i>'
-                                                    }
-                                                </span>
-                                            </li>
-                                        `).join('')}
-                                        </ul>
-                                    </li>
-                                    ${assignToField}                                    
-                                </ul>
-                            `;
-
-                            if (editButton) {
-                                editButton.href = `/customers/${customerId}/edit`; // Update edit button URL
-                                editButton.style.display = 'inline-block'; // Show edit button
-                            }
-                        }
-                    })
-                    .catch(error => console.error('Error fetching customer details:', error));
-            });
-        });
     })();
-    
 
+    // (function() {
+    //     console.log('Leads information functionality initialized');
+    
+    //     const leadInfoBox = document.querySelector('.lead-info');
+    //     const detailsContainer = leadInfoBox.querySelector('.details-container');
+    //     const editButton = document.getElementById('edit-button');
+    
+    //     if (!leadInfoBox) {
+    //         console.error('Lead info box not found');
+    //         console.error('Edit button not found in the DOM');
+    //         return;
+    //     }
+    
+    //     function showLoading() {
+    //         detailsContainer.innerHTML = '<ul><li>Loading...</li></ul>';
+    //         if (editButton) editButton.style.display = 'none';
+    //     }
+    
+    //     function resetLeadInfo() {
+    //         detailsContainer.innerHTML = '<ul><li>No data selected</li></ul>';
+    //         if (editButton) editButton.style.display = 'none';
+    //     }
+    
+    //     resetLeadInfo();
+    
+    //     // Listen for clicks on the rows of the customer table
+    //     document.addEventListener('click', function(event) {
+    //         const clickedRow = event.target.closest('.customer-row');
+    //         if (!clickedRow) return;
+    
+    //         console.log('Row clicked:', clickedRow);
+    
+    //         const customerId = clickedRow.getAttribute('data-id');
+    //         console.log('Clicked Customer ID:', customerId); // Debug line
+    //         if (!customerId) {
+    //             console.error('No customer ID found on clicked row');
+    //             return;
+    //         }
+    
+    //         showLoading();
+    
+    //         // Highlight the clicked row
+    //         document.querySelectorAll('.customer-row').forEach(row => row.classList.remove('bg-gray-200'));
+    //         clickedRow.classList.add('bg-gray-200');
+    
+    //         // Fetch customer details using the ID from the clicked row
+    //         fetch(`/customers/${customerId}`)
+    //             .then(response => response.json())
+    //             .then(data => {
+    //                 console.log('Fetched customer data:', data);
+    //                 if (data.success && data.customer) {
+    //                     displayCustomerInfo(data.customer); // Call function to display customer data
+    //                 } else {
+    //                     console.error('Customer data not found in response');
+    //                     resetLeadInfo();
+    //                 }
+    //             })
+    //             .catch(error => {
+    //                 console.error('Error fetching customer details:', error);
+    //                 resetLeadInfo();
+    //             });
+    //     });
+    
+    //     // Function to display the fetched customer data
+    //     function displayCustomerInfo(customer) {
+    //         let assignToField = '';
+    //         if (customer.assign_to && customer.assign_to !== customer.current_user_name) {
+    //             assignToField = `<li><strong>Assign To:</strong> ${customer.assign_to}</li>`;
+    //         }
+    
+    //         detailsContainer.innerHTML = `
+    //             <ul class="m-auto mt-5 flex flex-col space-y-2 font-semibold text-white-dark">
+    //                 <li><strong>Name:</strong> ${customer.name}</li>
+    //                 <li><strong>Email:</strong> ${customer.email}</li>
+    //                 <li><strong>Address:</strong> ${customer.address || 'N/A'}</li>
+    //                 <li><strong>Website:</strong> ${customer.website || 'N/A'}</li>
+    //                 <li><strong>Books:</strong>
+    //                     <ul>
+    //                         ${customer.books.map(book => `<li><a href="${book.link}" target="_blank">${book.title}</a></li>`).join('')}
+    //                     </ul>
+    //                 </li>
+    //                 <li><strong>Contact #:</strong>
+    //                     <ul>
+    //                         ${customer.contact_numbers.map(contact => `
+    //                             <li>
+    //                                 ${contact.contact_number} - ${contact.status === 'Verified' ? '✔️' : '❌'}
+    //                             </li>
+    //                         `).join('')}
+    //                     </ul>
+    //                 </li>
+    //                 ${assignToField}
+    //             </ul>
+    //         `;
+    
+    //         // Update the Edit button with the customer ID
+    //         console.log('Customer ID:', customer.id); // Debug
+
+    //         if (editButton) {
+    //             const editUrl = `/customers/${customer.id}/edit`;
+    //             console.log('Setting Edit Button URL:', editUrl); // Debug
+    //             editButton.href = editUrl; // Update URL
+    //             editButton.style.display = 'inline-block'; // Show button
+    //         }
+    //     }
+    // })();
+    
+    // Global tab initialization script (can be included in a common JavaScript file)
     (function () {
-        document.querySelectorAll('.tab-link').forEach(tabLink => {
-            tabLink.addEventListener('click', function(event) {
-                event.preventDefault();
-    
-                // Remove active class from all tabs and hide all tab contents
-                document.querySelectorAll('.tab-link').forEach(link => {
-                    link.classList.remove('active');
+        const tabLinks = document.querySelectorAll('.tab-link');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        if (tabLinks.length > 0 && tabContents.length > 0) {
+            tabLinks.forEach(tabLink => {
+                tabLink.addEventListener('click', function(event) {
+                    event.preventDefault();
+
+                    // Reset active classes
+                    tabLinks.forEach(link => link.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+
+                    // Activate clicked tab and its content
+                    this.classList.add('active');
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) target.classList.add('active');
                 });
-                document.querySelectorAll('.tab-content').forEach(content => {
-                    content.classList.remove('active');
-                });
-    
-                // Add active class to the clicked tab
-                this.classList.add('active');
-    
-                // Show the corresponding tab content
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.classList.add('active');
-                }
             });
-        });
-    
-        // Optionally, set the default active tab (first tab in this case)
-        document.querySelector('.tab-link').click();
+
+            // Set default tab active
+            tabLinks[0].click();
+        } else {
+            console.log("No tabs detected on this page. Skipping tab initialization.");
+        }
     })();
     
 

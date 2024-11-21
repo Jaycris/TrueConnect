@@ -41,14 +41,14 @@
                     </div>
                 </a>
             </li>
-            <li class="menu nav-item" x-data="{ activeDropdown: '{{ (request()->is('customers', 'admin/departments/create') || request()->is('admin/designations', 'admin/designations/create', 'admin/designations/*/edit')) ? 'settings' : null; }}' }">
+            <li class="menu nav-item" x-data="{ activeDropdown: '{{ (request()->is('customers','customers/assigned','customers/returned', 'admin/departments/create') || request()->is('admin/designations', 'admin/designations/create', 'admin/designations/*/edit')) ? 'settings' : null; }}' }">
                 <button type="button" class="nav-link group" :class="{'active' : activeDropdown === 'settings'}" @click="activeDropdown = (activeDropdown === 'settings' ? null : 'settings')">
                     <div class="flex items-center">
                     <svg class="shrink-0 group-hover:!text-primary" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <circle cx="12" cy="7" r="4" fill="currentColor"></circle>
                             <ellipse cx="12" cy="17" rx="7" ry="4" fill="currentColor"></ellipse>
                         </svg> 
-                        <span class="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Clients</span>
+                        <span class="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Leads Management</span>
                     </div>      
                     <div class="rtl:rotate-180" :style="{ transform: activeDropdown === 'settings' ? 'rotate(90deg)' : 'rotate(0deg)' }">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -80,6 +80,12 @@
                 @if($hasAccess)                          
                     <li>
                         <a class="{{ request()->is('customers') ? 'active' : '' }}" href="{{ route('customers.index') }}">Leads</a>
+                    </li>
+                    <li>
+                        <a class="{{ request()->is('customers/assigned') ? 'active' : '' }}" href="{{ route('customers.assigned') }}">Assign Leads</a>                    
+                    </li>
+                    <li>
+                        <a class="{{ request()->is('customers/returned') ? 'active' : '' }}" href="{{ route('customers.returned') }}">Returned Leads</a>                    
                     </li>
                     <li>
                         <a class="{{ request()->is('admin/designations', 'admin/designations/create', 'admin/designations/*/edit') ? 'active' : '' }}" href="{{ route('admin.designations') }}">Clients</a>

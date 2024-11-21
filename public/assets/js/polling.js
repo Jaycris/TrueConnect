@@ -1,11 +1,15 @@
-let lastCheck = new Date().toISOString();  // Keep track of last time we polled
+// State tracking
+let previousAssignedData = new Set();
+let previousReturnedData = new Set();
+let lastCheckAssigned = new Date().toISOString();
+let lastCheckReturned = new Date().toISOString();
 
+// Polling for returned leads
 function pollForReturnedLeads() {
     setInterval(() => {
-        console.log('Polling for returned leads...'); // Debugging
-        
-        // Send the last check timestamp to fetch only new leads
-        fetch(`/returned-leads?last_check=${lastCheck}`, {
+        console.log('Polling for returned leads...');
+
+        fetch(`/returned-leads?last_check=${lastCheckReturned}`, {
             method: 'GET',
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
@@ -13,24 +17,22 @@ function pollForReturnedLeads() {
         })
         .then(response => response.json())
         .then(data => {
-            console.log('Returned leads response:', data); // Debugging
+            console.log('Returned leads response:', data);
+            lastCheckReturned = data.last_check;
 
-            // Update the last check timestamp for the next poll
-            lastCheck = data.last_check;
-
-            // Add new returned leads to the table
-            data.return_customers.forEach(customer => {
-                addNewCustomerRow(customer, 'return-leads-table'); // Update the return leads table
-            });
+            // Update only if there’s new or modified data
+            updateCustomerTable(data.return_customers, 'returned-leads-body', 'no-returned-leads', 'No leads returned', previousReturnedData);
         })
         .catch(error => console.error('Error fetching returned leads:', error));
-    }, 5000); // Poll every 5 seconds
+    }, 5000);
 }
 
+// Polling for assigned leads
 function pollForAssignedLeads() {
     setInterval(() => {
-        console.log('Polling for assigned leads...'); // Check if polling is happening
-        fetch('/assigned-leads', {
+        console.log('Polling for assigned leads...');
+        
+        fetch(`/assigned-leads?last_check=${lastCheckAssigned}`, {
             method: 'GET',
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
@@ -38,20 +40,21 @@ function pollForAssignedLeads() {
         })
         .then(response => response.json())
         .then(data => {
-            console.log('Assigned leads response:', data); // Log the data returned by the server
+            console.log('Assigned leads response:', data);
+            lastCheckAssigned = data.last_check;
 
-            data.assigned_customers.forEach(customer => {
-                console.log(`Processing customer ID: ${customer.id}`); // Log customer ID before adding the row
-                addNewCustomerRow(customer, 'assign-leads-table'); // Ensure correct table ID
-            });
+            // Update only if there’s new or modified data
+            updateCustomerTable(data.assigned_customers, 'assigned-leads-body', 'no-assigned-leads', 'No leads assigned', previousAssignedData);
         })
         .catch(error => console.error('Error fetching assigned leads:', error));
-    }, 5000); // Poll every 5 seconds
+    }, 5000);
 }
+
 
 function pollForEmployeeAssignedLeads() {
     setInterval(() => {
-        console.log('Polling for employee assigned leads...'); // Debugging
+        console.log('Polling for employee assigned leads...'); 
+        
         fetch('/my-assigned-leads', {
             method: 'GET',
             headers: {
@@ -60,49 +63,119 @@ function pollForEmployeeAssignedLeads() {
         })
         .then(response => response.json())
         .then(data => {
-            console.log('Employee assigned leads response:', data); // Log the server response
+            console.log('Employee assigned leads response:', data); 
 
-            data.assigned_customers.forEach(customer => {
-                console.log(`Processing customer ID: ${customer.id}`); // Debugging
-                addNewCustomerRow(customer, 'my-leads-table'); // Ensure correct table
-            });
+            const tableBody = document.getElementById('my-leads-table').querySelector('tbody');
+            const noCustomersRow = document.getElementById('no-customers-row');
+
+            // Check if we have customers
+            if (data && Array.isArray(data.assigned_customers) && data.assigned_customers.length > 0) {
+                // Remove the "No customers assigned" row if it exists
+                if (noCustomersRow) {
+                    noCustomersRow.remove();
+                }
+
+                // Loop through data and only add rows for new customers
+                data.assigned_customers.forEach(customer => {
+                    // Only add new rows that do not already exist in the table
+                    if (!tableBody.querySelector(`tr[data-id="${customer.id}"]`)) {
+                        console.log(`Adding new customer ID: ${customer.id}`);
+                        addNewCustomerRow(customer, 'my-leads-table');
+                    }
+                });
+            } else {
+                // No assigned customers: Ensure "No customers assigned" row is present
+                if (!noCustomersRow) {
+                    tableBody.innerHTML = `
+                        <tr id="no-customers-row">
+                            <td colspan="5" class="text-center">No customers assigned</td>
+                        </tr>
+                    `;
+                }
+            }
         })
         .catch(error => console.error('Error fetching employee assigned leads:', error));
-    }, 5000); // Poll every 5 seconds
+    }, 5000);
 }
 
-// Function to add a new customer row to the table dynamically
+// Function to add a new customer row to the table dynamically, avoiding duplicates
 function addNewCustomerRow(customer, tableId) {
-    const tableBody = document.querySelector(`#${tableId} tbody`);
+    const tableBody = document.getElementById(tableId).querySelector('tbody');
     
     // Check if a row with this customer ID already exists in the table
-    const existingRow = document.querySelector(`tr[data-id="${customer.id}"]`);
-
-    // Avoid adding duplicate rows by checking if the row already exists
-    if (existingRow) {
-        console.log(`Customer with ID ${customer.id} already exists in the table.`);
-        return; // Don't add the row again if it exists
+    if (tableBody.querySelector(`tr[data-id="${customer.id}"]`)) {
+        console.log(`Customer with ID ${customer.id} already exists in the table. Skipping.`);
+        return; // Don't add the row again if it already exists
     }
 
     // Create a new row for the customer
     const newRow = `
-        <tr class="customer-row fade-in" data-id="${customer.id}">
+        <tr class="customer-row fade-in" data-id="${customer.id}" onclick="markAsViewed(${customer.id})">
             <td><input type="checkbox" class="form-checkbox select-lead" /></td>
             <td>${new Date(customer.date_created).toLocaleDateString()}</td>
-            <td>${customer.first_name} ${customer.last_name}</td>
+            <td>${customer.first_name} ${customer.last_name} ${!customer.is_viewed ? '<span class="new-label">New</span>' : ''}</td>
             <td>${customer.email}</td>
             <td>${customer.address || 'N/A'}</td>
-        </tr>`;
+        </tr>
+    `;
     
     // Append the new row to the table body
-    tableBody.insertAdjacentHTML('beforeend', newRow); // Insert the new row into the table
-    console.log(`Customer with ID ${customer.id} added to the ${tableId}.`); // Debugging
+    tableBody.insertAdjacentHTML('beforeend', newRow);
+    console.log(`Customer with ID ${customer.id} added to the ${tableId}.`);
 }
 
-// Start polling for each table when the page loads
+// Function to update the table and manage the "No leads assigned" message
+function updateCustomerTable(customers, tbodyId, emptyMessageId, emptyMessageText) {
+    const tableBody = document.getElementById(tbodyId);
+    let noDataRow = document.getElementById(emptyMessageId);
+
+    // Add or update each customer row without removing existing rows
+    customers.forEach(customer => {
+        const existingRow = tableBody.querySelector(`tr[data-id="${customer.id}"]`);
+        const rowContent = `
+            <td><input type="checkbox" class="form-checkbox select-lead" /></td>
+            <td>${formatDate(customer.date_created)}</td>
+            <td>${customer.fullName || `${customer.first_name} ${customer.last_name}`} ${!customer.is_viewed ? '<span class="new-label">New</span>' : ''}</td>
+            <td>${customer.email}</td>
+            <td>${customer.address || 'N/A'}</td>
+        `;
+
+        if (existingRow) {
+            existingRow.innerHTML = rowContent;
+        } else {
+            const newRow = document.createElement('tr');
+            newRow.classList.add('customer-row');
+            newRow.setAttribute('data-id', customer.id);
+            newRow.innerHTML = rowContent;
+            tableBody.appendChild(newRow);
+        }
+    });
+
+    // Display "No leads assigned" message only if there are no rows and no new customers
+    if (customers.length === 0 && !tableBody.querySelector('.customer-row')) {
+        if (!noDataRow) {
+            console.log(`Displaying "No leads assigned" message for ${tbodyId}`);
+            const noDataRowElement = document.createElement('tr');
+            noDataRowElement.id = emptyMessageId;
+            noDataRowElement.innerHTML = `<td colspan="5" class="text-center">${emptyMessageText}</td>`;
+            tableBody.appendChild(noDataRowElement);
+        }
+    } else if (noDataRow) {
+        console.log(`Removing "No leads assigned" message for ${tbodyId}`);
+        noDataRow.remove();
+    }
+}
+
+// Utility function to format dates consistently
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString();  // Consistent format for display
+}
+
+// Start polling when the page loads
 window.onload = function() {
-    pollForAssignedLeads();  // Start polling assigned leads
-    pollForReturnedLeads();  // Start polling returned leads
+    pollForAssignedLeads();
+    pollForReturnedLeads();
 };
 
 // Mark customer as viewed and remove the "New" label
