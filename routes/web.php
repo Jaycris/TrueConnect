@@ -67,7 +67,8 @@ Route::middleware(['auth'])->group(function () {
 
     //Customer
     Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index')->middleware('2fa');
-    Route::get('/customers/assigned', [CustomerController::class, 'assignedLeads'])->name('customers.assigned');
+    Route::get('/customers/distro', [CustomerController::class, 'distroLeads'])->name('customers.distro');
+    Route::post('/customers/unassigned', [CustomerController::class, 'unassignLeads'])->name('customers.unassignLeads');
     Route::get('/customers/returned', [CustomerController::class, 'returnedLeads'])->name('customers.returned');   
     Route::get('/mycustomers', [CustomerController::class, 'userCustomer'])->name('employee.mycustomer')->middleware('2fa');
     Route::get('/customers/create', [CustomerController::class, 'create'])->name('customers.create')->middleware('2fa');

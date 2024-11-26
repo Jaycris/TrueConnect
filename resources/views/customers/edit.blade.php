@@ -1,9 +1,17 @@
 @extends('layouts.master')
 @section('content')
     <div>
+        @php
+            $referrer = request('referrer', 'index'); // Defaults to 'index'
+        @endphp
+        
         <ul class="flex space-x-2 rtl:space-x-reverse">
             <li>
+            @if ($referrer === 'return_leads')
+                <a href="{{ route('customers.returned') }}" class="text-primary hover:underline">Return Leads</a>
+            @else
                 <a href="{{ route('customers.index') }}" class="text-primary hover:underline">Leads</a>
+            @endif
             </li>
             <li class="before:content-['/'] ltr:before:mr-1 rtl:before:ml-1">
                 <span>Edit Leads</span>
@@ -90,9 +98,8 @@
                                             <input type="text" name="contact_numbers[{{ $index }}][contact_number]" class="form-input flex-1" placeholder="Enter Contact Number" value="{{ $contact->contact_number }}">
                                             <select name="contact_numbers[{{ $index }}][status]" class="form-select text-white-dark w-1/3">
                                                 <option value="">Select Status</option>
-                                                @foreach ($statuss as $status)
-                                                    <option value="Not Verified" {{ $contact->status === 'Not Verified' ? 'selected' : '' }}>Not Verified</option>
-                                                    <option value="Verified" {{ $contact->status === 'Verified' ? 'selected' : '' }}>Verified</option>
+                                                @foreach ($statusOptions as $status)
+                                                    <option value="{{ $status }}" {{ $contact->status === $status ? 'selected' : '' }}>{{ $status }}</option>
                                                 @endforeach
                                             </select>        
                                         </div>

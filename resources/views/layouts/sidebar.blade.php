@@ -41,7 +41,7 @@
                     </div>
                 </a>
             </li>
-            <li class="menu nav-item" x-data="{ activeDropdown: '{{ (request()->is('customers','customers/assigned','customers/returned', 'admin/departments/create') || request()->is('admin/designations', 'admin/designations/create', 'admin/designations/*/edit')) ? 'settings' : null; }}' }">
+            <li class="menu nav-item" x-data="{ activeDropdown: '{{ (request()->is('customers','customers/distro','customers/returned', 'admin/departments/create') || request()->is('admin/designations', 'admin/designations/create', 'admin/designations/*/edit')) ? 'settings' : null; }}' }">
                 <button type="button" class="nav-link group" :class="{'active' : activeDropdown === 'settings'}" @click="activeDropdown = (activeDropdown === 'settings' ? null : 'settings')">
                     <div class="flex items-center">
                     <svg class="shrink-0 group-hover:!text-primary" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -82,7 +82,7 @@
                         <a class="{{ request()->is('customers') ? 'active' : '' }}" href="{{ route('customers.index') }}">Leads</a>
                     </li>
                     <li>
-                        <a class="{{ request()->is('customers/assigned') ? 'active' : '' }}" href="{{ route('customers.assigned') }}">Assign Leads</a>                    
+                        <a class="{{ request()->is('customers/distro') ? 'active' : '' }}" href="{{ route('customers.distro') }}">Leads Distro</a>                    
                     </li>
                     <li>
                         <a class="{{ request()->is('customers/returned') ? 'active' : '' }}" href="{{ route('customers.returned') }}">Returned Leads</a>                    

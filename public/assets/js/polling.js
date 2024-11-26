@@ -1,6 +1,6 @@
 // State tracking
-let previousAssignedData = new Set();
-let previousReturnedData = new Set();
+let previousAssignedData = new Map(); // Use Map for caching row content
+let previousReturnedData = new Map(); // Use Map for caching row content
 let lastCheckAssigned = new Date().toISOString();
 let lastCheckReturned = new Date().toISOString();
 
@@ -134,7 +134,7 @@ function updateCustomerTable(customers, tbodyId, emptyMessageId, emptyMessageTex
         const existingRow = tableBody.querySelector(`tr[data-id="${customer.id}"]`);
         const rowContent = `
             <td><input type="checkbox" class="form-checkbox select-lead" /></td>
-            <td>${formatDate(customer.date_created)}</td>
+            <td>${formatDateToDMY(customer.date_created)}</td>
             <td>${customer.fullName || `${customer.first_name} ${customer.last_name}`} ${!customer.is_viewed ? '<span class="new-label">New</span>' : ''}</td>
             <td>${customer.email}</td>
             <td>${customer.address || 'N/A'}</td>
@@ -166,10 +166,13 @@ function updateCustomerTable(customers, tbodyId, emptyMessageId, emptyMessageTex
     }
 }
 
-// Utility function to format dates consistently
-function formatDate(dateString) {
+// Utility function to format dates as `d M, Y`
+function formatDateToDMY(dateString) {
     const date = new Date(dateString);
-    return date.toLocaleDateString();  // Consistent format for display
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = date.toLocaleString('default', { month: 'short' });
+    const year = date.getFullYear();
+    return `${day} ${month}, ${year}`; // Matches `d M, Y` format
 }
 
 // Start polling when the page loads

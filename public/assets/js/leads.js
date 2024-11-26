@@ -4,31 +4,41 @@ document.addEventListener('DOMContentLoaded', function(){
     // Contact number functionality
     (function () {
         console.log('Contact number functionality initialized');
-
+    
         const addContactNumberButton = document.getElementById('add_contact_number');
         const contactNumbersContainer = document.getElementById('contact_numbers_container');
         const removeContactNumberButton = document.querySelector('.remove-contact-number');
-
+    
         if (!addContactNumberButton || !contactNumbersContainer || !removeContactNumberButton) {
             console.error('One or more contact number elements not found');
             return;
         }
-
+    
         addContactNumberButton.addEventListener('click', function () {
-            var newInput = document.createElement('div');
-            newInput.className = 'contact-input-group';
-            newInput.innerHTML = `<input type="text" class="form-input" name="contact_numbers[]" placeholder="Enter Contact Number">`;
+            const index = contactNumbersContainer.children.length; // Get the new index for the field
+    
+            // Create a new contact number input group
+            const newInput = document.createElement('div');
+            newInput.className = 'contact-input-group flex items-center space-x-2 mb-3';
+            newInput.innerHTML = `
+                <input type="text" class="form-input flex-1" name="contact_numbers[${index}][contact_number]" placeholder="Enter Contact Number">
+                <select name="contact_numbers[${index}][status]" class="form-select text-white-dark w-1/3">
+                    <option value="Not Verified" selected>Not Verified</option> <!-- Default -->
+                    <option value="Verified">Verified</option>
+                </select>
+            `;
+    
             contactNumbersContainer.appendChild(newInput);
             updateRemoveButtonVisibility();
         });
-
+    
         removeContactNumberButton.addEventListener('click', function () {
             if (contactNumbersContainer.children.length > 1) {
                 contactNumbersContainer.lastElementChild.remove();
             }
             updateRemoveButtonVisibility();
         });
-
+    
         function updateRemoveButtonVisibility() {
             if (contactNumbersContainer.children.length > 1) {
                 removeContactNumberButton.style.display = 'inline-block';
@@ -144,13 +154,11 @@ document.addEventListener('DOMContentLoaded', function(){
 
         // Display fetched customer data
         function displayCustomerInfo(customer) {
-
-
             let assignToField = '';
             if (customer.assign_to && customer.assign_to !== customer.current_user_name) {
                 assignToField = `<li><strong>Assign To:</strong> ${customer.assign_to}</li>`;
             }
-
+        
             detailsContainer.innerHTML = `
                 <ul class="m-auto mt-5 flex flex-col space-y-2 font-semibold text-white-dark">
                     <li><strong>Name:</strong> ${customer.name}</li>
@@ -174,9 +182,14 @@ document.addEventListener('DOMContentLoaded', function(){
                     ${assignToField}
                 </ul>
             `;
+        
             if (editButton) {
-                console.log('Setting Edit Button URL:', `/customers/${customer.id}/edit`);
-                editButton.href = `/customers/${customer.id}/edit`; // Ensure customer ID is set
+                // Dynamically determine the page name (referrer) from the URL
+                const pathSegments = window.location.pathname.split('/').filter(segment => segment);
+                const referrer = pathSegments.length > 1 ? pathSegments[pathSegments.length - 1] : 'index';
+        
+                // Set the Edit Button URL with the correct referrer
+                editButton.href = `/customers/${customer.id}/edit?referrer=${referrer}`;
                 editButton.style.display = 'inline-block';
             }
         }

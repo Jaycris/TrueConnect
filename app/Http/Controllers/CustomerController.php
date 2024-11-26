@@ -19,9 +19,19 @@ class CustomerController extends Controller
                             ->whereHas('contactNumbers', function($query) {
                         $query->where('status', 'Not Verified');
                         })->get();        
-    
-        // Query to get verified customers
-        $verifiedCustomers = Customer::with(['contactNumbers', 'books'])
+
+        
+        return view('customers.index', compact('customers'));
+    }
+
+    public function distroLeads()
+    {
+        $assignedCustomers = Customer::with(['contactNumbers', 'books'])
+                                    ->whereNotNull('assign_to')
+                                    ->get();
+
+                                    // Query to get verified customers
+        $unassignedLeads = Customer::with(['contactNumbers', 'books'])
                                     ->whereHas('contactNumbers', function ($query) {
                                 $query->whereIn('status', ['Verified', 'DNC', 'VM']);
                                 })
@@ -31,27 +41,19 @@ class CustomerController extends Controller
                                 ->whereNull('assign_to')  // Only include customers who are not assigned
                                 ->get();
 
-
         $brandingSpecialists = User::whereHas('profile', function ($query) {
                                 $query->where('des_id', function ($subQuery) {
                                 $subQuery->select('id')->from('designations')->where('name', 'Branding Specialist');
                                 });
                                 })->get();
-
-                                
-
+    
+                                    
+    
         $selectedCustomer = null;
-        $employees = User::where('user_type', 'Employee')->get();
-        
-        return view('customers.index', compact('customers', 'selectedCustomer', 'employees', 'verifiedCustomers', 'brandingSpecialists'));
-    }
+        $employees = User::where('user_type', 'Employee')->get();                        
 
-    public function assignedLeads()
-    {
-        $assignedCustomers = Customer::with(['contactNumbers', 'books'])
-                                    ->whereNotNull('assign_to')
-                                    ->get();
-        return view('customers.assigned', compact('assignedCustomers'));
+
+        return view('customers.distro', compact('assignedCustomers', 'unassignedLeads', 'selectedCustomer', 'employees', 'unassignedLeads', 'brandingSpecialists'));
     }
 
     public function returnedLeads()
@@ -184,12 +186,15 @@ class CustomerController extends Controller
         return redirect()->route('customers.index')->with('success', 'Customer created successfully.');
     }
     
-    public function edit($id)
+    public function edit($id, Request $request)
     {
+        $statusOptions = ['Not Verified', 'Verified']; 
         $customer = Customer::with('contactNumbers', 'books')->findOrFail($id);
         $statuss = ContactNumber::distinct()->pluck('status')->toArray();
 
-        return view('customers.edit', compact('customer', 'statuss'));
+        $referrer = $request->input('referrer', 'index'); // Default to 'index' if no referrer provided
+
+        return view('customers.edit', compact('customer', 'statuss', 'statusOptions', 'referrer'));    
     }
 
     public function update(Request $request, $id)
@@ -374,6 +379,23 @@ class CustomerController extends Controller
         }
 
         return redirect()->route('customers.index')->with('success', 'Leads assigned successfully.');
+    }
+
+    public function unassignLeads(Request $request)
+    {
+        $request->validate([
+            'customers' => 'required|array',
+            'customers.*' => 'exists:customers,id',
+        ]);
+
+        foreach ($request->customers as $customerId) {
+            $customer = Customer::find($customerId);
+            $customer->assign_to = null; // Unassign the user
+            $customer->return_lead = false;
+            $customer->save();
+        }
+
+        return redirect()->route('customers.distro')->with('success', 'Leads unassigned successfully.');
     }
 
     public function returnToLeadMiner(Request $request)

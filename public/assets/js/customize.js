@@ -201,6 +201,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 'verified-leads-table': 'assign-leads-btn',
                 'my-leads-table': 'return-leads-btn',  // Link `my-leads-table` with `return-leads-btn`
                 'return-leads-table': 'reassign-leads-btn',
+                'assign-leads-table': 'unassign-leads-btn',
                 'leads-table': 'some-other-button-id',
             };
     
@@ -212,24 +213,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         }
-    
-        //Update the selected customer IDs and total selected leads value
-        // function updateSelectedCustomerIds(tableId) {
-        //     const checkboxes = getCheckboxes(tableId);
-        //     const selectedIds = Array.from(checkboxes)
-        //         .filter(checkbox => checkbox.checked)
-        //         .map(checkbox => checkbox.closest('tr').dataset.id);
-
-        //     const totalSelectedLeads = document.getElementById('total-selected-leads');
-        //     if (totalSelectedLeads) {
-        //         totalSelectedLeads.value = selectedIds.length;
-        //     }
-
-        //     const selectedCustomerIdsInput = document.getElementById('selected-customer-ids');
-        //     if (selectedCustomerIdsInput) {
-        //         selectedCustomerIdsInput.value = selectedIds.join(',');
-        //     }
-        // }
 
         function updateSelectedCustomerIds(tableId, modalId) {
             const checkboxes = getCheckboxes(tableId); // Get checkboxes for the specific table
@@ -278,14 +261,45 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
         }
+
+        // Add confirmation functionality to modal submit button
+        function handleModalSubmit(modalId, submitButtonId) {
+            const submitButton = document.getElementById(submitButtonId);
+            const modal = document.getElementById(modalId);
+
+            if (submitButton && modal) {
+                submitButton.addEventListener('click', function (event) {
+                    event.preventDefault(); // Prevent default form submission behavior
+
+                    const selectedCustomerIdsInput = modal.querySelector('#selected-customer-ids');
+                    const selectedIds = selectedCustomerIdsInput?.value.split(',') || [];
+
+                    if (selectedIds.length === 0) {
+                        alert('Please select at least one lead to proceed.');
+                        return;
+                    }
+
+                    // Confirm the action with the user
+                    const confirmation = confirm('Are you sure you want to proceed with the selected leads?');
+                    if (confirmation) {
+                        // Submit the form programmatically or handle the business logic here
+                        const form = modal.querySelector('form');
+                        if (form) {
+                            form.submit(); // Submit the form
+                        }
+                    }
+                });
+            }
+        }
+
     
         // Initialize the "Check All" functionality for specific tables
         function initializeCheckAll() {
             handleCheckAll('checkAllVerified', 'verified-leads-table', 'open-assign-modal'); 
             handleCheckAll('checkAllLeads', 'leads-table');
-            handleCheckAll('checkAllAssign', 'assign-leads-table');
             handleCheckAll('checkAllreturn', 'my-leads-table', 'open-return-modal');
             handleCheckAll('checkAllReassign', 'return-leads-table', 'open-reassign-modal');
+            handleCheckAll('checkAllAssign', 'assign-leads-table', 'unassign-leads-modal');
         }
     
         // Open modal for a specific button
@@ -320,6 +334,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Attach event listeners to individual checkboxes
             handleIndividualCheckboxes('verified-leads-table', 'open-assign-modal');
             handleIndividualCheckboxes('return-leads-table', 'open-reassign-modal');
+            handleIndividualCheckboxes('assign-leads-table', 'unassign-leads-modal');
             handleIndividualCheckboxes('my-leads-table', 'open-return-modal'); // Ensure `my-leads-table` is included here
     
             // Initial button state update on page load
@@ -331,9 +346,17 @@ document.addEventListener('DOMContentLoaded', function() {
             openModal('assign-leads-btn', 'open-assign-modal');
             openModal('return-leads-btn', 'open-return-modal');
             openModal('reassign-leads-btn', 'open-reassign-modal');
+            openModal('unassign-leads-btn', 'unassign-leads-modal');
             closeModal('open-assign-modal');
             closeModal('open-return-modal');
             closeModal('open-reassign-modal');
+            closeModal('unassignedModal');
+
+            // Add modal submit button logic
+            handleModalSubmit('open-assign-modal', 'assign-modal-submit');
+            handleModalSubmit('open-return-modal', 'return-modal-submit');
+            handleModalSubmit('open-reassign-modal', 'reassign-modal-submit');
+            handleModalSubmit('unassign-leads-modal', 'unassign-modal-submit');
         }
     
         initialize();
@@ -424,4 +447,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     })();
 });
+
+
 
