@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', function(){
-    console.log('DOM fully loaded and parsed');
+    // console.log('DOM fully loaded and parsed');
 
     // Contact number functionality
     (function () {
-        console.log('Contact number functionality initialized');
+        // console.log('Contact number functionality initialized');
     
         const addContactNumberButton = document.getElementById('add_contact_number');
         const contactNumbersContainer = document.getElementById('contact_numbers_container');
@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function(){
     
         addContactNumberButton.addEventListener('click', function () {
             const index = contactNumbersContainer.children.length; // Get the new index for the field
-    
+     
             // Create a new contact number input group
             const newInput = document.createElement('div');
             newInput.className = 'contact-input-group flex items-center space-x-2 mb-3';
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
     // Book fields functionality
     (function () {
-        console.log('Book fields functionality initialized');
+        // console.log('Book fields functionality initialized');
 
         const addBookButton = document.getElementById('add_book');
         const booksContainer = document.getElementById('books_container');
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
     // Leads information functionality
     (function() {
-        console.log('Leads information functionality initialized');
+        // console.log('Leads information functionality initialized');
 
         const leadInfoBox = document.querySelector('.lead-info');
         const detailsContainer = leadInfoBox.querySelector('.details-container');
@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function(){
             const clickedRow = event.target.closest('.customer-row');
             if (!clickedRow) return;
 
-            console.log('Row clicked:', clickedRow);
+            // console.log('Row clicked:', clickedRow);
 
             const customerId = clickedRow.getAttribute('data-id');
             if (!customerId) {
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function(){
             fetch(`/customers/${customerId}`)
                 .then(response => response.json())
                 .then(data => {
-                    console.log('Fetched customer data:', data); // Check the data received
+                    // console.log('Fetched customer data:', data); // Check the data received
                     if (data.success && data.customer) {
                         displayCustomerInfo(data.customer); // Call function to display data
                     } else {
@@ -325,7 +325,7 @@ document.addEventListener('DOMContentLoaded', function(){
             // Set default tab active
             tabLinks[0].click();
         } else {
-            console.log("No tabs detected on this page. Skipping tab initialization.");
+            // console.log("No tabs detected on this page. Skipping tab initialization.");
         }
     })();
     
@@ -349,16 +349,16 @@ document.addEventListener('DOMContentLoaded', function(){
 
         // Function to show/hide the Update Status button and modal
         function updateUI(selectedData) {
-            console.log('Updating UI with selected data:', selectedData); // Debugging line
+            // console.log('Updating UI with selected data:', selectedData); // Debugging line
     
             contactNumbersContainer.innerHTML = ''; // Clear existing content
     
             if (selectedData && selectedData.contactNumbers && Array.isArray(selectedData.contactNumbers)) {
-                console.log('Updating UI with selected data:', selectedData); // Debugging line
+                // console.log('Updating UI with selected data:', selectedData); // Debugging line
     
                 updateStatusButton.classList.remove('hidden');
                 updateStatusButton.addEventListener('click', function () {
-                    console.log('Update Status button clicked'); // Debugging line
+                    // console.log('Update Status button clicked'); // Debugging line
                     // Populate the modal with selected data
                     customerIdInput.value = selectedData.customerId;
                     nameInput.value = selectedData.name;
@@ -388,7 +388,7 @@ document.addEventListener('DOMContentLoaded', function(){
                     modal.classList.remove('hidden');
                 });
             } else {
-                console.log('No data selected or available'); // Debugging line
+                // console.log('No data selected or available'); // Debugging line
                 updateStatusButton.classList.add('hidden');
             }
         }
@@ -403,7 +403,7 @@ document.addEventListener('DOMContentLoaded', function(){
                     contactNumbers: JSON.parse(this.dataset.contactNumbers || '[]') // Ensure JSON parsing is done correctly
                 };
     
-                console.log('Selected Data:', selectedData); // Debugging line
+                // console.log('Selected Data:', selectedData); // Debugging line
     
                 // Update UI based on selection
                 updateUI(selectedData);

@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM fully loaded and parsed');
+    // console.log('DOM fully loaded and parsed');
 
     (function () {
         const imageUpload = document.getElementById('imageUpload');
@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const cameraIconOverlay = document.getElementById('cameraIconOverlay');
             if (cameraIconOverlay) {
                 cameraIconOverlay.addEventListener('click', function() {
-                    console.log('Camera icon clicked');
+                    // console.log('Camera icon clicked');
                     const clickEvent = new MouseEvent('click', {
                         bubbles: true,
                         cancelable: true,

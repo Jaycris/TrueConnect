@@ -11,7 +11,7 @@
                 <form method="POST" action="{{ route('login') }}" class="space-y-5 dark:text-white">
                     @csrf
                     <div>
-                        <label for="Email">Email or Username</label>
+                        <label for="email">Email or Username</label>
                         <div class="relative text-white-dark">
                             <input id="email" type="text" name="email" value="{{ old('email') }}" required autofocus placeholder="Enter Email or Username" class="form-input ps-10 placeholder:text-white-dark">
                             <span class="absolute start-4 top-1/2 -translate-y-1/2">
@@ -38,7 +38,7 @@
                         </div>
                     </div>
                     <div class="flex items-center justify-between">
-                        <label for="remember_me" class="inline-flex items-center cursor-pointer">
+                        <label for="remember" class="inline-flex items-center cursor-pointer">
                             <input type="checkbox" name="remember" id="remember" class="form-checkbox bg-white dark:bg-black">
                             <span class="ms-2 text-white-dark">Remember me</span>
                         </label>
