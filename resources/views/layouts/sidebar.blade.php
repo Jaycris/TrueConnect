@@ -1,4 +1,4 @@
-<nav x-data="sidebar" class="sidebar fixed bottom-0 top-0 z-50 h-full min-h-screen w-[260px] shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] transition-all duration-300">
+<nav class="sidebar fixed bottom-0 top-0 z-50 h-full min-h-screen w-[260px] shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] transition-all duration-300">
     <div class="h-full bg-white dark:bg-[#0e1726]">
         <div class="flex items-center justify-between px-4 py-3">
             <a href="{{ route('admin.dashboard') }}" class="main-logo flex shrink-0 items-center">
@@ -41,7 +41,7 @@
                     </div>
                 </a>
             </li>
-            <li class="menu nav-item" x-data="{ activeDropdown: '{{ (request()->is('customers','customers/distro','customers/returned', 'admin/departments/create') || request()->is('admin/designations', 'admin/designations/create', 'admin/designations/*/edit')) ? 'settings' : null; }}' }">
+            <li class="menu nav-item" x-data="{ activeDropdown: '{{ (request()->is('customers','customers/distro','customers/returned', 'admin/departments/create') || request()->is('admin/designations', 'admin/designations/create', 'admin/designations/*/edit')) ? 'settings' : '' }}' }">
                 <button type="button" class="nav-link group" :class="{'active' : activeDropdown === 'settings'}" @click="activeDropdown = (activeDropdown === 'settings' ? null : 'settings')">
                     <div class="flex items-center">
                     <svg class="shrink-0 group-hover:!text-primary" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

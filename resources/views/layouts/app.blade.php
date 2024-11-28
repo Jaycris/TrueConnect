@@ -26,8 +26,8 @@
         </div>
 
         <!-- scroll to top button -->
-        <div class="fixed bottom-6 right-6 z-50" x-data="scrollToTop">
-            <template x-if="showTopButton">
+        <div class="fixed bottom-6 right-6 z-50">
+            <template>
                 <button type="button" class="btn btn-outline-primary animate-pulse rounded-full p-2" @click="goToTop">
                     <svg width="24" height="24" class="h-4 w-4" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path opacity="0.5" fill-rule="evenodd" clip-rule="evenodd" d="M12 20.75C12.4142 20.75 12.75 20.4142 12.75 20L12.75 10.75L11.25 10.75L11.25 20C11.25 20.4142 11.5858 20.75 12 20.75Z" fill="currentColor"></path>
@@ -55,7 +55,7 @@
         <script defer="" src="assets/js/alpine.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-        <script src="assets/js/custom.js"></script>
+        <script src="{{ asset('assets/js/custom.js') }}"></script>
         <script src="{{ asset('assets/js/notifications.js') }}"></script>
         <script>
             window.successMessage = @json(Session::get('success'));
