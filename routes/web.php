@@ -8,6 +8,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DesignationController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\SalesController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -92,6 +93,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/customers/assign', [CustomerController::class, 'assignEmployees'])->name('customers.assignEmployees');
     Route::post('/customers/return', [CustomerController::class, 'returnToLeadMiner'])->name('customers.return');    
     Route::post('/customers/reassign', [CustomerController::class, 'reassignToEmployee'])->name('customers.reassign');
+
+
+    // Sales
+    Route::get('/sales', [SalesController::class, 'index'])->name('sales.index')->middleware('2fa');
+    Route::get('/sales/create', [SalesController::class, 'create'])->name('sales.create')->middleware('2fa');
+    Route::get('/get-authors-suggestions', [SalesController::class, 'getAuthorSuggestions']);
+    Route::get('/get-book-titles', [SalesController::class, 'getBookTitles']);
     
 
     // 2FA routes

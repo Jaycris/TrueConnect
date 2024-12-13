@@ -135,7 +135,7 @@ function updateCustomerTable(customers, tbodyId, emptyMessageId, emptyMessageTex
         const rowContent = `
             <td><input type="checkbox" class="form-checkbox select-lead" /></td>
             <td>${formatDateToDMY(customer.date_created)}</td>
-            <td>${customer.fullName || `${customer.first_name} ${customer.last_name}`} ${!customer.is_viewed ? '<span class="new-label">New</span>' : ''}</td>
+            <td>${customer.fullName || `${customer.first_name} ${customer.last_name}`} </td>
             <td>${customer.email}</td>
             <td>${customer.address || 'N/A'}</td>
         `;

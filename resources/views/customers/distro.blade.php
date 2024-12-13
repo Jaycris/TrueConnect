@@ -39,15 +39,14 @@
                 </div>
                 <div id="assigned" class="tab-content">
                     <div class="mb-5 flex items-center justify-between">
-                        <h5 class="text-lg font-semibold dark:text-white-light">Assigned Leads</h5>
-                        <!-- <a href="{{ route('customers.create') }}" class="btn btn-primarycolor">Add Leads</a> -->
+                        <h5 class="text-lg font-semibold dark:text-white-light">Unassigned Leads</h5>
                     </div>
                     <div class="mb-5">
                         <div class="table-responsive font-semibold text-[#515365] dark:text-white-light">
                             <table id="assign-leads-table" class="whitespace-nowrap">
                                 <thead>
                                     <tr>
-                                        <th><input type="checkbox" id="checkAllAssign" class="checkAll form-checkbox" /></th>
+                                        <th><input type="checkbox" id="checkAllVerified" class="checkAll form-checkbox" /></th>
                                         <th>Date</th>
                                         <th>Name</th>
                                         <th>Email</th>
@@ -56,22 +55,20 @@
                                 </thead>
                                 <tbody id="assigned-leads-body" class="dark:text-white-dark">
                                 @forelse($assignedCustomers as $customer)
-                                    <tr class="customer-row" data-id="{{ $customer->id }}" data-name="{{ $customer->fullName() }}" data-books="{{ $customer->books->toJson() }}" data-contact-numbers="{{ $customer->contactNumbers->toJson() }}" data-employee-id="{{ $customer->assign_to }}" onclick="markAsViewed({{ $customer->id }})">  <!-- Add employee ID here -->                                        
-                                        <td>
-                                            <input type="checkbox" class="form-checkbox select-lead" /></td> 
+                                    <tr class="customer-row" data-id="{{ $customer->id }}" data-name="{{ $customer->fullName() }}" data-books="{{ $customer->books->toJson() }}" data-contact-numbers="{{ $customer->contactNumbers->toJson() }}" onclick="markAsViewed({{ $customer->id }})">
+                                        <td><input type="checkbox" class="form-checkbox select-lead" /></td> 
                                         <td>
                                         {!! \Carbon\Carbon::parse($customer->date_created)->format('d M, Y') ?? 'N/A' !!}
                                         </td>
                                         <td>{{ $customer->fullName() }}</td>
                                         <td>{{ $customer->email }}</td>
-                                        <td>{{ $customer->address }}</td>
+                                        <td>{{ $customer->address ?? 'N/A'}}</td>
                                     </tr>
                                     @empty
-                                        <tr id="no-returned-leads">
-                                            <td colspan="5">No leads return</td>
+                                        <tr>
+                                            <td colspan="5">No leads available</td>
                                         </tr>
                                 @endforelse
-                                </tbody>
                             </table>
                             <hr>
                             <button id="unassign-leads-btn" class="btn btn-primarycolor btn-sm mt-3" data-modal-target="unassign-leads-modal" disabled>Unassign Leads</button>
@@ -104,7 +101,7 @@
                                         </td>
                                         <td>{{ $customer->fullName() }}</td>
                                         <td>{{ $customer->email }}</td>
-                                        <td>{{ $customer->address }}</td>
+                                        <td>{{ $customer->address ?? 'N/A'}}</td>
                                     </tr>
                                     @empty
                                         <tr>
@@ -192,9 +189,8 @@
                                 <select id="employee-select" name="employees[]" class="form-select text-white-dark">
                                     <option class="text-white-light">Select Branding Specialist</option>
                                     @foreach($brandingSpecialists as $specialist)
-                                        @if($specialist->profile)
                                         <option value="{{ $specialist->id }}">{{ $specialist->profile->fullName() }}</option>
-                                        @endif
+
                                     @endforeach
                                 </select>
                             </div>
@@ -208,96 +204,14 @@
                 </div>
             </div>
         </div>
-
-         <!-- Assign Leads Modal -->
-         <!-- <div class="fixed inset-0 bg-[black]/60 z-[999] hidden overflow-y-auto" id="open-assign-modal">
-            <div class="flex items-center justify-center min-h-screen px-4" @click.self="document.getElementById('open-assign-modal').classList.add('hidden')">
-                <div class="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg my-8 animate__animated animate__fadeIn">
-                    <div class="flex bg-[#fbfbfb] dark:bg-[#121c2c] items-center justify-between px-5 py-3">
-                        <h5 class="font-bold text-lg">Assign Leads</h5>
-                        <button type="button" class="text-white-dark hover:text-dark" @click="document.getElementById('open-assign-modal').classList.add('hidden')">
-                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="18" y1="6" x2="6" y2="18"></line>
-                                <line x1="6" y1="6" x2="18" y2="18"></line>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="p-5">
-                        <form id="assign-leads-form" method="POST" action="{{ route('customers.assignEmployees') }}">
-                            @csrf
-                            <input type="hidden" id="selected-customer-ids" name="customers[]">
-
-                            <div class="mb-4">
-                                <label for="total-selected-leads" class="block text-sm font-medium text-gray-700">Total Leads Selected</label>
-                                <input type="text" id="total-selected-leads" name="total_leads" class="form-input mt-1 block w-full" readonly>
-                            </div>
-                            
-                            <div class="mb-4">
-                                <label for="employee-select" class="block text-sm font-medium text-gray-700">Assign to</label>
-                                <select id="employee-select" name="employees[]" class="form-select text-white-dark">
-                                    <option class="text-white-light">Select Branding Specialist</option>
-                                    @foreach($brandingSpecialists as $specialist)
-                                        @if($specialist->profile)
-                                        <option value="{{ $specialist->id }}">{{ $specialist->profile->fullName() }}</option>
-                                        @endif
-                                    @endforeach
-                                </select>
-                            </div>
-                            
-                            <div class="flex justify-end items-center mt-8">
-                                <button type="button" class="btn btn-outline-danger" @click="document.getElementById('open-assign-modal').classList.add('hidden')">Cancel</button>
-                                <button type="submit" class="btn btn-primary ltr:ml-4 rtl:mr-4">Assign Leads</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div> -->
 
         <!--Unassign Modal-->
         <div class="fixed inset-0 bg-[black]/60 z-[999] hidden overflow-y-auto" id="unassign-leads-modal">
-            <div class="flex items-center justify-center min-h-screen px-4" 
-                @click.self="document.getElementById('unassign-leads-modal').classList.add('hidden')">
-                <div class="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg my-8 animate__animated animate__fadeIn">
-                    <div class="flex bg-[#fbfbfb] dark:bg-[#121c2c] items-center justify-between px-5 py-3">
-                        <h5 class="font-bold text-lg" id="modalTitle">Confirm Unassign</h5>
-                        <button type="button" class="text-white-dark hover:text-dark" 
-                                @click="document.getElementById('unassign-leads-modal').classList.add('hidden')">
-                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" 
-                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" 
-                                stroke-linejoin="round">    
-                                <line x1="18" y1="6" x2="6" y2="18"></line>
-                                <line x1="6" y1="6" x2="18" y2="18"></line>
-                            </svg>                            
-                        </button>
-                    </div>
-                    <div class="p-5">
-                        <div class="dark:text-white-dark/70 text-base font-medium text-[#1f2937]">
-                            <p>Are you sure you want to unassign the selected leads?</p>
-                        </div>
-                        <div class="flex justify-end items-center mt-8">
-                            <button type="button" id="cancelButton" class="btn btn-outline-danger" 
-                                    @click="document.getElementById('unassign-leads-modal').classList.add('hidden')">
-                                Cancel
-                            </button>
-                            <form id="unassign-leads-form" method="POST" action="{{ route('customers.unassignLeads') }}" class="ltr:ml-4 rtl:mr-4">
-                                @csrf
-                                <input type="hidden" name="customers[]" id="confirmButton">
-                                <button type="submit" class="btn btn-primary">Confirm</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Reassign Leads Modal -->
-        <div class="fixed inset-0 bg-[black]/60 z-[999] hidden overflow-y-auto" id="open-reassign-modal">
-            <div class="flex items-center justify-center min-h-screen px-4" @click.self="document.getElementById('open-reassign-modal').classList.add('hidden')">
+            <div class="flex items-center justify-center min-h-screen px-4" @click.self="document.getElementById('unassign-leads-modal').classList.add('hidden')">
                 <div class="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg my-8 animate__animated animate__fadeIn">
                     <div class="flex bg-[#fbfbfb] dark:bg-[#121c2c] items-center justify-between px-5 py-3">
                         <h5 class="font-bold text-lg">Reassign Leads</h5>
-                        <button type="button" class="text-white-dark hover:text-dark" @click="document.getElementById('open-reassign-modal').classList.add('hidden')">
+                        <button type="button" class="text-white-dark hover:text-dark" @click="document.getElementById('unassign-leads-modal').classList.add('hidden')">
                             <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                 <line x1="18" y1="6" x2="6" y2="18"></line>
                                 <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -305,16 +219,16 @@
                         </button>
                     </div>
                     <div class="p-5">
-                    <form id="reassign-leads-form" method="POST" action="{{ route('customers.reassign') }}">
+                    <form id="unassigned-leads-form" method="POST" action="{{ route('customers.unassignLeads') }}">
                         @csrf
                         <input type="hidden" id="selected-customer-ids" name="customers[]">
                         
                         <label id="reassign-modal-text">
-                            Reassigning <span id="total-selected-leads">0</span> lead(s) to their respective Branding Specialist(s).
+                            Unassign <span id="total-selected-leads">0</span> lead(s) from their respective Branding Specialist(s).
                         </label>
 
                         <div class="flex justify-end items-center mt-8">
-                            <button type="button" class="btn btn-outline-danger" @click="document.getElementById('open-reassign-modal').classList.add('hidden')">Cancel</button>
+                            <button type="button" class="btn btn-outline-danger" @click="document.getElementById('unassign-leads-modal').classList.add('hidden')">Cancel</button>
                             <button type="submit" class="btn btn-primary ltr:ml-4 rtl:mr-4">Assign Leads</button>    
                         </div>
                     </form>

@@ -359,7 +359,7 @@ class CustomerController extends Controller
         $employees = User::whereIn('id', $request->employees)->get();
 
         if ($employees->isEmpty()) {
-            return redirect()->route('customers.index')->with('error', 'No valid employees found.');
+            return redirect()->route('customers.distro')->with('error', 'No valid employees found.');
         }
 
         $employee = $employees->first();
@@ -378,7 +378,7 @@ class CustomerController extends Controller
             }
         }
 
-        return redirect()->route('customers.index')->with('success', 'Leads assigned successfully.');
+        return redirect()->route('customers.distro')->with('success', 'Leads assigned successfully.');
     }
 
     public function unassignLeads(Request $request)
