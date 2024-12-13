@@ -45,7 +45,7 @@
                 </li>
             </ul>
         </div>
-        <div x-data="header" class="flex items-center space-x-1.5 ltr:ml-auto rtl:mr-auto rtl:space-x-reverse dark:text-[#d0d2d6] sm:flex-1 ltr:sm:ml-0 sm:rtl:mr-0 lg:space-x-2">
+        <div class="flex items-center space-x-1.5 ltr:ml-auto rtl:mr-auto rtl:space-x-reverse dark:text-[#d0d2d6] sm:flex-1 ltr:sm:ml-0 sm:rtl:mr-0 lg:space-x-2">
             <div class="sm:ltr:mr-auto sm:rtl:ml-auto" x-data="{ search: false }" @click.outside="search = false">
                 <form class="absolute inset-x-0 top-1/2 z-10 mx-4 hidden -translate-y-1/2 sm:relative sm:top-0 sm:mx-0 sm:block sm:translate-y-0" :class="{'!block' : search}" @submit.prevent="search = false">
                     <div class="relative">
@@ -114,7 +114,7 @@
                             <h4 class="relative z-10 text-lg font-semibold">Messages</h4>
                         </div>
                     </li>
-                    <template x-for="msg in messages">
+                    <template>
                         <li>
                             <div class="flex items-center px-5 py-3" @click.self="toggle">
                                 <div x-html="msg.image"></div>
@@ -132,7 +132,7 @@
                             </div>
                         </li>
                     </template>
-                    <template x-if="messages.length">
+                    <template>
                         <li class="mt-5 border-t border-white-light text-center dark:border-white/10">
                             <div class="group flex cursor-pointer items-center justify-center px-4 py-4 font-semibold text-primary dark:text-gray-400" @click="toggle">
                                 <span class="group-hover:underline ltr:mr-1 rtl:ml-1">VIEW ALL ACTIVITIES</span>
@@ -142,7 +142,7 @@
                             </div>
                         </li>
                     </template>
-                    <template x-if="!messages.length">
+                    <template>
                         <li class="mb-5">
                             <div class="!grid min-h-[200px] place-content-center text-lg hover:!bg-transparent">
                                 <div class="mx-auto mb-4 rounded-full text-primary ring-4 ring-primary/30">
@@ -175,12 +175,12 @@
                     <li>
                         <div class="flex items-center justify-between px-4 py-2 font-semibold hover:!bg-transparent">
                             <h4 class="text-lg">Notification</h4>
-                            <template x-if="notifications.length">
+                            <template>
                                 <span class="badge bg-primary/80" x-text="notifications.length + 'New'"></span>
                             </template>
                         </div>
                     </li>
-                    <template x-for="notification in notifications">
+                    <template>
                         <li class="dark:text-white-light/90">
                             <div class="group flex items-center px-4 py-2" @click.self="toggle">
                                 <div class="grid place-content-center rounded">
@@ -204,14 +204,14 @@
                             </div>
                         </li>
                     </template>
-                    <template x-if="notifications.length">
+                    <template>
                         <li>
                             <div class="p-4">
                                 <button class="btn btn-primary btn-small block w-full" @click="toggle">Read All Notifications</button>
                             </div>
                         </li>
                     </template>
-                    <template x-if="!notifications.length">
+                    <template>
                         <li>
                             <div class="!grid min-h-[200px] place-content-center text-lg hover:!bg-transparent">
                                 <div class="mx-auto mb-4 rounded-full text-primary ring-4 ring-primary/30">

@@ -6,7 +6,9 @@
         <title>Login | Bookmarc alliance</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" type="image/x-icon" href="{{ asset('assets/images/favicon.png') }}">
-        <link href="css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
 
@@ -26,8 +28,8 @@
         </div>
 
         <!-- scroll to top button -->
-        <div class="fixed bottom-6 right-6 z-50" x-data="scrollToTop">
-            <template x-if="showTopButton">
+        <div class="fixed bottom-6 right-6 z-50">
+            <template>
                 <button type="button" class="btn btn-outline-primary animate-pulse rounded-full p-2" @click="goToTop">
                     <svg width="24" height="24" class="h-4 w-4" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path opacity="0.5" fill-rule="evenodd" clip-rule="evenodd" d="M12 20.75C12.4142 20.75 12.75 20.4142 12.75 20L12.75 10.75L11.25 10.75L11.25 20C11.25 20.4142 11.5858 20.75 12 20.75Z" fill="currentColor"></path>
@@ -38,7 +40,7 @@
         </div>
 
         <div class="main-container min-h-screen text-black dark:text-white-dark">
-            <div x-data="auth">
+            <div>
                 <div class="absolute inset-0">
                     <img src="assets/images/bg.jpg" alt="image" class="h-full w-full object-cover">
                 </div>
@@ -55,7 +57,7 @@
         <script defer="" src="assets/js/alpine.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-        <script src="assets/js/custom.js"></script>
+        <script src="{{ asset('assets/js/custom.js') }}"></script>
         <script src="{{ asset('assets/js/notifications.js') }}"></script>
         <script>
             window.successMessage = @json(Session::get('success'));
