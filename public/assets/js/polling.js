@@ -7,7 +7,7 @@ let lastCheckReturned = new Date().toISOString();
 // Polling for returned leads
 function pollForReturnedLeads() {
     setInterval(() => {
-        console.log('Polling for returned leads...');
+        // console.log('Polling for returned leads...');
 
         fetch(`/returned-leads?last_check=${lastCheckReturned}`, {
             method: 'GET',
@@ -17,7 +17,7 @@ function pollForReturnedLeads() {
         })
         .then(response => response.json())
         .then(data => {
-            console.log('Returned leads response:', data);
+            // console.log('Returned leads response:', data);
             lastCheckReturned = data.last_check;
 
             // Update only if there’s new or modified data
@@ -30,7 +30,7 @@ function pollForReturnedLeads() {
 // Polling for assigned leads
 function pollForAssignedLeads() {
     setInterval(() => {
-        console.log('Polling for assigned leads...');
+        // console.log('Polling for assigned leads...');
         
         fetch(`/assigned-leads?last_check=${lastCheckAssigned}`, {
             method: 'GET',
@@ -40,7 +40,7 @@ function pollForAssignedLeads() {
         })
         .then(response => response.json())
         .then(data => {
-            console.log('Assigned leads response:', data);
+            // console.log('Assigned leads response:', data);
             lastCheckAssigned = data.last_check;
 
             // Update only if there’s new or modified data
@@ -53,7 +53,7 @@ function pollForAssignedLeads() {
 
 function pollForEmployeeAssignedLeads() {
     setInterval(() => {
-        console.log('Polling for employee assigned leads...'); 
+        // console.log('Polling for employee assigned leads...'); 
         
         fetch('/my-assigned-leads', {
             method: 'GET',
@@ -63,7 +63,7 @@ function pollForEmployeeAssignedLeads() {
         })
         .then(response => response.json())
         .then(data => {
-            console.log('Employee assigned leads response:', data); 
+            // console.log('Employee assigned leads response:', data); 
 
             const tableBody = document.getElementById('my-leads-table').querySelector('tbody');
             const noCustomersRow = document.getElementById('no-customers-row');
@@ -79,7 +79,7 @@ function pollForEmployeeAssignedLeads() {
                 data.assigned_customers.forEach(customer => {
                     // Only add new rows that do not already exist in the table
                     if (!tableBody.querySelector(`tr[data-id="${customer.id}"]`)) {
-                        console.log(`Adding new customer ID: ${customer.id}`);
+                        // console.log(`Adding new customer ID: ${customer.id}`);
                         addNewCustomerRow(customer, 'my-leads-table');
                     }
                 });
@@ -104,7 +104,7 @@ function addNewCustomerRow(customer, tableId) {
     
     // Check if a row with this customer ID already exists in the table
     if (tableBody.querySelector(`tr[data-id="${customer.id}"]`)) {
-        console.log(`Customer with ID ${customer.id} already exists in the table. Skipping.`);
+        // console.log(`Customer with ID ${customer.id} already exists in the table. Skipping.`);
         return; // Don't add the row again if it already exists
     }
 
@@ -121,7 +121,7 @@ function addNewCustomerRow(customer, tableId) {
     
     // Append the new row to the table body
     tableBody.insertAdjacentHTML('beforeend', newRow);
-    console.log(`Customer with ID ${customer.id} added to the ${tableId}.`);
+    // console.log(`Customer with ID ${customer.id} added to the ${tableId}.`);
 }
 
 // Function to update the table and manage the "No leads assigned" message
@@ -135,7 +135,7 @@ function updateCustomerTable(customers, tbodyId, emptyMessageId, emptyMessageTex
         const rowContent = `
             <td><input type="checkbox" class="form-checkbox select-lead" /></td>
             <td>${formatDateToDMY(customer.date_created)}</td>
-            <td>${customer.fullName || `${customer.first_name} ${customer.last_name}`} ${!customer.is_viewed ? '<span class="new-label">New</span>' : ''}</td>
+            <td>${customer.fullName || `${customer.first_name} ${customer.last_name}`} </td>
             <td>${customer.email}</td>
             <td>${customer.address || 'N/A'}</td>
         `;
@@ -154,14 +154,14 @@ function updateCustomerTable(customers, tbodyId, emptyMessageId, emptyMessageTex
     // Display "No leads assigned" message only if there are no rows and no new customers
     if (customers.length === 0 && !tableBody.querySelector('.customer-row')) {
         if (!noDataRow) {
-            console.log(`Displaying "No leads assigned" message for ${tbodyId}`);
+            // console.log(`Displaying "No leads assigned" message for ${tbodyId}`);
             const noDataRowElement = document.createElement('tr');
             noDataRowElement.id = emptyMessageId;
             noDataRowElement.innerHTML = `<td colspan="5" class="text-center">${emptyMessageText}</td>`;
             tableBody.appendChild(noDataRowElement);
         }
     } else if (noDataRow) {
-        console.log(`Removing "No leads assigned" message for ${tbodyId}`);
+        // console.log(`Removing "No leads assigned" message for ${tbodyId}`);
         noDataRow.remove();
     }
 }

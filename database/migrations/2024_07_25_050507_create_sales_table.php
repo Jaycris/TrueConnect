@@ -13,17 +13,21 @@ return new class extends Migration
     {
         Schema::create('sales', function (Blueprint $table) {
             $table->id();
-            $table->date('date_created')->nullable();
+            $table->string('s_id')->unique();
+            $table->date('date_sold')->nullable();
             $table->string('consultant')->nullable();
-            $table->string('customer_name')->nullable();
-            $table->string('email')->unique();
-            $table->string('address')->nullable();
-            $table->string('website')->nullable();
-            $table->string('Service')->nullable();
-            $table->string('books')->nullable();
-            $table->integer('quantity');
-            $table->decimal('amount', 8, 2);
-            $table->string('status');
+            $table->string('author_name')->nullable();
+            $table->string('gender')->nullable();
+            $table->string('book_title')->nullable();
+            $table->string('contact_number')->nullable();
+            $table->string('email')->nullable();
+            $table->string('mailing_address')->nullable();
+            $table->string('pack_type')->nullable();
+            $table->string('pack_sold')->nullable();
+            $table->string('service_stage')->nullable();
+            $table->decimal('total_price', 8, 2)->nullable();
+            $table->decimal('amount', 8, 2)->nullable();
+            $table->string('method')->nullable();
             $table->timestamps();
         });
     }

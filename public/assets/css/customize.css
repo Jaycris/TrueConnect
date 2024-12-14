@@ -191,3 +191,86 @@
 .fade-in {
     animation: fadeIn 1s ease-in-out;
 }
+
+
+.bg-primary {
+    background-color: #46425c; /* Your theme's primary color */
+}
+
+.text-primary {
+    color: #46425c; /* Your theme's primary color */
+}
+
+.flex-1 {
+    flex-grow: 1;
+}
+
+.border-red-500 {
+    border-color: #f56565;
+}
+
+.text-red-500 {
+    color: #f56565;
+}
+
+.button-flex {
+    display: flex;
+    gap: 15px; /* Adjust spacing between buttons */
+}
+
+/* Styling for the suggestion dropdown */
+.suggestions-dropdown {
+    position: absolute;
+    top: calc(100% + 2px); /* Place right below the input field */
+    left: 0;
+    width: 100%; /* Match the input field width */
+    max-height: 0; /* Start with zero height for animation */
+    opacity: 0; /* Fully transparent by default */
+    overflow: hidden; /* Hide overflowing content */
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    z-index: 999;
+    transform: translateY(-10px); /* Slightly offset upward */
+    transition: max-height 0.3s ease-out, opacity 0.3s ease-out, transform 0.3s ease-out; /* Smooth animation */
+}
+
+/* Show state for the dropdown */
+.suggestions-dropdown.show {
+    max-height: 300px; /* Expand to maximum height */
+    opacity: 1; /* Fully visible */
+    transform: translateY(0); /* Reset position */
+}
+
+/* Individual suggestion items */
+.suggestion-item {
+    padding: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    white-space: nowrap; /* Prevent wrapping */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Add ellipsis for long text */
+}
+
+/* Hover effect for suggestion items */
+.suggestion-item:hover {
+    background-color: #f0f0f0;
+}
+
+/* Loading spinner styles (optional) */
+.loading-spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+/* Spinner animation */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

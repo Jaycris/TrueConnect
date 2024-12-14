@@ -30,6 +30,7 @@
                 <div class="mb-5">
                     <div class="mb-5 flex items-center justify-between">
                         <h5 class="text-lg font-semibold dark:text-white-light">Leads</h5>
+                        <a href="{{ route('sales.create') }}" class="btn btn-primarycolor">Endorse Sale</a>
                     </div>
                     <div class="table-responsive font-semibold text-[#515365] dark:text-white-light">
                         <table id="my-leads-table" class="whitespace-nowrap">

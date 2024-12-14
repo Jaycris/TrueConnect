@@ -14,6 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('assets/css/perfect-scrollbar.min.css') }}">
     <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('assets/css/style.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="{{ asset('assets/css/customize.css') }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('assets/css/animate.css') }}">
@@ -92,7 +93,9 @@
     <script src="{{ asset('assets/js/custom.js') }}"></script>
     <script src="{{ asset('assets/js/customize.js') }}"></script>    
     <script src="{{ asset('assets/js/notifications.js') }}"></script>
-    <script src="{{ asset('assets/js/leads.js') }}"></script> 
+    <script src="{{ asset('assets/js/leads.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    @yield('script')
     <script>
         window.successMessage = @json(Session::get('success'));
         window.errorMessage = @json(Session::get('error'));

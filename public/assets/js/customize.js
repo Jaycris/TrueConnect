@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM fully loaded and parsed');
+    // console.log('DOM fully loaded and parsed');
 
     (function () {
         const imageUpload = document.getElementById('imageUpload');
@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const cameraIconOverlay = document.getElementById('cameraIconOverlay');
             if (cameraIconOverlay) {
                 cameraIconOverlay.addEventListener('click', function() {
-                    console.log('Camera icon clicked');
+                    // console.log('Camera icon clicked');
                     const clickEvent = new MouseEvent('click', {
                         bubbles: true,
                         cancelable: true,
@@ -445,6 +445,231 @@ document.addEventListener('DOMContentLoaded', function() {
         setupDeleteButtons('.delete-designation-btn', '/admin/designations/:id/delete/check', 
             '/admin/designations/:id/delete', 'Are you sure you want to delete this designation?', 'Users in Designation');
 
+    })();
+
+    (function () {
+        let currentStep = 1;
+        const totalSteps = 3;
+    
+        const progressBar = document.getElementById('progress-bar');
+        const prevButton = document.getElementById('prev-button');
+        const nextButton = document.getElementById('next-button');
+        const submitButton = document.getElementById('submit-button');
+    
+        const stepContents = document.querySelectorAll('.step-content');
+        const connectors = [...document.querySelectorAll('[id^="connector-"]')];
+    
+        // Function to validate required fields in the current step
+        function validateStep() {
+            const currentStepContent = stepContents[currentStep - 1];
+            const requiredFields = currentStepContent.querySelectorAll('[required]');
+        
+            let isValid = true;
+        
+            requiredFields.forEach((field) => {
+                if ((field.tagName === 'INPUT' || field.tagName === 'TEXTAREA') && !field.value.trim()) {
+                    isValid = false;
+                    field.classList.add('border-red-500');
+                    field.nextElementSibling?.classList.remove('hidden'); // Show error message
+                } else if (field.tagName === 'SELECT' && !field.value) {
+                    isValid = false;
+                    field.classList.add('border-red-500');
+                    field.nextElementSibling?.classList.remove('hidden'); // Show error message
+                } else {
+                    field.classList.remove('border-red-500');
+                    field.nextElementSibling?.classList.add('hidden'); // Hide error message
+                }
+            });
+        
+            return isValid;
+        }
+    
+        // Function to update UI based on current step
+        function updateStepUI() {
+            stepContents.forEach((content, index) => {
+                content.classList.toggle('hidden', index !== currentStep - 1);
+            });
+    
+            // Update progress bar steps
+            for (let i = 1; i <= totalSteps; i++) {
+                const stepElement = document.getElementById(`step-${i}`);
+                const connector = document.getElementById(`connector-${i - 1}`);
+    
+                if (i < currentStep) {
+                    stepElement.classList.add('bg-primary', 'text-white');
+                    stepElement.classList.remove('bg-gray-300', 'text-gray-600');
+                    if (connector) connector.style.width = '100%';
+                } else if (i === currentStep) {
+                    stepElement.classList.add('bg-primary', 'text-white');
+                    stepElement.classList.remove('bg-gray-300', 'text-gray-600');
+                    if (connector) connector.style.width = '50%';
+                } else {
+                    stepElement.classList.add('bg-gray-300', 'text-gray-600');
+                    stepElement.classList.remove('bg-primary', 'text-white');
+                    if (connector) connector.style.width = '0%';
+                }
+            }
+    
+            // Update button visibility
+            prevButton.disabled = currentStep === 1;
+            nextButton.classList.toggle('hidden', currentStep === totalSteps);
+            submitButton.classList.toggle('hidden', currentStep !== totalSteps);
+        }
+    
+        // Event listeners for navigation
+        prevButton.addEventListener('click', () => {
+            if (currentStep > 1) currentStep--;
+            updateStepUI();
+        });
+    
+        nextButton.addEventListener('click', () => {
+            if (validateStep() && currentStep < totalSteps) {
+                currentStep++;
+                updateStepUI();
+            }
+        });
+    
+        // Initial UI setup
+        updateStepUI();
+    })();
+
+    (function () {
+        // Author's Name Suggestions
+        const authorInput = document.getElementById('authorsName');
+        const authorSuggestionsBox = document.getElementById('authorsSuggestions');
+        const authorSpinner = authorSuggestionsBox.querySelector('.loading-spinner'); // Spinner inside author suggestions box
+        const bookInput = document.getElementById('BookTitle');
+        const bookSuggestionsBox = document.getElementById('bookSuggestions');
+        const bookSpinner = bookSuggestionsBox.querySelector('.loading-spinner'); // Spinner inside book suggestions box
+    
+        if (!authorInput || !authorSuggestionsBox || !bookInput || !bookSuggestionsBox || !authorSpinner || !bookSpinner) {
+            console.error('Required elements not found in the DOM.');
+            return;
+        }
+    
+        // Function to handle showing suggestions
+        function showSuggestions(box) {
+            box.classList.add('show');
+        }
+    
+        // Function to handle hiding suggestions
+        function hideSuggestions(box) {
+            box.classList.remove('show');
+        }
+    
+        // Function to handle showing spinner
+        function showSpinner(spinner) {
+            spinner.style.display = 'block';
+        }
+    
+        // Function to handle hiding spinner
+        function hideSpinner(spinner) {
+            spinner.style.display = 'none';
+        }
+    
+        // Fetch and display author suggestions
+        authorInput.addEventListener('input', function () {
+            const query = authorInput.value.trim();
+    
+            if (query.length < 1) {
+                hideSuggestions(authorSuggestionsBox);
+                hideSpinner(authorSpinner);
+                return;
+            }
+    
+            showSuggestions(authorSuggestionsBox);
+            showSpinner(authorSpinner); // Show spinner during fetch
+    
+            fetch(`/get-authors-suggestions?query=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    authorSuggestionsBox.innerHTML = ''; // Clear previous suggestions
+    
+                    if (data.length > 0) {
+                        data.forEach(item => {
+                            const div = document.createElement('div');
+                            div.textContent = item.name; // Author's name
+                            div.className = 'suggestion-item';
+    
+                            div.addEventListener('click', function () {
+                                authorInput.value = item.name;
+                                hideSuggestions(authorSuggestionsBox);
+    
+                                // Load book suggestions for the selected author
+                                loadBookSuggestions(item.name);
+                            });
+    
+                            authorSuggestionsBox.appendChild(div);
+                        });
+                    } else {
+                        hideSuggestions(authorSuggestionsBox);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching author suggestions:', error);
+                    hideSuggestions(authorSuggestionsBox);
+                })
+                .finally(() => {
+                    hideSpinner(authorSpinner); // Hide spinner after fetch
+                });
+        });
+    
+        // Fetch and display book suggestions based on author name
+        function loadBookSuggestions(authorName) {
+            bookInput.addEventListener('input', function () {
+                const query = bookInput.value.trim();
+    
+                if (query.length < 1 || !authorName) {
+                    hideSuggestions(bookSuggestionsBox);
+                    hideSpinner(bookSpinner);
+                    return;
+                }
+    
+                showSuggestions(bookSuggestionsBox);
+                showSpinner(bookSpinner); // Show spinner during fetch
+    
+                fetch(`/get-book-titles?author_name=${encodeURIComponent(authorName)}&query=${encodeURIComponent(query)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        bookSuggestionsBox.innerHTML = ''; // Clear previous suggestions
+    
+                        if (data.length > 0) {
+                            data.forEach(item => {
+                                const div = document.createElement('div');
+                                div.textContent = item; // Book title
+                                div.className = 'suggestion-item';
+    
+                                div.addEventListener('click', function () {
+                                    bookInput.value = item;
+                                    hideSuggestions(bookSuggestionsBox);
+                                });
+    
+                                bookSuggestionsBox.appendChild(div);
+                            });
+                        } else {
+                            hideSuggestions(bookSuggestionsBox);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching book suggestions:', error);
+                        hideSuggestions(bookSuggestionsBox);
+                    })
+                    .finally(() => {
+                        hideSpinner(bookSpinner); // Hide spinner after fetch
+                    });
+            });
+        }
+    
+        // Global click handler to hide suggestions when clicking outside
+        document.addEventListener('click', function (event) {
+            if (!authorSuggestionsBox.contains(event.target) && event.target !== authorInput) {
+                hideSuggestions(authorSuggestionsBox);
+            }
+    
+            if (!bookSuggestionsBox.contains(event.target) && event.target !== bookInput) {
+                hideSuggestions(bookSuggestionsBox);
+            }
+        });
     })();
 });
 

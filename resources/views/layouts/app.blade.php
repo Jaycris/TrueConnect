@@ -6,7 +6,9 @@
         <title>Login | Bookmarc alliance</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" type="image/x-icon" href="{{ asset('assets/images/favicon.png') }}">
-        <link href="css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
 
@@ -38,7 +40,7 @@
         </div>
 
         <div class="main-container min-h-screen text-black dark:text-white-dark">
-            <div x-data="auth">
+            <div>
                 <div class="absolute inset-0">
                     <img src="assets/images/bg.jpg" alt="image" class="h-full w-full object-cover">
                 </div>
