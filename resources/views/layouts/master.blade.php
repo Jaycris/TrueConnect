@@ -23,6 +23,9 @@
     <script defer src="{{ asset('assets/js/tippy-bundle.umd.min.js') }}"></script>
     @yield('styles')
     <script defer src="{{ asset('assets/js/sweetalert.min.js') }}"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body x-data="main" class="relative overflow-x-hidden font-nunito text-sm font-normal antialiased" :class="[ $store.app.sidebar ? 'toggle-sidebar' : '', $store.app.theme === 'dark' || $store.app.isDarkMode ?  'dark' : '', $store.app.menu, $store.app.layout, $store.app.rtlClass]">
