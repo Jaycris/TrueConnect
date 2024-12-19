@@ -101,6 +101,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/get-authors-suggestions', [SalesController::class, 'getAuthorSuggestions']);
     Route::get('/get-book-titles', [SalesController::class, 'getBookTitles']);
     
+    //Services
+    
 
     // 2FA routes
     Route::get('/2fa', [AuthenticatedSessionController::class, 'showTwoFactorForm'])->name('auth.2fa');
