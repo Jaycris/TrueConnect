@@ -102,9 +102,22 @@
                 <svg class="hidden h-5 w-4 flex-none" viewbox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="5" y1="12" x2="19" y2="12"></line>
                 </svg>
-                <span class="bmaColortext">SERVICES AND PACKAGES</span>
+                <span class="bmaColortext">SERVICES</span>
             </h2>
-            <li class="menu nav-item" x-data="{ activeDropdown: '{{ (request()->is('admin/departments', 'admin/departments/create') || request()->is('admin/designations', 'admin/designations/create', 'admin/designations/*/edit')) ? 'packages' : null; }}' }">
+            <li class="menu nav-item">
+                <a class="nav-link group {{ request()->is('events', 'events/create', 'events/*/edit') ? 'active' : '' }}" href="{{ route('events.index') }}">                    
+                    <div class="flex items-center">
+                        <svg class="shrink-0 group-hover:!text-primary" width="20" height="20" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle opacity="0.5" cx="15" cy="6" r="3" fill="currentColor"></circle>
+                            <ellipse opacity="0.5" cx="16" cy="17" rx="5" ry="3" fill="currentColor"></ellipse>
+                            <circle cx="9.00098" cy="6" r="4" fill="currentColor"></circle>
+                            <ellipse cx="9.00098" cy="17.001" rx="7" ry="4" fill="currentColor"></ellipse>
+                        </svg>        
+                        <span class="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Events</span>
+                    </div>
+                </a>
+            </li>
+            <li class="menu nav-item" x-data="{ activeDropdown: '{{ (request()->is('package-type', 'package-type/create', 'package-type/*/edit') || request()->is('package-sold', 'package-sold/create', 'package-sold/*/edit')) ? 'packages' : null; }}' }">
                 <button type="button" class="nav-link group" :class="{'active' : activeDropdown === 'packages'}" @click="activeDropdown = (activeDropdown === 'packages' ? null : 'packages')">
                     <div class="flex items-center">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -121,10 +134,10 @@
                 </button>
                 <ul x-cloak x-show="activeDropdown === 'packages'" x-collapse="" class="sub-menu text-gray-500">
                     <li>
-                        <a class="{{ request()->is('admin/departments', 'admin/departments/create') ? 'active' : '' }}" href="{{ route('admin.department') }}">Package Type</a>
+                        <a class="{{ request()->is('package-type', 'package-type/create', 'package-type/*/edit') ? 'active' : '' }}" href="{{ route('pack-type.index') }}">Package Type</a>
                     </li>
                     <li>
-                        <a class="{{ request()->is('admin/designations', 'admin/designations/create', 'admin/designations/*/edit') ? 'active' : '' }}" href="{{ route('admin.designations') }}">Package Sold</a>
+                        <a class="{{ request()->is('package-sold', 'package-sold/create', 'package-sold/*/edit') ? 'active' : '' }}" href="{{ route('pack-sold.index') }}">Package Sold</a>
                     </li>
                 </ul>
             </li>

@@ -3,26 +3,26 @@
     <div>
         <ul class="flex space-x-2 rtl:space-x-reverse">
             <li>
-                <a href="{{ route('admin.department') }}" class="text-primary hover:underline">Edit Package Type</a>
+                <a href="{{ route('pack-type.index') }}" class="text-primary hover:underline">Edit Package Type</a>
             </li>
             <li class="before:content-['/'] ltr:before:mr-1 rtl:before:ml-1">
-                <span>Edit Service</span>
+                <span>Edit Package Type</span>
             </li>
         </ul>
         <div class="pt-5">
             <div class="mb-5 flex items-center justify-between">
-                <h5 class="text-lg font-semibold dark:text-white-light">Edit Service</h5>
+                <h5 class="text-lg font-semibold dark:text-white-light">Edit Package Type</h5>
             </div>
             <div class="mb-5">
-                <form action="{{ route('admin.department.update', $departments->id) }}" method="POST" enctype="multipart/form-data" class="mb-5 rounded-md border border-[#ebedf2] bg-white p-4 dark:border-[#191e3a] dark:bg-[#0e1726]">
+                <form action="{{ route('pack-type.update', $packType->id) }}" method="POST" enctype="multipart/form-data" class="mb-5 rounded-md border border-[#ebedf2] bg-white p-4 dark:border-[#191e3a] dark:bg-[#0e1726]">
                     @csrf
-                    <h6 class="mb-5 text-lg font-bold">Service</h6>
+                    <h6 class="mb-5 text-lg font-bold">Package Type</h6>
                     <div class="flex flex-col sm:flex-row">
                         <div class="grid flex-1 grid-cols-1 gap-5 sm:grid-cols-2">
                             <!-- Input fields here -->
                             <div>
-                                <label for="service_name">Service</label>
-                                <input id="service_name" name="name" type="text" placeholder="Enter Service" class="form-input" value="{{ $departments->name }}">
+                                <label for="pack_type">Package Type</label>
+                                <input id="pack_type" name="pack_type_name" type="text" placeholder="Enter Package Type" class="form-input" value="{{ $packType->pack_type_name }}">
                                 @error('name')
                                     <p class="text-danger 500 italic">{{ $message }}</p>
                                 @enderror
