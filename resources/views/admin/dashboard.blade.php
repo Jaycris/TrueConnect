@@ -9,7 +9,94 @@
                 <span>Sales</span>
             </li>
         </ul>
+
         <div class="pt-5">
+        <div class="panel h-full">
+                    <div class="mb-5 flex items-center dark:text-white-light">
+                        <h5 class="text-lg font-semibold">🏆 Consultant Leaderboard
+                        
+                    </div>
+                    <div class="space-y-9">
+                        
+                        
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="ltr:rounded-l-md rtl:rounded-r-md">Rank</th>
+                                    <th>Consultant</th>
+                                    <th class="ltr:rounded-r-md rtl:rounded-l-md">Sale</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- condition here: if rank 1, 2, 3 use emojis 🥇, 🥈, 🥉 instead -->
+                                <tr class="group text-white-dark hover:text-black dark:hover:text-white-light/90">
+                                    <td class="text-primary">🥇</td>
+                                    <td class="min-w-[150px] text-black dark:text-white">
+                                        <div class="flex items-center">
+                                            <img class="h-8 w-8 rounded-md object-cover ltr:mr-3 rtl:ml-3" src="assets/images/profile-6.jpeg" alt="avatar">
+                                            <span class="whitespace-nowrap">Jette Greenfield</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-primary"><strong>$60,000</strong></td>
+                                </tr>
+
+                                <tr class="group text-white-dark hover:text-black dark:hover:text-white-light/90">
+                                    <td class="text-primary">🥈</td>
+                                    <td class="min-w-[150px] text-black dark:text-white">
+                                        <div class="flex items-center">
+                                            <img class="h-8 w-8 rounded-md object-cover ltr:mr-3 rtl:ml-3" src="assets/images/profile-7.jpeg" alt="avatar">
+                                            <span class="whitespace-nowrap">Simon Jenkins</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-primary"><strong>$53,000</strong></td>
+                                </tr>
+
+                                <tr class="group text-white-dark hover:text-black dark:hover:text-white-light/90">
+                                    <td class="text-primary">🥉</td>
+                                    <td class="min-w-[150px] text-black dark:text-white">
+                                        <div class="flex items-center">
+                                            <img class="h-8 w-8 rounded-md object-cover ltr:mr-3 rtl:ml-3" src="assets/images/profile-3.jpeg" alt="avatar">
+                                            <span class="whitespace-nowrap">Clark Franklin</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-primary"><strong>$49,000</strong></td>
+                                </tr>
+
+                                <tr class="group text-white-dark hover:text-black dark:hover:text-white-light/90">
+                                    <td class="text-primary">4</td>
+                                    <td class="min-w-[150px] text-black dark:text-white">
+                                        <div class="flex items-center">
+                                            <img class="h-8 w-8 rounded-md object-cover ltr:mr-3 rtl:ml-3" src="assets/images/profile-8.jpeg" alt="avatar">
+                                            <span class="whitespace-nowrap">Jane Gomez</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-primary"><strong>$45,000</strong></td>
+                                </tr>
+
+                                <tr class="group text-white-dark hover:text-black dark:hover:text-white-light/90">
+                                    <td class="text-primary">5</td>
+                                    <td class="min-w-[150px] text-black dark:text-white">
+                                        <div class="flex items-center">
+                                            <img class="h-8 w-8 rounded-md object-cover ltr:mr-3 rtl:ml-3" src="assets/images/profile-9.jpeg" alt="avatar">
+                                            <span class="whitespace-nowrap">Donna Fergie</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-primary"><strong>$35,000</strong></td>
+                                </tr>
+                                
+                                
+                                
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                    </div>
+                </div>
+        </div>
+        
+        <div class="pt-5">
+            
         <div class="mb-6 grid">
         <div class="panel h-full">
                     <div class="mb-8 flex items-center dark:text-white-light">
