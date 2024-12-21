@@ -24,7 +24,23 @@
                             <div>
                                 <label for="package">Package Sold</label>
                                 <input id="package" name="pack_sold_name" type="text" placeholder="Enter Package Sold Name" class="form-input" value="{{ old('pack_sold_name') }}">
-                                @error('name')
+                                @error('pack_sold_name')
+                                    <p class="text-danger 500 italic">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div>
+                                <label>Select Packages Sold</label>
+                                <div>
+                                    @foreach($event as $events)
+                                        <div>
+                                            <label>
+                                                <input type="checkbox" name="events[]" value="{{ $events->id }}">
+                                                {{ $events->event_name }}
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                @error('events')
                                     <p class="text-danger 500 italic">{{ $message }}</p>
                                 @enderror
                             </div>

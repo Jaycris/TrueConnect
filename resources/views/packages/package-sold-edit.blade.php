@@ -27,6 +27,24 @@
                                     <p class="text-danger 500 italic">{{ $message }}</p>
                                 @enderror
                             </div>
+                            <div>
+                                <label>Select Packages Sold</label>
+                                <div>
+                                    @foreach($event as $events)
+                                        <div>
+                                            <label>
+                                                <!-- Check if the package is already associated with the package type -->
+                                                <input type="checkbox" name="events[]" value="{{ $events->id }}" 
+                                                    {{ in_array($events->id, $packSold->event->pluck('id')->toArray()) ? 'checked' : '' }}>
+                                                {{ $events->event_name }}
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                @error('events')
+                                    <p class="text-danger 500 italic">{{ $message }}</p>
+                                @enderror
+                            </div>
                             <div class="mt-3 sm:col-span-2">
                                 <button type="submit" class="btn btn-primary">Update</button>
                             </div>

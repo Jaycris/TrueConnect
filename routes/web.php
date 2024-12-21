@@ -123,7 +123,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/events', [PackagesController::class, 'event'])->name('events.index')->middleware('2fa');
     Route::get('/events/create', [PackagesController::class, 'createEvent'])->name('event.create')->middleware('2fa');
     Route::get('/events/view/{id}', [PackagesController::class, 'viewEvent'])->name('event.view')->middleware('2fa');
-
     Route::post('/events/post', [PackagesController::class, 'storeEvent'])->name('event.store')->middleware('2fa');
     Route::get('/event/{id}/edit', [PackagesController::class, 'editEvent'])->name('event.edit')->middleware('2fa');
     Route::post('/event/{id}/update', [PackagesController::class, 'updateEvent'])->name('event.update')->middleware('2fa');

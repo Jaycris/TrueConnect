@@ -20,7 +20,8 @@ class PackagesController extends Controller
 
     public function createPackType()
     {
-        return view('packages.package-type-create');
+        $packSold = PackageSold::all(); // Fetch all package sold entries
+        return view('packages.package-type-create', compact('packSold'));
     }
 
     
@@ -29,12 +30,19 @@ class PackagesController extends Controller
         
         $validatedData = $request->validate([
             'pack_type_name' => 'required|string|max:255',
+            'pack_sold'      => 'array', // Validate that it's an array
+            'pack_sold.*'    => 'exists:package_sold,id', // Validate that each item exists in the package_sold table
         ]);
         
         $packType = new PackageType([
             'pack_type_name' => $validatedData['pack_type_name'],
         ]);
         $packType->save();
+
+            // Attach the selected package_sold entries to the newly created package_type
+        if (!empty($validatedData['pack_sold'])) {
+            $packType->packageSold()->attach($validatedData['pack_sold']);
+        }
         
         return redirect()->route('pack-type.index')->with('success', 'Package Type saved successfully');
     }
@@ -50,8 +58,9 @@ class PackagesController extends Controller
     public function editPackType($id)
     {
         $packType = PackageType::find($id);
+        $packSold = PackageSold::all();
 
-        return view('packages.package-type-edit', compact('packType'));
+        return view('packages.package-type-edit', compact('packType', 'packSold'));
     }
 
 
@@ -59,11 +68,15 @@ class PackagesController extends Controller
     {
         $request->validate([
             'pack_type_name'        => 'required|string|max:255',
+            'pack_sold' => 'array', // Validate as an array
+            'pack_sold.*' => 'exists:package_sold,id', // Validate each item exists
         ]);
 
-        $packType = PackageType::find($id);
+        $packType = PackageType::findOrFail($id);
         $packType->pack_type_name = $request->input('pack_type_name');
         $packType->save();
+
+        $packType->packageSold()->sync($request->input('pack_sold', [])); // Default to empty array if none selected
 
         return redirect()->route('pack-type.index')->with('success', 'Package Type updated successfully!');
     }
@@ -93,7 +106,8 @@ class PackagesController extends Controller
 
     public function createPackSold()
     {
-        return view('packages.package-sold-create');
+        $event = Event::all(); // Fetch all event entries
+        return view('packages.package-sold-create', compact('event'));
     }
 
 
@@ -102,12 +116,18 @@ class PackagesController extends Controller
 
         $validatedData = $request->validate([
             'pack_sold_name' => 'required|string|max:255',
+            'events'          => 'array',
+            'events.*'    => 'exists:events,id',
         ]);
 
         $packSold = new PackageSold([
             'pack_sold_name' => $validatedData['pack_sold_name'],
         ]);
         $packSold->save();
+
+        if (!empty($validatedData['events'])) {
+            $packSold->event()->attach($validatedData['events']);
+        }
     
         return redirect()->route('pack-sold.index')->with('success', 'Package Sold saved successfully!');
     }
@@ -123,8 +143,9 @@ class PackagesController extends Controller
     public function editPackSold($id)
     {
         $packSold = PackageSold::find($id);
+        $event = Event::all();
 
-        return view('packages.package-sold-edit', compact('packSold'));
+        return view('packages.package-sold-edit', compact('packSold', 'event'));
     }
 
 
@@ -132,11 +153,15 @@ class PackagesController extends Controller
     {
         $request->validate([
             'pack_sold_name'        => 'required|string|max:255',
+            'events' => 'array', // Validate as an array
+            'events.*' => 'exists:events,id', // Validate each item exists
         ]);
 
-        $packSold = PackageSold::find($id);
+        $packSold = PackageSold::findOrFail($id);
         $packSold->pack_sold_name = $request->input('pack_sold_name');
         $packSold->save();
+
+        $packSold->event()->sync($request->input('events', [])); // Default to empty array if none selected
 
         return redirect()->route('pack-sold.index')->with('success', 'Package Sold updated successfully!');
     }
@@ -180,7 +205,7 @@ class PackagesController extends Controller
         ]);
         $event->save();
     
-        return redirect()->route('pack-sold.index')->with('success', 'Package Sold saved successfully!');
+        return redirect()->route('events.index')->with('success', 'Package Sold saved successfully!');
     }
 
     public function viewEvent($id)
