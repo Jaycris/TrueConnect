@@ -38,6 +38,13 @@ class PackagesController extends Controller
         
         return redirect()->route('pack-type.index')->with('success', 'Package Type saved successfully');
     }
+
+    public function viewPackType($id)
+    {
+        $packType = PackageType::find($id);
+
+        return view('packages.package-type-view', compact('packType'));
+    }
     
 
     public function editPackType($id)
@@ -58,7 +65,7 @@ class PackagesController extends Controller
         $packType->pack_type_name = $request->input('pack_type_name');
         $packType->save();
 
-        return redirect()->route('pack-type.index')->with('success', 'Package Type updated');
+        return redirect()->route('pack-type.index')->with('success', 'Package Type updated successfully!');
     }
 
 
@@ -72,7 +79,7 @@ class PackagesController extends Controller
 
         $packType->delete();
 
-        return redirect()->route('pack-type.index')->with('success', 'Package Deleted Successfully');
+        return redirect()->route('pack-type.index')->with('success', 'Package Type deleted successfully!');
     }
 
     
@@ -102,7 +109,14 @@ class PackagesController extends Controller
         ]);
         $packSold->save();
     
-        return redirect()->route('pack-sold.index')->with('success', 'Package Sold saved successfully');
+        return redirect()->route('pack-sold.index')->with('success', 'Package Sold saved successfully!');
+    }
+
+    public function viewPackSold($id)
+    {
+        $packSold = PackageSold::find($id);
+
+        return view('packages.package-sold-view', compact('packSold'));
     }
 
 
@@ -124,7 +138,7 @@ class PackagesController extends Controller
         $packSold->pack_sold_name = $request->input('pack_sold_name');
         $packSold->save();
 
-        return redirect()->route('pack-sold.index')->with('success', 'Package Sold updated');
+        return redirect()->route('pack-sold.index')->with('success', 'Package Sold updated successfully!');
     }
 
 
@@ -138,7 +152,7 @@ class PackagesController extends Controller
 
         $packSold->delete();
 
-        return redirect()->route('pack-sold.index')->with('success', 'Package Deleted Successfully');
+        return redirect()->route('pack-sold.index')->with('success', 'Package deleted successfully!');
     }
 
 
@@ -166,7 +180,14 @@ class PackagesController extends Controller
         ]);
         $event->save();
     
-        return redirect()->route('pack-sold.index')->with('success', 'Package Sold saved successfully');
+        return redirect()->route('pack-sold.index')->with('success', 'Package Sold saved successfully!');
+    }
+
+    public function viewEvent($id)
+    {
+        $event = Event::find($id);
+
+        return view('packages.event-view', compact('event'));
     }
 
     public function editEvent($id)
@@ -195,11 +216,11 @@ class PackagesController extends Controller
         $event = Event::find($id);
 
         if (!$event) {
-            return redirect()->route('event.index')->with('error', 'Event not found.');
+            return redirect()->route('events.index')->with('error', 'Event not found.');
         }
 
         $event->delete();
 
-        return redirect()->route('event.index')->with('success', 'Event Deleted Successfully');
+        return redirect()->route('events.index')->with('success', 'Event deleted successfully!');
     }
 }
