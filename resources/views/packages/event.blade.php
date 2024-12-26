@@ -51,19 +51,16 @@
                                         </a>
                                     </li>
                                     <li>
-                                    <form action="{{ route('event.delete', $events->id) }}" method="POST" style="display:inline;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" onclick="return confirm('Are you sure you want to delete this event?')" x-tooltip="Delete" class="bg-transparent border-none p-0 m-0">
-                                            <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-danger">
-                                                <path d="M20.5001 6H3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
-                                                <path d="M18.8334 8.5L18.3735 15.3991C18.1965 18.054 18.108 19.3815 17.243 20.1907C16.378 21 15.0476 21 12.3868 21H11.6134C8.9526 21 7.6222 21 6.75719 20.1907C5.89218 19.3815 5.80368 18.054 5.62669 15.3991L5.16675 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
-                                                <path opacity="0.5" d="M9.5 11L10 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
-                                                <path opacity="0.5" d="M14.5 11L14 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
-                                                <path opacity="0.5" d="M6.5 6C6.55588 6 6.58382 6 6.60915 5.99936C7.43259 5.97849 8.15902 5.45491 8.43922 4.68032C8.44784 4.65649 8.45667 4.62999 8.47434 4.57697L8.57143 4.28571C8.65431 4.03708 8.69575 3.91276 8.75071 3.8072C8.97001 3.38607 9.37574 3.09364 9.84461 3.01877C9.96213 3 10.0932 3 10.3553 3H13.6447C13.9068 3 14.0379 3 14.1554 3.01877C14.6243 3.09364 15.03 3.38607 15.2493 3.8072C15.3043 3.91276 15.3457 4.03708 15.4286 4.28571L15.5257 4.57697C15.5433 4.62992 15.5522 4.65651 15.5608 4.68032C15.841 5.45491 16.5674 5.97849 17.3909 5.99936C17.4162 6 17.4441 6 17.5 6" stroke="currentColor" stroke-width="1.5"></path>
-                                            </svg>
-                                        </button>
-                                    </form>
+                                    <button onclick="document.getElementById('usersModal').style.display='block'" title="Delete" style="background: none; border: none; padding: 0; margin: 0;">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 1.25rem; height: 1.25rem; color: #dc3545;">
+        <path d="M20.5 6H3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+        <path d="M18.833 8.5L18.373 15.399C18.196 18.054 18.108 19.3815 17.243 20.1907C16.378 21 15.048 21 12.387 21H11.613C8.953 21 7.622 21 6.757 20.1907C5.892 19.3815 5.804 18.054 5.627 15.399L5.167 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+        <path opacity="0.5" d="M9.5 11L10 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+        <path opacity="0.5" d="M14.5 11L14 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+        <path opacity="0.5" d="M6.5 6C6.556 6 6.584 6 6.609 5.999C7.433 5.978 8.159 5.455 8.439 4.68C8.448 4.656 8.457 4.63 8.474 4.577L8.571 4.286C8.654 4.037 8.696 3.913 8.751 3.807C8.97 3.386 9.376 3.094 9.845 3.019C9.962 3 10.093 3 10.355 3H13.645C13.907 3 14.038 3 14.155 3.019C14.624 3.094 15.03 3.386 15.249 3.807C15.304 3.913 15.346 4.037 15.429 4.286L15.526 4.577C15.543 4.63 15.552 4.657 15.561 4.68C15.841 5.455 16.567 5.978 17.391 5.999C17.416 6 17.444 6 17.5 6" stroke="currentColor" stroke-width="1.5"></path>
+    </svg>
+</button>
+                                    
                                 </ul>
                             </td>
                         </tr>
@@ -72,35 +69,28 @@
                 </table>
 
                 <!-- Modal -->
-                <div class="fixed inset-0 bg-[black]/60 z-[999] hidden overflow-y-auto" id="usersModal">
-                    <div class="flex items-center justify-center min-h-screen px-4" @click.self="document.getElementById('usersModal').classList.add('hidden')">
-                        <div class="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg my-8 animate__animated animate__fadeIn">
-                            <div class="flex bg-[#fbfbfb] dark:bg-[#121c2c] items-center justify-between px-5 py-3">
-                                <h5 class="font-bold text-lg" id="modalTitle">Modal Title</h5>
-                                <button type="button" class="text-white-dark hover:text-dark" @click="document.getElementById('usersModal').classList.add('hidden')">
-                                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">    
-                                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                                    </svg>                            
-                                </button>
-                            </div>
-                            <div class="p-5">
-                                <div class="dark:text-white-dark/70 text-base font-medium text-[#1f2937]">
-                                    <p id="modalMessage"></p>
-                                    <h3 id="usersHeading" style="margin-top: 20px;"></h3>
-                                    <ul>
-                                        <li id="usersList" style="font-size: 13px;"></li>
-                                    </ul>
-                                </div>
-                                <div class="flex justify-end items-center mt-8">
-                                    <button type="button" class="btn btn-outline-danger hidden" id="okayButton" @click="document.getElementById('usersModal').classList.add('hidden')">Okay</button>
-                                    <button type="button" class="btn btn-outline-danger hidden" id="cancelButton" @click="document.getElementById('usersModal').classList.add('hidden')">Cancel</button>
-                                    <button type="button" class="btn btn-primary ltr:ml-4 rtl:mr-4 hidden" id="confirmDeleteButton">Delete</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div id="usersModal" style="display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); z-index: 9999; overflow-y: auto;">
+    <div style="display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 1rem;" onclick="document.getElementById('usersModal').style.display='none'">
+        <div style="background: white; border-radius: 0.5rem; overflow: hidden; max-width: 500px; width: 100%;" onclick="event.stopPropagation()">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid #ddd;">
+                <h5 style="margin: 0; font-size: 1.25rem; font-weight: bold;">Delete Confirmation</h5>
+                <button onclick="document.getElementById('usersModal').style.display='none'" style="background: none; border: none; color: #888; cursor: pointer;">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div style="padding: 1rem;">
+                <p>Are you sure you want to delete this item?</p>
+                <div style="margin-top: 1rem; display: flex; justify-content: flex-end;">
+                    <button onclick="document.getElementById('usersModal').style.display='none'" style="margin-right: 0.5rem; padding: 0.5rem 1rem; background: none; border: 1px solid #ddd; border-radius: 0.25rem; cursor: pointer;">Cancel</button>
+                    <button onclick="alert('Item Deleted!'); document.getElementById('usersModal').style.display='none'" style="padding: 0.5rem 1rem; background: #dc3545; color: white; border: none; border-radius: 0.25rem; cursor: pointer;">Delete</button>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
                 
             </div>
         </div>
