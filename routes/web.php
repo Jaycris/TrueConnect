@@ -100,6 +100,9 @@ Route::middleware(['auth'])->group(function () {
     // Sales
     Route::get('/sales', [SalesController::class, 'index'])->name('sales.index')->middleware('2fa');
     Route::get('/sales/create', [SalesController::class, 'create'])->name('sales.create')->middleware('2fa');
+    Route::post('/get-package-sold', [SalesController::class, 'getPackageSoldByType'])->name('getPackageSoldByType');
+    Route::post('/get-events', [SalesController::class, 'getEventsByPackageSold'])->name('getEventsByPackageSold');
+    Route::post('/sales/store', [SalesController::class, 'store'])->name('sales.store')->middleware('2fa');
     Route::get('/get-authors-suggestions', [SalesController::class, 'getAuthorSuggestions']);
     Route::get('/get-book-titles', [SalesController::class, 'getBookTitles']);
     

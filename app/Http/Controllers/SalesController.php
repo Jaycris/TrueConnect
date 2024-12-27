@@ -7,6 +7,9 @@ use App\Models\Sale;
 use App\Models\Customer;
 use App\Models\Profile;
 use Illuminate\Support\Facades\Auth;
+use App\Models\PackageSold;
+use App\Models\PackageType;
+use App\Models\Event;
 
 class SalesController extends Controller
 {
@@ -22,7 +25,60 @@ class SalesController extends Controller
 
         $user = Auth::user();
         $fullName = $user->profile->fullName();
-        return view('sales.create', compact('s_id', 'fullName'));
+        $packageTypes = PackageType::all();
+        return view('sales.create', compact('s_id', 'fullName', 'packageTypes'));
+    }
+
+
+    public function getPackageSoldByType(Request $request)
+    {
+        $packageTypeId = $request->input('pack_type_id');
+        $packageSold = PackageSold::whereHas('packageType', function ($query) use ($packageTypeId) {
+            $query->where('package_type.id', $packageTypeId); // Check the related `PackageType` ID
+        })->get();
+    
+
+        if ($packageSold->isEmpty()) {
+            return response()->json(['message' => 'No packages found for the selected type.'], 404);
+        }
+
+        return response()->json($packageSold);
+    }
+
+
+    public function getEventsByPackageSold(Request $request)
+    {
+        $packageSoldId = $request->input('pack_sold_id');
+        $events = Event::whereHas('packageSold', function ($query) use ($packageSoldId) {
+            $query->where('package_sold.id', $packageSoldId);
+        })->get();
+
+        if ($events->isEmpty()) {
+            return response()->json(['message' => 'No events found for the selected package.'], 404);
+        }
+
+        return response()->json($events);
+    }
+
+
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            's_id' => 'required',
+            'customer_name' => 'required',
+            'book_title' => 'required',
+            'quantity' => 'required|numeric',
+            'price' => 'required|numeric',
+            'total' => 'required|numeric',
+            'payment_method' => 'required',
+            'status' => 'required',
+        ]);
+
+        $sale = Sale::create($request->all());
+
+        return redirect()->route('sales.index')
+            ->with('success', 'Sale created successfully.');
     }
 
     public function getAuthorSuggestions(Request $request)

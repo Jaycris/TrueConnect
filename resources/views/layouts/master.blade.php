@@ -21,6 +21,7 @@
     <script src="{{ asset('assets/js/perfect-scrollbar.min.js') }}"></script>
     <script defer src="{{ asset('assets/js/popper.min.js') }}"></script>
     <script defer src="{{ asset('assets/js/tippy-bundle.umd.min.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     @yield('styles')
     <script defer src="{{ asset('assets/js/sweetalert.min.js') }}"></script>
 

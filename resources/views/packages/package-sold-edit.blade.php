@@ -2,7 +2,7 @@
 @section('content')
     <div>
         <ul class="flex space-x-2 rtl:space-x-reverse">
-            <li>
+            <li> 
                 <a href="{{ route('pack-sold.index') }}" class="text-primary hover:underline">Edit Package Sold</a>
             </li>
             <li class="before:content-['/'] ltr:before:mr-1 rtl:before:ml-1">
