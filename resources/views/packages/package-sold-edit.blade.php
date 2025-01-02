@@ -2,7 +2,7 @@
 @section('content')
     <div>
         <ul class="flex space-x-2 rtl:space-x-reverse">
-            <li>
+            <li> 
                 <a href="{{ route('pack-sold.index') }}" class="text-primary hover:underline">Edit Package Sold</a>
             </li>
             <li class="before:content-['/'] ltr:before:mr-1 rtl:before:ml-1">
@@ -24,6 +24,24 @@
                                 <label for="pack_sold_name">Package Sold Name</label>
                                 <input id="pack_sold_name" name="pack_sold_name" type="text" placeholder="Enter Package Sold Name" class="form-input" value="{{ $packSold->pack_sold_name }}">
                                 @error('name')
+                                    <p class="text-danger 500 italic">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div>
+                                <label>Select Packages Sold</label>
+                                <div>
+                                    @foreach($event as $events)
+                                        <div>
+                                            <label>
+                                                <!-- Check if the package is already associated with the package type -->
+                                                <input type="checkbox" name="events[]" value="{{ $events->id }}" 
+                                                    {{ in_array($events->id, $packSold->event->pluck('id')->toArray()) ? 'checked' : '' }}>
+                                                {{ $events->event_name }}
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                @error('events')
                                     <p class="text-danger 500 italic">{{ $message }}</p>
                                 @enderror
                             </div>

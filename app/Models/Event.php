@@ -13,4 +13,9 @@ class Event extends Model
     protected $fillable = [
         'event_name'
     ];
+
+    public function packageSold()
+    {
+        return $this->belongsToMany(PackageSold::class, 'pack_sold_event', 'pack_sold_id', 'event_id');
+    }
 }

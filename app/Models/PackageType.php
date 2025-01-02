@@ -12,4 +12,9 @@ class PackageType extends Model
     protected $fillable = [
         'pack_type_name'
     ];
+
+    public function packageSold()
+    {
+        return $this->belongsToMany(PackageSold::class, 'pack_type_pack_sold', 'pack_type_id', 'pack_sold_id');
+    }
 }

@@ -100,6 +100,9 @@ Route::middleware(['auth'])->group(function () {
     // Sales
     Route::get('/sales', [SalesController::class, 'index'])->name('sales.index')->middleware('2fa');
     Route::get('/sales/create', [SalesController::class, 'create'])->name('sales.create')->middleware('2fa');
+    Route::post('/get-package-sold', [SalesController::class, 'getPackageSoldByType'])->name('getPackageSoldByType');
+    Route::post('/get-events', [SalesController::class, 'getEventsByPackageSold'])->name('getEventsByPackageSold');
+    Route::post('/sales/store', [SalesController::class, 'store'])->name('sales.store')->middleware('2fa');
     Route::get('/get-authors-suggestions', [SalesController::class, 'getAuthorSuggestions']);
     Route::get('/get-book-titles', [SalesController::class, 'getBookTitles']);
     
@@ -123,7 +126,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/events', [PackagesController::class, 'event'])->name('events.index')->middleware('2fa');
     Route::get('/events/create', [PackagesController::class, 'createEvent'])->name('event.create')->middleware('2fa');
     Route::get('/events/view/{id}', [PackagesController::class, 'viewEvent'])->name('event.view')->middleware('2fa');
-
     Route::post('/events/post', [PackagesController::class, 'storeEvent'])->name('event.store')->middleware('2fa');
     Route::get('/event/{id}/edit', [PackagesController::class, 'editEvent'])->name('event.edit')->middleware('2fa');
     Route::post('/event/{id}/update', [PackagesController::class, 'updateEvent'])->name('event.update')->middleware('2fa');
