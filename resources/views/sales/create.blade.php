@@ -43,6 +43,7 @@
                 </div>
             </div>
         </div>
+        <div class="mt-6"></div> <!-- space -->
             <div class="mb-5">
                 <form id="multi-step-form" action="{{ route('sales.store') }}" method="POST" enctype="multipart/form-data" class="mb-5 rounded-md border border-[#ebedf2] bg-white p-4 dark:border-[#191e3a] dark:bg-[#0e1726]">
                     @csrf
@@ -84,8 +85,8 @@
                                 </div>
                                 <div>
                                     <label for="gender">Gender <span class="text-danger">*</span></label>
-                                    <select id="gender" name="gender" class="form-select text-white-dark" required>
-                                        <option value="" disabled selected>Select Gender</option>
+                                    <select id="gender" name="gender" class="form-select text-dark" required>
+                                        <option value="" disabled selected>Select Gender...</option>
                                         <option value="Male">Male</option>
                                         <option value="Female">Female</option>
                                     </select>
