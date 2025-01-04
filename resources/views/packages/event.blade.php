@@ -73,7 +73,7 @@
     <div style="display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 1rem;" onclick="document.getElementById('usersModal').style.display='none'">
         <div style="background: white; border-radius: 0.5rem; overflow: hidden; max-width: 500px; width: 100%;" onclick="event.stopPropagation()">
             <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid #ddd;">
-                <h5 style="margin: 0; font-size: 1.25rem; font-weight: bold;">Delete Confirmation</h5>
+                <h5 style="margin: 0; font-size: 1.25rem; font-weight: bold;">Confirm Delete</h5>
                 <button onclick="document.getElementById('usersModal').style.display='none'" style="background: none; border: none; color: #888; cursor: pointer;">
                     <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="18" y1="6" x2="6" y2="18"></line>

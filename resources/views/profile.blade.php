@@ -6,7 +6,7 @@
                 <a href="{{ route('admin.users') }}" class="text-primary hover:underline">Users</a>
             </li>
             <li class="before:content-['/'] ltr:before:mr-1 rtl:before:ml-1">
-                <span>Profile</span>
+                <span>View Profile</span>
             </li>
         </ul>
         <div class="pt-5">

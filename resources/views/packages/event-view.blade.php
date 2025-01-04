@@ -3,10 +3,10 @@
 <div>
     <ul class="flex space-x-2 rtl:space-x-reverse">
         <li>
-            <a href="{{ route('admin.users') }}" class="text-primary hover:underline">Events</a>
+            <a href="{{ route('events.index') }}" class="text-primary hover:underline">Events</a>
         </li>
         <li class="before:content-['/'] ltr:before:mr-1 rtl:before:ml-1">
-            <span>&nbsp;</span>
+            <span>View Event</span>
         </li>
     </ul>
     <div class="pt-5">

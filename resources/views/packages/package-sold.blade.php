@@ -3,8 +3,11 @@
 <div>
     <ul class="flex space-x-2 rtl:space-x-reverse">
         <li>
-            <span>Packages</span>
+            <a href="javascript:void(0);" class="text-primary hover:underline">Packages</a>
         </li>
+        <li class="before:content-['/'] ltr:before:mr-1 rtl:before:ml-1">
+            <span>Package Sold</span>
+         </li>
     </ul>
     <div class="panel mt-6">
         <div class="mb-5 flex items-center justify-between">

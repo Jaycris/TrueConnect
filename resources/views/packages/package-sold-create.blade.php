@@ -2,17 +2,17 @@
 @section('content')
 
 <div>
-        <ul class="flex space-x-2 rtl:space-x-reverse">
-            <li>
-                <a href="{{route('pack-sold.index')}}" class="text-primary hover:underline">Package Sold</a>
-            </li>
-            <li class="before:content-['/'] ltr:before:mr-1 rtl:before:ml-1">
-                <span>Add Package Sold</span>
-            </li>
-        </ul>
+<ul class="flex space-x-2 rtl:space-x-reverse">
+        <li>
+            <a href="{{ route('pack-sold.index') }}" class="text-primary hover:underline">Package Sold</a>
+        </li>
+        <li class="before:content-['/'] ltr:before:mr-1 rtl:before:ml-1">
+            <span>Add Package Sold</span>
+        </li>
+    </ul>
         <div class="pt-5">
             <div class="mb-5 flex items-center justify-between">
-                <h5 class="text-lg font-semibold dark:text-white-light">Add Package</h5>
+                <h5 class="text-lg font-semibold dark:text-white-light">Add Package Sold</h5>
             </div>
             <div class="mb-5">
                 <form action="{{ route('pack-sold.store') }}" method="POST" enctype="multipart/form-data" class="mb-5 rounded-md border border-[#ebedf2] bg-white p-4 dark:border-[#191e3a] dark:bg-[#0e1726]">
@@ -29,7 +29,7 @@
                                 @enderror
                             </div>
                             <div>
-                                <label>Select Packages Sold</label>
+                                <label>Select Sold Packages</label>
                                 <div>
                                     @foreach($event as $events)
                                         <div>
