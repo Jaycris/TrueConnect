@@ -3,7 +3,7 @@
     <div>
         <ul class="flex space-x-2 rtl:space-x-reverse">
             <li>
-                <a href="{{ route('pack-type.index') }}" class="text-primary hover:underline">Edit Package Type</a>
+                <a href="{{ route('pack-type.index') }}" class="text-primary hover:underline">Package Type</a>
             </li>
             <li class="before:content-['/'] ltr:before:mr-1 rtl:before:ml-1">
                 <span>Edit Package Type</span>

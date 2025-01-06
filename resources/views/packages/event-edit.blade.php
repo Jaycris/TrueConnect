@@ -1,14 +1,14 @@
 @extends('layouts.master')
 @section('content')
     <div>
-        <ul class="flex space-x-2 rtl:space-x-reverse">
-            <li>
-                <a href="{{ route('events.index') }}" class="text-primary hover:underline">Edit Event</a>
-            </li>
-            <li class="before:content-['/'] ltr:before:mr-1 rtl:before:ml-1">
-                <span>Edit Event</span>
-            </li>
-        </ul>
+    <ul class="flex space-x-2 rtl:space-x-reverse">
+        <li>
+            <a href="{{ route('events.index') }}" class="text-primary hover:underline">Events</a>
+        </li>
+        <li class="before:content-['/'] ltr:before:mr-1 rtl:before:ml-1">
+            <span>Edit Event</span>
+        </li>
+    </ul>
         <div class="pt-5">
             <div class="mb-5 flex items-center justify-between">
                 <h5 class="text-lg font-semibold dark:text-white-light">Edit Event</h5>

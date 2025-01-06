@@ -3,10 +3,10 @@
 <div>
     <ul class="flex space-x-2 rtl:space-x-reverse">
         <li>
-            <a href="{{ route('admin.users') }}" class="text-primary hover:underline">Packages</a>
+            <a href="{{ route('pack-sold.index') }}" class="text-primary hover:underline">Package Sold</a>
         </li>
         <li class="before:content-['/'] ltr:before:mr-1 rtl:before:ml-1">
-            <span>Package Sold</span>
+            <span>View Package Sold</span>
         </li>
     </ul>
     <div class="pt-5">

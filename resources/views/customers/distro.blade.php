@@ -3,8 +3,11 @@
 <div>
     <ul class="flex space-x-2 rtl:space-x-reverse">
         <li>
-            <span>Leads</span>
+            <a href="javascript:void(0);" class="text-primary hover:underline">Leads Management</a>
         </li>
+        <li class="before:content-['/'] ltr:before:mr-1 rtl:before:ml-1">
+            <span>Leads Distro</span>
+         </li>
     </ul>
     <div class="pt-5">
         <div class="mb-5 grid grid-cols-1 gap-5 lg:grid-cols-3 xl:grid-cols-3">

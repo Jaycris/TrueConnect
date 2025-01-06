@@ -12,7 +12,7 @@
         </ul>
         <div class="pt-5">
             <div class="mb-5 flex items-center justify-between">
-                <h5 class="text-lg font-semibold dark:text-white-light">Add Package</h5>
+                <h5 class="text-lg font-semibold dark:text-white-light">Add Package Type</h5>
             </div>
             <div class="mb-5">
                 <form action="{{ route('pack-type.store') }}" method="POST" enctype="multipart/form-data" class="mb-5 rounded-md border border-[#ebedf2] bg-white p-4 dark:border-[#191e3a] dark:bg-[#0e1726]">
@@ -29,7 +29,7 @@
                                 @enderror
                             </div>
                             <div>
-                                <label>Select Packages Sold</label>
+                                <label>Select Sold Packages</label>
                                 <div>
                                     @foreach($packSold as $sold)
                                         <div>

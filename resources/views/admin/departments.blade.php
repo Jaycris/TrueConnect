@@ -3,12 +3,15 @@
 <div>
     <ul class="flex space-x-2 rtl:space-x-reverse">
         <li>
-            <span>Department</span>
+            <a href="javascript:void(0);" class="text-primary hover:underline">Settings</a>
         </li>
+        <li class="before:content-['/'] ltr:before:mr-1 rtl:before:ml-1">
+            <span>Department</span>
+         </li>
     </ul>
     <div class="panel mt-6">
         <div class="mb-5 flex items-center justify-between">
-            <h5 class="text-lg font-semibold dark:text-white-light">Settings</h5>
+            <h5 class="text-lg font-semibold dark:text-white-light">Department</h5>
             <a href="{{ route('admin.department.create') }}" class="btn btn-primary">Add Department</a>
         </div>
         @if(session('success'))
