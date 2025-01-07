@@ -24,7 +24,6 @@ return new class extends Migration
             $table->string('mailing_address')->nullable();
             $table->string('pack_type')->nullable();
             $table->string('pack_sold')->nullable();
-            $table->string('service_stage')->nullable();
             $table->decimal('total_price', 8, 2)->nullable();
             $table->decimal('amount', 8, 2)->nullable();
             $table->string('method')->nullable();

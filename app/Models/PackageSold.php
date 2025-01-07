@@ -10,7 +10,8 @@ class PackageSold extends Model
     use HasFactory;
     protected $table = 'package_sold';
     protected $fillable = [
-        'pack_sold_name'
+        'pack_sold_name',
+        'price'
     ];
 
     public function packageType()

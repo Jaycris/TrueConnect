@@ -24,7 +24,7 @@
                 <div class="flex-1 h-1 bg-gray-300 mx-2">
                     <div id="connector-1" class="h-1 bg-primary" style="width: 0%;"></div>
                 </div>
-                <!-- Step 2 -->
+                <!-- Step 2 --> 
                 <div class="flex flex-col items-center">
                     <div id="step-2" class="h-6 w-6 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center text-sm font-bold">
                         2
@@ -155,7 +155,7 @@
                                 <div>
                                     <label for="packageSold">Package Sold <span class="text-danger">*</span></label>
                                     <select id="packageSold" name="package_sold" class="form-select text-white-dark" required>
-                                        <option value="" disabled selected>Select Sold Package</option>
+                                        <option value="" disabled selected>Select Sold Package(s)</option>
                                     </select>
                                     <p class="text-red-500 text-sm hidden">Please select a Sold Package.</p>
                                     @error('package_sold')
@@ -173,6 +173,32 @@
                                         <p class="text-danger 500 italic">{{ $message }}</p>
                                     @enderror
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="step-content-3" class="step-content hidden">
+                        <div class="flex flex-col sm:flex-row">
+                            <div class="grid flex-1 grid-cols-1 gap-5 sm:grid-cols-2">
+
+                                <div style="position: relative;">
+                                    <label for="amount">Amount to be billed <span class="text-danger">*</span></label>
+                                    <input id="amount" name="amount" type="text" placeholder="Enter Amount" class="form-input" autocomplete="off" required>
+                                    @error('amount')
+                                        <p class="text-danger 500 italic">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <div>
+                                    <label for="method">Payment Method <span class="text-danger">*</span></label>
+                                    <select id="method" name="method" class="form-select text-dark" required>
+                                        <option value="" disabled selected>Select Method...</option>
+                                    </select>
+                                    <p class="text-red-500 text-sm hidden">Please select a method.</p> <!-- Hidden by default -->
+                                    @error('method')
+                                        <p class="text-danger 500 italic">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
                             </div>
                         </div>
                     </div>

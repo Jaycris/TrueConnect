@@ -5,17 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Event extends Model
+class EndorsedEvents extends Model
 {
     use HasFactory;
-    use HasFactory;
-    protected $table = 'events';
+    protected $table = 'endorsed_event';
     protected $fillable = [
+        's_id',
         'event_name'
     ];
 
-    public function packageSold()
+    public function sales()
     {
-        return $this->belongsToMany(PackageSold::class, 'pack_sold_event', 'event_id', 'pack_sold_id');
+        return $this->belongsTo(Sale::class);
     }
 }

@@ -116,12 +116,14 @@ class PackagesController extends Controller
 
         $validatedData = $request->validate([
             'pack_sold_name' => 'required|string|max:255',
+            'price'          => 'nullable|numeric',
             'events'          => 'array',
             'events.*'    => 'exists:events,id',
         ]);
 
         $packSold = new PackageSold([
             'pack_sold_name' => $validatedData['pack_sold_name'],
+            'price'          => $validatedData['price']
         ]);
         $packSold->save();
 
@@ -153,12 +155,14 @@ class PackagesController extends Controller
     {
         $request->validate([
             'pack_sold_name'        => 'required|string|max:255',
+            'price'          => 'nullable|numeric',
             'events' => 'array', // Validate as an array
             'events.*' => 'exists:events,id', // Validate each item exists
         ]);
 
         $packSold = PackageSold::findOrFail($id);
         $packSold->pack_sold_name = $request->input('pack_sold_name');
+        $packSold->price = $request->input('price');
         $packSold->save();
 
         $packSold->event()->sync($request->input('events', [])); // Default to empty array if none selected
