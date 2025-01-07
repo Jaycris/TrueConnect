@@ -28,7 +28,7 @@
                                 @enderror
                             </div>
                             <div>
-                                <label for="price">Base Price</label>
+                                <label for="price">Base Price ($)</label>
                                 <input id="price" name="price" type="text" placeholder="Enter Price" class="form-input" value="{{ $packSold->price }}">
                                 @error('price')
                                     <p class="text-danger 500 italic">{{ $message }}</p>
