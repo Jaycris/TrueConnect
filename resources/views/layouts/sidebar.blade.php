@@ -31,7 +31,7 @@
                 <span class="bmaColortext">Client and Sales</span>
             </h2>
             <li class="menu nav-item">
-                <a class="nav-link group {{ request()->is('admin/users', 'admin/users/create', 'admin/users/*/edit') ? 'active' : '' }}" href="{{ route('admin.users') }}">                    
+                <a class="nav-link group {{ request()->is('sales') ? 'active' : '' }}" href="{{ route('sales.index') }}">                    
                     <div class="flex items-center">
                         <svg class="shrink-0 group-hover:!text-primary" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path opacity="0.5" fill-rule="evenodd" clip-rule="evenodd" d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" fill="currentColor"></path>
@@ -41,7 +41,7 @@
                     </div>
                 </a>
             </li>
-            <li class="menu nav-item" x-data="{ activeDropdown: '{{ (request()->is('customers','customers/distro','customers/returned', 'admin/departments/create') || request()->is('admin/designations', 'admin/designations/create', 'admin/designations/*/edit')) ? 'settings' : '' }}' }">
+            <li class="menu nav-item" x-data="{ activeDropdown: '{{ (request()->is('customers','customers/distro','customers/returned', 'admin/departments/create') || request()->is('admin/designations', 'admin/designations/create', 'admin/designations/*/edit')) || request()->is('mycustomers', 'sales/create') ? 'settings' : '' }}' }">
                 <button type="button" class="nav-link group" :class="{'active' : activeDropdown === 'settings'}" @click="activeDropdown = (activeDropdown === 'settings' ? null : 'settings')">
                     <div class="flex items-center">
                     <svg class="shrink-0 group-hover:!text-primary" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -92,7 +92,7 @@
                     </li>
                 @endif
                     <li>
-                        <a class="{{ request()->is('mycustomers') ? 'active' : '' }}" href="{{ route('employee.mycustomer') }}">My Leads</a>
+                        <a class="{{ request()->is('mycustomers', 'sales/create') ? 'active' : '' }}" href="{{ route('employee.mycustomer') }}">My Leads</a>
                     </li>
                 </ul>
             </li>
