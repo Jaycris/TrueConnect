@@ -29,6 +29,9 @@
                                     <p><strong>Package Sold:</strong> {{ $packSold->pack_sold_name }}</p>
                                 </li>
                                 <li class="flex items-center gap-2">
+                                    <p><strong>Base Price:</strong> ${{ $packSold->price }}</p>
+                                </li>
+                                <li class="flex items-center gap-2">
                                     <p><strong>Date added:</strong> {{ $packSold->created_at->format('M d, Y') }}</p>
                                 </li>
                             </ul>

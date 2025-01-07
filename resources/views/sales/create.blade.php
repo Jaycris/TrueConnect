@@ -164,41 +164,49 @@
                                 </div>
 
                                 <!-- Event Dropdown -->
-                                <div>
-                                    <label for="eventLocation">Event Location <span class="text-danger">*</span></label>
-                                    <select id="eventLocation" name="event_location[]" class="form-select text-white-dark" multiple required>
-                                        <option value="" disabled>Select Event(s)</option>
-                                    </select>
-                                    @error('event_location')
-                                        <p class="text-danger 500 italic">{{ $message }}</p>
-                                    @enderror
-                                </div>
+                                <div class="mb-3">
+    <label for="eventLocation" class="form-label">Event Location <span class="text-danger">*</span></label>
+    <select id="eventLocation" name="event_location[]" class="form-select select2-multiple" multiple required>
+        <option value="" disabled>Select Event(s)</option>
+        <!-- Options will be dynamically populated via AJAX -->
+    </select>
+    <small class="form-text text-muted">Hold Ctrl (Windows) or Command (Mac) to select multiple options.</small>
+    @error('event_location')
+        <p class="text-danger fw-italic mt-1">{{ $message }}</p>
+    @enderror
+</div>
+
                             </div>
                         </div>
                     </div>
                     <div id="step-content-3" class="step-content hidden">
                         <div class="flex flex-col sm:flex-row">
                             <div class="grid flex-1 grid-cols-1 gap-5 sm:grid-cols-2">
-
                                 <div style="position: relative;">
+                                    
                                     <label for="amount">Amount to be billed <span class="text-danger">*</span></label>
                                     <input id="amount" name="amount" type="text" placeholder="Enter Amount" class="form-input" autocomplete="off" required>
                                     @error('amount')
                                         <p class="text-danger 500 italic">{{ $message }}</p>
                                     @enderror
+                                    <br />
+                                    <br />
+                                    <p id="basePriceDisplay">Base Price: $0.00</p>
                                 </div>
 
                                 <div>
                                     <label for="method">Payment Method <span class="text-danger">*</span></label>
                                     <select id="method" name="method" class="form-select text-dark" required>
-                                        <option value="" disabled selected>Select Method...</option>
+                                        <option value="" disabled selected>Select Payment Method...</option>
                                     </select>
                                     <p class="text-red-500 text-sm hidden">Please select a method.</p> <!-- Hidden by default -->
                                     @error('method')
                                         <p class="text-danger 500 italic">{{ $message }}</p>
                                     @enderror
                                 </div>
-
+                                <div class="">
+                                    <h1 class="mb-5 text-2xl font-normal">Total Price: $0.00</h1>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -224,6 +232,8 @@
             });
         });
 
+        
+
         $(document).ready(function () {
             // When Package Type changes
             $('#packageType').change(function () {
@@ -238,11 +248,13 @@
                         _token: '{{ csrf_token() }}'
                     },
                     success: function (response) {
-                        $('#packageSold').html('<option value="" disabled selected>Select Sold Package</option>');
-                        response.forEach(function (item) {
-                            $('#packageSold').append(`<option value="${item.id}">${item.pack_sold_name}</option>`);
-                        });
-                    },
+                $('#packageSold').html('<option value="" disabled selected>Select Sold Package</option>');
+                response.forEach(function (item) {
+                    $('#packageSold').append(
+                        `<option value="${item.id}" data-price="${item.price}">${item.pack_sold_name} ($${item.price})</option>`
+                    );
+                });
+            },
                     error: function (xhr, status, error) {
                         console.error("Error fetching package sold data:", error);
                         alert("Failed to fetch package sold data. Please try again.");
@@ -252,6 +264,8 @@
 
             // When Package Sold changes
             $('#packageSold').change(function () {
+
+                
                 const packageSoldId = $(this).val();            
                 $('#eventLocation').html('<option value="" disabled selected>Loading...</option>');
 
@@ -275,6 +289,29 @@
                 });
             });
         });
+
+        // Real-time Total Price Calculation
+        $(document).ready(function () {
+            const basePriceInput = $('#packageSold'); // Dropdown for selected package
+            const amountInput = $('#amount'); // Input for additional amount
+            const totalPriceDisplay = $('.text-2xl.font-normal'); // Display element for Total Price
+            const basePriceDisplay = $('#basePriceDisplay'); // Display element for Base Price
+            
+            // Function to update the Total Price and Base Price
+            function updateTotalPrice() {
+                const basePrice = parseFloat(basePriceInput.find(':selected').data('price')) || 0;
+                const amount = parseFloat(amountInput.val()) || 0;
+                const totalPrice = basePrice + amount;
+
+                totalPriceDisplay.text(`Total Price: $${totalPrice.toFixed(2)}`);
+                basePriceDisplay.text(`Base Price: $${basePrice.toFixed(2)}`); // Update base price display
+            }
+
+            // Trigger update on change of package or amount
+            basePriceInput.change(updateTotalPrice);
+            amountInput.on('input', updateTotalPrice);
+        });
+
     </script>
 
 <script>

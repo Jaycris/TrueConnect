@@ -25,6 +25,7 @@
                             <th><input type="checkbox" class="checkAll form-checkbox" />Select All</th>
                             <th>#</th>
                             <th>Package Sold Name</th>
+                            <th>Base Price</th>
                             <th>Date</th>
                             <th class="text-right flex">Action</th>
                         </tr>
@@ -35,6 +36,7 @@
                             <td><input type="checkbox" class="form-checkbox" /></td>
                             <td>{{ $packSolds->id }}</td>
                             <td>{{ $packSolds->pack_sold_name }}</td>
+                            <td>${{ $packSolds->price }}</td>
                             <td>{{ $packSolds->created_at->format('M d, Y') }}</td>
                             <td class="text-center">
                                 <ul class="flex items-center gap-2">
