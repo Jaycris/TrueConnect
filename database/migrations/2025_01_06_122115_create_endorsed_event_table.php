@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('package_sold', function (Blueprint $table) {
+        Schema::create('endorsed_event', function (Blueprint $table) {
             $table->id();
-            $table->string('pack_sold_name');
-            $table->decimal('price', 8, 2)->nullable();
+            $table->foreignId('s_id')->constrained('sales')->onDelete('cascade');
+            $table->string('event_name')->nullable();
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('package_sold');
+        Schema::dropIfExists('endorsed_event');
     }
 };
