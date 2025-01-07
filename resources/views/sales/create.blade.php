@@ -250,5 +250,69 @@
             });
         });
     </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        let currentStep = 1;
+        const totalSteps = 3; // Update based on the number of steps
+        const nextButton = document.getElementById('next-button');
+        const prevButton = document.getElementById('prev-button');
+        const submitButton = document.getElementById('submit-button');
+
+        function updateProgressBar() {
+            // Update step circles
+            for (let i = 1; i <= totalSteps; i++) {
+                const stepCircle = document.getElementById(`step-${i}`);
+                const connector = document.getElementById(`connector-${i - 1}`); // Connector is for steps between
+                
+                if (i < currentStep) {
+                    stepCircle.classList.add('bg-primary', 'text-white');
+                    stepCircle.classList.remove('bg-gray-300', 'text-gray-600');
+                    if (connector) connector.style.width = '100%';
+                } else if (i === currentStep) {
+                    stepCircle.classList.add('bg-primary', 'text-white');
+                    stepCircle.classList.remove('bg-gray-300', 'text-gray-600');
+                    if (connector) connector.style.width = '100%';
+                } else {
+                    stepCircle.classList.add('bg-gray-300', 'text-gray-600');
+                    stepCircle.classList.remove('bg-primary', 'text-white');
+                    if (connector) connector.style.width = '0%';
+                }
+            }
+        }
+
+        function updateStepContent() {
+            for (let i = 1; i <= totalSteps; i++) {
+                const stepContent = document.getElementById(`step-content-${i}`);
+                if (i === currentStep) {
+                    stepContent.classList.remove('hidden');
+                } else {
+                    stepContent.classList.add('hidden');
+                }
+            }
+            // Enable/disable buttons
+            prevButton.disabled = currentStep === 1;
+            nextButton.classList.toggle('hidden', currentStep === totalSteps);
+            submitButton.classList.toggle('hidden', currentStep !== totalSteps);
+        }
+
+        nextButton.addEventListener('click', () => {
+            if (currentStep < totalSteps) currentStep++;
+            updateProgressBar();
+            updateStepContent();
+        });
+
+        prevButton.addEventListener('click', () => {
+            if (currentStep > 1) currentStep--;
+            updateProgressBar();
+            updateStepContent();
+        });
+
+        // Initial state
+        updateProgressBar();
+        updateStepContent();
+    });
+</script>
+
     @endsection
 @endsection
