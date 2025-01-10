@@ -28,6 +28,16 @@ class SalesController extends Controller
         $packageTypes = PackageType::all();
         return view('sales.create', compact('s_id', 'fullName', 'packageTypes'));
     }
+    
+    public function view()
+    {
+        return view('sales.view');
+    }
+
+    public function edit()
+    {
+        return view('sales.edit');
+    }
 
 
     public function getPackageSoldByType(Request $request)
