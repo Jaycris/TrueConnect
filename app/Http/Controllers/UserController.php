@@ -50,6 +50,8 @@ class UserController extends Controller
             'user_status' => 'required|string|max:255',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'e_id' => 'required|string|max:255',
+            'two_factor_enabled' => 'nullable|boolean',
+            'two_factor_recipient' => 'nullable|in:Admin,User',
         ]);
 
         $user = new User([
@@ -58,6 +60,9 @@ class UserController extends Controller
             'password' => Hash::make($validatedData['password']),
             'user_type' => $validatedData['user_type'],
             'user_status' => $validatedData['user_status'],
+            'must_reset_password' => true, // Force password reset on first login
+            'two_factor_enabled' => $validatedData['two_factor_enabled'] ?? false,
+            'two_factor_recipient' => $validatedData['two_factor_recipient'] ?? null,
         ]);
         $user->save();
     
@@ -124,6 +129,8 @@ class UserController extends Controller
             'user_type'         => 'required|string|max:255',
             'user_status'       => 'required||string|max:255',
             'avatar'            => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'two_factor_enabled' => 'sometimes|boolean',
+            'two_factor_recipient' => 'nullable|string|in:Admin,User',
         ]);
 
         $user = User::findOrFail($id);
@@ -131,6 +138,8 @@ class UserController extends Controller
         $user->username = $request->input('username');
         $user->user_type = $request->input('user_type');
         $user->user_status = $request->input('user_status');
+        $user->two_factor_enabled = $request->has('two_factor_enabled');
+        $user->two_factor_recipient = $request->input('two_factor_recipient');
         $user->save();
 
         // Update the profile fields
