@@ -165,16 +165,16 @@
 
                                 <!-- Event Dropdown -->
                                 <div class="mb-3">
-    <label for="eventLocation" class="form-label">Event Location <span class="text-danger">*</span></label>
-    <select id="eventLocation" name="event_location[]" class="form-select select2-multiple" multiple required>
-        <option value="" disabled>Select Event(s)</option>
-        <!-- Options will be dynamically populated via AJAX -->
-    </select>
-    <small class="form-text text-muted">Hold Ctrl (Windows) or Command (Mac) to select multiple options.</small>
-    @error('event_location')
-        <p class="text-danger fw-italic mt-1">{{ $message }}</p>
-    @enderror
-</div>
+                                    <label for="eventLocation" class="form-label">Event Location <span class="text-danger">*</span></label>
+                                    <select id="eventLocation" name="event_location[]" class="form-select select2-multiple" multiple required>
+                                        <option value="" disabled>Select Event(s)</option>
+                                        <!-- Options will be dynamically populated via AJAX -->
+                                    </select>
+                                    <small class="form-text text-muted">Hold Ctrl (Windows) or Command (Mac) to select multiple options.</small>
+                                    @error('event_location')
+                                        <p class="text-danger fw-italic mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
 
                             </div>
                         </div>
@@ -198,6 +198,9 @@
                                     <label for="method">Payment Method <span class="text-danger">*</span></label>
                                     <select id="method" name="method" class="form-select text-dark" required>
                                         <option value="" disabled selected>Select Payment Method...</option>
+                                        @foreach($method as $methods)
+                                            <option value="{{ $methods->id }}">{{ $methods->method_name }}</option>
+                                        @endforeach
                                     </select>
                                     <p class="text-red-500 text-sm hidden">Please select a method.</p> <!-- Hidden by default -->
                                     @error('method')

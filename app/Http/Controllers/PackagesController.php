@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\PackageSold;
 use App\Models\PackageType;
 use App\Models\Event;
+use App\Models\PaymentMethod;
 
 class PackagesController extends Controller
 {
@@ -251,5 +252,70 @@ class PackagesController extends Controller
         $event->delete();
 
         return redirect()->route('events.index')->with('success', 'Event deleted successfully!');
+    }
+
+    public function method(){
+        $method = PaymentMethod::paginate(10);
+        return view('packages.method', compact('method'));
+    }
+
+    public function createMethod()
+    {
+        return view('packages.method-create');
+    }
+
+    public function storeMethod(Request $request)
+    {
+
+        $validatedData = $request->validate([
+            'method_name' => 'required|string|max:255',
+        ]);
+
+        $method = new PaymentMethod([
+            'method_name' => $validatedData['method_name'],
+        ]);
+        $method->save();
+    
+        return redirect()->route('method.index')->with('success', 'Payment Method saved successfully!');
+    }
+
+    public function viewMethod($id)
+    {
+        $method = PaymentMethod::find($id);
+
+        return view('packages.method-view', compact('method'));
+    }
+
+    public function editMethod($id)
+    {
+        $method = PaymentMethod::find($id);
+
+        return view('packages.method-edit', compact('method'));
+    }
+
+    public function updateMethod(Request $request, $id)
+    {
+        $request->validate([
+            'method_name'        => 'required|string|max:255',
+        ]);
+
+        $method = PaymentMethod::find($id);
+        $method->method_name = $request->input('method_name');
+        $method->save();
+
+        return redirect()->route('method.index')->with('success', 'Payment Method updated');
+    }
+
+    public function destroyMethod(Request $request, $id)
+    {
+        $method = PaymentMethod::find($id);
+
+        if (!$method) {
+            return redirect()->route('method.index')->with('error', 'Method not found.');
+        }
+
+        $method->delete();
+
+        return redirect()->route('method.index')->with('success', 'Method deleted successfully!');
     }
 }

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\PackageSold;
 use App\Models\PackageType;
 use App\Models\Event;
+use App\Models\PaymentMethod;
 
 class SalesController extends Controller
 {
@@ -26,7 +27,8 @@ class SalesController extends Controller
         $user = Auth::user();
         $fullName = $user->profile->fullName();
         $packageTypes = PackageType::all();
-        return view('sales.create', compact('s_id', 'fullName', 'packageTypes'));
+        $method = PaymentMethod::all();
+        return view('sales.create', compact('s_id', 'fullName', 'packageTypes', 'method'));
     }
 
 
@@ -64,22 +66,55 @@ class SalesController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            's_id' => 'required',
-            'customer_name' => 'required',
-            'book_title' => 'required',
-            'quantity' => 'required|numeric',
-            'price' => 'required|numeric',
-            'total' => 'required|numeric',
-            'payment_method' => 'required',
-            'status' => 'required',
+        // Validate input data
+        $validatedData = $request->validate([
+            'date_sold' => 'required|date',
+            'consultant_name' => 'required|string|max:255',
+            'authors_name' => 'required|string|max:255',
+            'gender' => 'required|in:Male,Female',
+            'book_title' => 'required|string|max:255',
+            'contact_number' => 'required|string|max:15',
+            'email' => 'required|email',
+            'mailing_address' => 'required|string|max:255',
+            'pack_type' => 'required|integer|exists:package_types,id',
+            'pack_sold' => 'required|integer|exists:packages,id',
+            'event_location' => 'required|array',
+            'event_location.*' => 'exists:events,id',
+            'amount' => 'required|numeric|min:0',
+            'method' => 'required|string|max:50',
         ]);
 
-        $sale = Sale::create($request->all());
+        // Calculate the total price (if not handled by JavaScript in the frontend)
+        $totalPrice = $request->input('amount'); // Adjust if needed for custom calculations
+        $s_id = $this->generateUniqueID();
 
-        return redirect()->route('sales.index')
-            ->with('success', 'Sale created successfully.');
+        // Create the Sale
+        $sale = new Sale();
+        $sale->transaction_id = $s_id; // You may already have this generated
+        $sale->date_sold = $validatedData['date_sold'];
+        $sale->consultant_name = $validatedData['consultant_name'];
+        $sale->authors_name = $validatedData['authors_name'];
+        $sale->gender = $validatedData['gender'];
+        $sale->book_title = $validatedData['book_title'];
+        $sale->contact_number = $validatedData['contact_number'];
+        $sale->email = $validatedData['email'];
+        $sale->mailing_address = $validatedData['mailing_address'];
+        $sale->pack_type = $validatedData['package_type'];
+        $sale->pack_sold = $validatedData['package_sold'];
+        $sale->amount = $validatedData['amount'];
+        $sale->total_price = $totalPrice;
+        $sale->payment_method = $validatedData['method'];
+        $sale->save();
+
+        // Attach event locations
+        if (!empty($validatedData['event_location'])) {
+            $sale->events()->attach($validatedData['event_location']);
+        }
+
+        // Redirect back with success message
+        return redirect()->route('sales.index')->with('success', 'Sale endorsement created successfully!');
     }
+
 
     public function getAuthorSuggestions(Request $request)
     {
