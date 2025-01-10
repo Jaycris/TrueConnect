@@ -8,6 +8,7 @@ use App\Models\CustomerReturnReason;
 use App\Models\Book;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
@@ -43,7 +44,7 @@ class CustomerController extends Controller
 
         $brandingSpecialists = User::whereHas('profile', function ($query) {
                                 $query->where('des_id', function ($subQuery) {
-                                $subQuery->select('id')->from('designations')->where('name', 'Branding Specialist');
+                                $subQuery->select('id')->from('designations')->where('name', 'Author Consultant');
                                 });
                                 })->get();
     
@@ -147,6 +148,40 @@ class CustomerController extends Controller
 
         try {
 
+            // Check if the first name and last name already exist in the database
+            $existingCustomer = Customer::where('first_name', $request->first_name)
+                                        ->where('last_name', $request->last_name)
+                                        ->exists();
+            
+            // ->first();
+        
+            if ($existingCustomer) {
+                $fullName = $request->first_name . ' ' . $request->last_name;
+                throw ValidationException::withMessages([
+                    'first_name' => "Lead Name $fullName already exists.",
+                ]);
+            }
+
+            // Check if any contact number already exists
+            $existingContactNumbers = ContactNumber::whereIn('contact_number', $request->contact_numbers)->exists();
+            if ($existingContactNumbers) {
+                throw ValidationException::withMessages([
+                    'contact_numbers' => 'Contact number already exist.',
+                ]);
+            }
+
+            // Check if any book title already exists
+            if ($request->books) {
+                foreach ($request->books as $book) {
+                    $existingBook = Book::where('title', $book['title'])->first();
+                    if ($existingBook) {
+                        throw ValidationException::withMessages([
+                            'books' => "Book titled '{$book['title']}' already exists.",
+                        ]);
+                    }
+                }
+            }
+
             $today = Carbon::now()->toDateString();
     
             $user = Auth::user()->id;
@@ -169,21 +204,22 @@ class CustomerController extends Controller
     
             ]);
 
+            foreach ($request->contact_numbers as $contact_number) {
+                $customers->contactNumbers()->create(['contact_number' => $contact_number, 'status' => 'Not Verified']);
+            }
+            
+            if ($request->books) {
+                foreach ($request->books as $book) {
+                    $customers->books()->create(['title' => $book['title'], 'link' => $book['link']]);
+                }
+            }
+            
+            return redirect()->route('customers.index')->with('success', 'Customer created successfully.');
+
         } catch ( ValidationException $e ) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
         
-        foreach ($request->contact_numbers as $contact_number) {
-            $customers->contactNumbers()->create(['contact_number' => $contact_number, 'status' => 'Not Verified']);
-        }
-        
-        if ($request->books) {
-            foreach ($request->books as $book) {
-                $customers->books()->create(['title' => $book['title'], 'link' => $book['link']]);
-            }
-        }
-        
-        return redirect()->route('customers.index')->with('success', 'Customer created successfully.');
     }
     
     public function edit($id, Request $request)
@@ -339,7 +375,7 @@ class CustomerController extends Controller
     {
         $brandingSpecialists = User::whereHas('profile', function ($query) {
             $query->where('des_id', function ($subQuery) {
-                $subQuery->select('id')->from('designations')->where('name', 'Branding Specialist');
+                $subQuery->select('id')->from('designations')->where('name', 'Author Consultant');
             });
         })->get();
 

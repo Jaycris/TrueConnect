@@ -198,20 +198,29 @@ document.addEventListener('DOMContentLoaded', function() {
     
             // Mapping table IDs to their respective buttons
             const buttonMapping = {
-                'verified-leads-table': 'assign-leads-btn',
-                'my-leads-table': 'return-leads-btn',  // Link `my-leads-table` with `return-leads-btn`
-                'return-leads-table': 'reassign-leads-btn',
+                'unassigned-leads-table': 'assign-leads-btn',
                 'assign-leads-table': 'unassign-leads-btn',
-                'leads-table': 'some-other-button-id',
+                'my-leads-table': 'return-leads-btn',  // Link `my-leads-table` with `return-leads-btn`
+                'assigned-customers-list': 'return-leads-btn',
+                'return-leads-table': 'reassign-leads-btn',
+                'returned-leads-body': 'reassign-leads-btn'
             };
     
             const buttonId = buttonMapping[tableId];
-            if (buttonId) {
-                const button = document.getElementById(buttonId);
-                if (button) {
-                    button.disabled = !anyChecked;
-                }
+            if (!buttonId) {
+                console.warn(`No button mapping found for table ID "${tableId}".`);
+                return; // Exit if there's no mapping for the table
             }
+
+            const button = document.getElementById(buttonId);
+            if (!button) {
+                console.warn(`Button with ID "${buttonId}" not found in the DOM.`);
+                return; // Exit if the button is not present on the page
+            }
+
+            // Enable or disable the button based on whether any checkboxes are checked
+            button.disabled = !anyChecked;
+            console.log(`Button ${buttonId} is now ${button.disabled ? 'disabled' : 'enabled'}.`);
         }
 
         function updateSelectedCustomerIds(tableId, modalId) {
@@ -262,6 +271,8 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
+        window.handleIndividualCheckboxes = handleIndividualCheckboxes;
+
         // Add confirmation functionality to modal submit button
         function handleModalSubmit(modalId, submitButtonId) {
             const submitButton = document.getElementById(submitButtonId);
@@ -295,11 +306,14 @@ document.addEventListener('DOMContentLoaded', function() {
     
         // Initialize the "Check All" functionality for specific tables
         function initializeCheckAll() {
-            handleCheckAll('checkAllVerified', 'verified-leads-table', 'open-assign-modal'); 
+            handleCheckAll('checkAllUnassigned', 'unassigned-leads-table', 'open-assign-modal'); 
+            handleCheckAll('checkAllAssign', 'assign-leads-table', 'unassign-leads-modal');
             handleCheckAll('checkAllLeads', 'leads-table');
             handleCheckAll('checkAllreturn', 'my-leads-table', 'open-return-modal');
             handleCheckAll('checkAllReassign', 'return-leads-table', 'open-reassign-modal');
-            handleCheckAll('checkAllAssign', 'assign-leads-table', 'unassign-leads-modal');
+            handleCheckAll('checkAllUsers', 'users-table');
+            handleCheckAll('checkAllDesignation', 'des-table');
+            handleCheckAll('checkAllDepartment', 'dep_table');
         }
     
         // Open modal for a specific button
@@ -332,13 +346,13 @@ document.addEventListener('DOMContentLoaded', function() {
             initializeCheckAll();
     
             // Attach event listeners to individual checkboxes
-            handleIndividualCheckboxes('verified-leads-table', 'open-assign-modal');
-            handleIndividualCheckboxes('return-leads-table', 'open-reassign-modal');
+            handleIndividualCheckboxes('unassigned-leads-table', 'open-assign-modal');
             handleIndividualCheckboxes('assign-leads-table', 'unassign-leads-modal');
+            handleIndividualCheckboxes('return-leads-table', 'open-reassign-modal');
             handleIndividualCheckboxes('my-leads-table', 'open-return-modal'); // Ensure `my-leads-table` is included here
     
             // Initial button state update on page load
-            updateButtonState('verified-leads-table');
+            updateButtonState('unassigned-leads-table');
             updateButtonState('my-leads-table'); // Ensure `my-leads-table` button state is set
             updateButtonState('return-leads-table');
     

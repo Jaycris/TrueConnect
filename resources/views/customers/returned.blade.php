@@ -62,7 +62,7 @@
                             </tbody>
                         </table>
                         <hr>
-                        <button id="reassign-leads-btn" class="btn btn-primarycolor btn-sm mt-3" data-modal-target="open-return-modal" disabled>Return Leads</button>
+                        <button id="reassign-leads-btn" class="btn btn-primarycolor btn-sm mt-3" data-modal-target="open-reassign-modal" disabled>Return Leads</button>
                     </div>
                     </div>
                 </div>
@@ -147,7 +147,7 @@
     </div>
 </div>
 
-    <script src="{{ asset('assets/js/polling.js') }}"></script>
+    <!-- <script src="{{ asset('assets/js/polling.js') }}"></script> -->
     <!-- <script>
         // Start polling when the page loads for employee
         window.onload = function() {

@@ -139,6 +139,9 @@
                     <li>
                         <a class="{{ request()->is('admin/designations', 'admin/designations/create', 'admin/designations/*/edit') ? 'active' : '' }}" href="{{ route('admin.designations') }}">Designation</a>
                     </li>
+                    <li>
+                        <a class="{{ request()->is('/admin/2fa-recipient') ? 'active' : '' }}" href="{{ route('admin.2fa-recipient') }}">2FA Recipient</a>
+                    </li>
                 </ul>
             </li>
             @endif

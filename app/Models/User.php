@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Mail;
 use App\Notifications\VerifyDeviceEmail;
 use Illuminate\Support\Str;
@@ -30,6 +31,9 @@ class User extends Authenticatable
         'password',
         'user_type',
         'user_status',
+        'must_reset_password',
+        'two_factor_enabled',
+        'two_factor_recipient',
     ];
 
     /**
@@ -81,7 +85,28 @@ class User extends Authenticatable
         $this->two_factor_expires_at = now()->addMinutes(10); // Code expires in 10 minutes
         $this->save();
 
-        $this->notify(new VerifyDeviceEmail($code));
+        if ($this->two_factor_enabled) {
+            if ($this->two_factor_recipient === 'Admin') {
+                $adminEmail = SendAdmin2fa::where('key', 'admin_email')->value('value');
+        
+                if ($adminEmail) {
+                    $profile = $this->profile; // Load the profile relationship
+        
+                    Notification::route('mail', $adminEmail)
+                        ->notify(new VerifyDeviceEmail(
+                            $code,
+                            $profile ? $profile->fullName() : 'Admin Account',
+                        ));
+                    return;
+                }
+            }
+        
+            // Default: Send to user's email
+            $profile = $this->profile; // Load the profile relationship
+            $fullName = $profile ? $profile->fullName() : 'User Account';
+        
+            $this->notify(new VerifyDeviceEmail($code, $fullName, ''));
+        }
     }
 
     /**
@@ -112,7 +137,7 @@ class User extends Authenticatable
         $familiarDevices = json_decode($this->familiar_devices, true) ?? [];
         // \Log::info("Checking device: $deviceIdentifier");
         // \Log::info("Familiar devices: " . implode(', ', $familiarDevices));
-        return in_array($deviceIdentifier, $familiarDevices);
+        return in_array($deviceIdentifier, $familiarDevices, true);
     }
     
 
@@ -122,9 +147,11 @@ class User extends Authenticatable
     public function markDeviceAsFamiliar(string $deviceIdentifier)
     {
         $familiarDevices = json_decode($this->familiar_devices, true) ?? [];
-        $familiarDevices[] = $deviceIdentifier;
-        $this->familiar_devices = json_encode(array_unique($familiarDevices));
-        $this->save();
+        if (!in_array($deviceIdentifier, $familiarDevices, true)) {
+            $familiarDevices[] = $deviceIdentifier;
+            $this->familiar_devices = json_encode($familiarDevices);
+            $this->save();
+        }
         // \Log::info("Familiar devices updated: " . implode(', ', $familiarDevices));
     }
 

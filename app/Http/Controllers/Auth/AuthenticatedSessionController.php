@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\RateLimiter; // Add this import
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use \Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cookie;
 use App\Traits\DeviceIdentifier;
@@ -41,29 +42,29 @@ class AuthenticatedSessionController extends Controller
             $request->session()->regenerate();
 
             // Generate or get the device identifier
-            // $deviceIdentifier = $this->deviceIdentifier();
-            // $existingIdentifier = Cookie::get('device_identifier');
+            $deviceIdentifier = $this->deviceIdentifier();
+            Cookie::queue('device_identifier', $deviceIdentifier, 129600);
 
-            // // Log device identifier and existing identifier for debugging
+            // Log device identifier and existing identifier for debugging
             // \Log::info("Device identifier: $deviceIdentifier");
             // \Log::info("Existing identifier: $existingIdentifier");
 
-            // // Set or update the device identifier cookie
+            // Set or update the device identifier cookie
             // Cookie::queue('device_identifier', $deviceIdentifier, 60);
 
-            // // Check if the device is familiar
-            // if (! $user->isDeviceFamiliar($deviceIdentifier)) {
-            //     // \Log::info("Device not familiar. Triggering 2FA.");
-            //     $user->sendTwoFactorCode();
+            // Check if the device is familiar
+            if (! $user->isDeviceFamiliar($deviceIdentifier)) {
+                // \Log::info("Device not familiar. Triggering 2FA.");
+                $user->sendTwoFactorCode();
 
-            //     // Use session flash data to store the 2FA redirection flag
-            //     session()->flash('2fa_required', true);
-            //     // Optional delay to address asynchronous issues
-            //     sleep(1); // 1 second delay
-            //     return redirect()->route('auth.2fa')->with('error', 'Please enter the 2FA code sent to your email.');
-            // }
+                // Use session flash data to store the 2FA redirection flag
+                session()->flash('2fa_required', true);
+                // Optional delay to address asynchronous issues
+                sleep(1); // 1 second delay
+                return redirect()->route('auth.2fa')->with('error', 'Please enter the 2FA code sent to your email.');
+            }
 
-            // RateLimiter::clear($request->throttleKey());
+            RateLimiter::clear($request->throttleKey());
 
             // Load the designation
             $user->load('profile.designation');
@@ -106,7 +107,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function verifyTwoFactor(Request $request)
     {
-        \Log::info('verifyTwoFactor method called'); // Debugging line
+        // \Log::info('verifyTwoFactor method called'); // Debugging line
 
         $request->validate([
             'two_factor_code' => ['required', 'string'],
@@ -121,6 +122,10 @@ class AuthenticatedSessionController extends Controller
             // Mark current device as familiar
             $user->markDeviceAsFamiliar($this->deviceIdentifier());
 
+            if ($user->must_reset_password) {
+                return redirect()->route('password.reset.prompt');
+            }
+
             // Redirect based on user type
             if ($user->user_type == 'Admin') {
                 return redirect()->intended('/admin');
@@ -132,6 +137,32 @@ class AuthenticatedSessionController extends Controller
         }
 
         return back()->withErrors(['two_factor_code' => 'Invalid 2FA code.']);
+    }
+
+    public function showPasswordResetForm()
+    {
+        return view('auth.password_reset');
+    }
+
+    public function handlePasswordReset(Request $request)
+    {
+        $request->validate([
+            'password' => 'required|min:8|confirmed',
+        ]);
+
+        $user = Auth::user();
+        $user->password = Hash::make($request->password);
+        $user->must_reset_password = false; // Mark the password reset as complete
+        $user->save();
+
+        // Redirect based on user type
+        if ($user->user_type == 'Admin') {
+            return redirect()->intended('/admin')->with('success', 'Password updated successfully.');
+        } elseif ($user->user_type == 'Employee') {
+            return redirect()->intended('/employee')->with('success', 'Password updated successfully.');
+        }
+
+        return redirect()->intended('/')->with('success', 'Password updated successfully.');
     }
 
     /**
