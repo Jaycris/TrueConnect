@@ -27,11 +27,16 @@
                                     <p class="text-danger 500 italic">{{ $message }}</p>
                                 @enderror
                             </div>
-                            <div>
-                                <label for="price">Base Price ($)</label>
-                                <input id="price" name="price" type="text" placeholder="Enter Price" class="form-input" value="{{ $packSold->price }}">
+                            <div class="form-group">
+                                <label for="price" class="block mb-1 font-medium">Base Price</label>
+                                <div class="relative flex items-stretch">
+                                    <div class="bg-[#eee] flex justify-center items-center px-3 font-semibold border border-[#e0e6ed] dark:border-[#17263c] dark:bg-[#1b2e4b] ltr:rounded-l-md rtl:rounded-r-md">
+                                        $
+                                    </div>
+                                    <input id="price" name="price" type="text" placeholder="Enter Price" class="form-input flex-1 ltr:rounded-r-md rtl:rounded-l-md border-[#e0e6ed] dark:border-[#17263c] dark:bg-[#1b2e4b]" value="{{ $packSold->price }}">
+                                </div>
                                 @error('price')
-                                    <p class="text-danger 500 italic">{{ $message }}</p>
+                                    <p class="text-danger 500 italic mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
                             <div>

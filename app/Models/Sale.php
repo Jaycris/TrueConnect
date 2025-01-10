@@ -25,4 +25,9 @@ class Sale extends Model
         'amount',
         'method',
     ];
+
+    public function events()
+    {
+        return $this->belongsToMany(Event::class);
+    }
 }
