@@ -22,6 +22,9 @@ return new class extends Migration
             $table->string('two_factor_code')->nullable();
             $table->timestamp('two_factor_expires_at')->nullable();
             $table->json('familiar_devices')->nullable();
+            $table->boolean('two_factor_enabled')->default(false);
+            $table->enum('two_factor_recipient', ['Admin', 'User']);
+            $table->boolean('must_reset_password')->default(true);
             $table->rememberToken();
             $table->timestamps();
         });

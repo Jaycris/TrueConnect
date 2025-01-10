@@ -67,5 +67,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         '2fa' => \App\Http\Middleware\EnsureTwoFactorVerified::class,
         'checkRole' => \App\Http\Middleware\CheckRole::class,
+        'check.password.reset' => \App\Http\Middleware\CheckPasswordReset::class,
     ];
 }

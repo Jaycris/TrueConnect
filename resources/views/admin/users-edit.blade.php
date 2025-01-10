@@ -136,6 +136,22 @@
                                     <p class="text-danger 500 italic">{{ $message }}</p>
                                 @enderror
                             </div>
+                            <div>
+                                <label for="two_factor_enabled">
+                                    <input type="checkbox" id="two_factor_enabled" name="two_factor_enabled" value="1" {{ old('two_factor_enabled', $user->two_factor_enabled ?? false) ? 'checked' : '' }}> Activate 2 Factor Authentication
+                                </label>
+                            </div>
+                            <div id="two_factor_recipient_wrapper" style="display: none;">
+                                <label for="two_factor_recipient">Send 2FA Code To</label>
+                                <select id="two_factor_recipient" name="two_factor_recipient" class="form-select text-white-dark">
+                                    <option>Select recipient</option>
+                                    <option value="User" {{ old('two_factor_recipient', $user->two_factor_recipient ?? '') == 'User' ? 'selected' : '' }}>User</option>
+                                    <option value="Admin" {{ old('two_factor_recipient', $user->two_factor_recipient ?? '') == 'Admin' ? 'selected' : '' }}>Admin</option>
+                                </select>
+                                @error('two_factor_recipient')
+                                    <p class="text-danger 500 italic">{{ $message }}</p>
+                                @enderror
+                            </div>
                             <div class="mt-3 sm:col-span-2">
                                 <button type="submit" class="btn btn-primary">Save</button>
                             </div>
@@ -188,4 +204,19 @@
     height: 20px;
 }
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const checkbox = document.getElementById('two_factor_enabled');
+        const recipientWrapper = document.getElementById('two_factor_recipient_wrapper');
+
+        checkbox.addEventListener('change', function () {
+            recipientWrapper.style.display = this.checked ? 'block' : 'none';
+        });
+
+        if (checkbox.checked) {
+            recipientWrapper.style.display = 'block';
+        }
+    });
+</script>
 @endsection
