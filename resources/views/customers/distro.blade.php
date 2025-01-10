@@ -42,14 +42,14 @@
                 </div>
                 <div id="assigned" class="tab-content">
                     <div class="mb-5 flex items-center justify-between">
-                        <h5 class="text-lg font-semibold dark:text-white-light">Unassigned Leads</h5>
+                        <h5 class="text-lg font-semibold dark:text-white-light">Assigned Leads</h5>
                     </div>
                     <div class="mb-5">
                         <div class="table-responsive font-semibold text-[#515365] dark:text-white-light">
                             <table id="assign-leads-table" class="whitespace-nowrap">
                                 <thead>
                                     <tr>
-                                        <th><input type="checkbox" id="checkAllVerified" class="checkAll form-checkbox" /></th>
+                                        <th><input type="checkbox" id="checkAllAssign" class="checkAll form-checkbox" /></th>
                                         <th>Date</th>
                                         <th>Name</th>
                                         <th>Email</th>
@@ -68,8 +68,8 @@
                                         <td>{{ $customer->address ?? 'N/A'}}</td>
                                     </tr>
                                     @empty
-                                        <tr>
-                                            <td colspan="5">No leads available</td>
+                                        <tr id="no-assigned-leads">
+                                            <td colspan="5">No leads assigned</td>
                                         </tr>
                                 @endforelse
                             </table>
@@ -85,10 +85,10 @@
                     </div>
                     <div class="mb-5">
                         <div class="table-responsive font-semibold text-[#515365] dark:text-white-light">
-                            <table id="verified-leads-table" class="whitespace-nowrap">
+                        <table id="unassigned-leads-table" class="whitespace-nowrap">
                                 <thead>
                                     <tr>
-                                        <th><input type="checkbox" id="checkAllVerified" class="checkAll form-checkbox" /></th>
+                                        <th><input type="checkbox" id="checkAllUnassigned" class="checkAll form-checkbox" /></th>
                                         <th>Date</th>
                                         <th>Name</th>
                                         <th>Email</th>
@@ -242,12 +242,11 @@
     </div>
 </div>
 
-<script src="{{ asset('assets/js/polling.js') }}"></script>
-    <script>
+    <!-- <script>
         // Start polling when the page loads
         window.onload = function() {
             pollForAssignedLeads();  // Start polling for assigned leads for admin
             pollForReturnedLeads();  // Start polling for returned leads for admin
         };
-    </script>
+    </script> -->
 @endsection

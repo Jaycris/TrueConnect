@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('endorsed_event', function (Blueprint $table) {
+        Schema::create('send_admin_2fa', function (Blueprint $table) {
             $table->id();
-            $table->string('s_id'); // Ensure this is a string to match the type in 'sales'
-            $table->foreign('s_id')->references('s_id')->on('sales')->onDelete('cascade');
-            $table->string('event_name')->nullable();
+            $table->string('key')->unique();
+            $table->text('value');
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('endorsed_event');
+        Schema::dropIfExists('send_admin_2fa');
     }
 };

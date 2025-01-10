@@ -11,15 +11,19 @@ class VerifyDeviceEmail extends Notification implements ShouldQueue
 {
     use Queueable;
     public $code;
+    public $fullName;
 
     /**
      * Create a new notification instance.
      *
      * @param string $code
+     * @param string $firstName
+     * @param string $lastName
      */
-    public function __construct($code)
+    public function __construct($code, $fullName)
     {
         $this->code = $code;
+        $this->fullName = $fullName;
     }
 
 
@@ -38,11 +42,11 @@ class VerifyDeviceEmail extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
-        \Log::info('Sending 2FA email with code: ' . $this->code);
+        //\Log::info('Sending 2FA email with code: ' . $this->code);
         return (new MailMessage)
                     ->subject('Your login verification code')
                     ->greeting('Hello!')
-                    ->line('A new device has been detected logging into your account.')
+                    ->line('A new device has been detected logging in to ' . $this->fullName . ' account.')                    
                     ->line('Your Verification code is: ' . $this->code)
                     ->line('This code will expire in 10 minutes.')
                     ->line('Thank you!')

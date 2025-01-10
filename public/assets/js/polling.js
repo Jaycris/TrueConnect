@@ -1,14 +1,18 @@
 // State tracking
-let previousAssignedData = new Map(); // Use Map for caching row content
-let previousReturnedData = new Map(); // Use Map for caching row content
+let previousAssignedData = []; // To track the previous data state
+let previousReturnedData = [];
 let lastCheckAssigned = new Date().toISOString();
 let lastCheckReturned = new Date().toISOString();
 
 // Polling for returned leads
-function pollForReturnedLeads() {
-    setInterval(() => {
-        // console.log('Polling for returned leads...');
 
+function pollForReturnedLeads() {
+    const returnedTableBody = document.getElementById('returned-leads-body');
+    if (!returnedTableBody) {
+        console.warn('Returned Leads table not found. Polling for Returned Leads stopped.');
+        return; // Exit if the table is not present
+    }
+    setInterval(() => {
         fetch(`/returned-leads?last_check=${lastCheckReturned}`, {
             method: 'GET',
             headers: {
@@ -17,11 +21,18 @@ function pollForReturnedLeads() {
         })
         .then(response => response.json())
         .then(data => {
-            // console.log('Returned leads response:', data);
             lastCheckReturned = data.last_check;
 
-            // Update only if there’s new or modified data
-            updateCustomerTable(data.return_customers, 'returned-leads-body', 'no-returned-leads', 'No leads returned', previousReturnedData);
+            // Only update the table if there's new or modified data
+            if (JSON.stringify(data.return_customers) !== JSON.stringify(previousReturnedData)) {
+                previousReturnedData = data.return_customers; // Update the previous data tracker
+                updateReturnedCustomerTable(
+                    data.return_customers,
+                    'returned-leads-body',
+                    'no-returned-leads',
+                    'No leads returned'
+                );
+            }
         })
         .catch(error => console.error('Error fetching returned leads:', error));
     }, 5000);
@@ -29,9 +40,13 @@ function pollForReturnedLeads() {
 
 // Polling for assigned leads
 function pollForAssignedLeads() {
+    const assignedTableBody = document.getElementById('assigned-leads-body');
+    if (!assignedTableBody) {
+        console.warn('Assigned Leads table not found. Polling for Assigned Leads stopped.');
+        return; // Exit if the table is not present
+    }
+
     setInterval(() => {
-        // console.log('Polling for assigned leads...');
-        
         fetch(`/assigned-leads?last_check=${lastCheckAssigned}`, {
             method: 'GET',
             headers: {
@@ -40,16 +55,22 @@ function pollForAssignedLeads() {
         })
         .then(response => response.json())
         .then(data => {
-            // console.log('Assigned leads response:', data);
             lastCheckAssigned = data.last_check;
 
-            // Update only if there’s new or modified data
-            updateCustomerTable(data.assigned_customers, 'assigned-leads-body', 'no-assigned-leads', 'No leads assigned', previousAssignedData);
+            // Update only if there's new or modified data
+            if (JSON.stringify(data.assigned_customers) !== JSON.stringify(previousAssignedData)) {
+                previousAssignedData = data.assigned_customers; // Update the previous data tracker
+                updateAssignedCustomerTable(
+                    data.assigned_customers, 
+                    'assigned-leads-body', 
+                    'no-assigned-leads', 
+                    'No leads assigned'
+                );
+            }
         })
         .catch(error => console.error('Error fetching assigned leads:', error));
     }, 5000);
 }
-
 
 function pollForEmployeeAssignedLeads() {
     setInterval(() => {
@@ -101,10 +122,15 @@ function pollForEmployeeAssignedLeads() {
 // Function to add a new customer row to the table dynamically, avoiding duplicates
 function addNewCustomerRow(customer, tableId) {
     const tableBody = document.getElementById(tableId).querySelector('tbody');
+
+    if (!tableBody) {
+        console.error(`Table body not found for table ID "${tableId}".`);
+        return;
+    }
     
     // Check if a row with this customer ID already exists in the table
     if (tableBody.querySelector(`tr[data-id="${customer.id}"]`)) {
-        // console.log(`Customer with ID ${customer.id} already exists in the table. Skipping.`);
+        console.log(`Customer with ID ${customer.id} already exists in the table. Skipping.`);
         return; // Don't add the row again if it already exists
     }
 
@@ -122,20 +148,102 @@ function addNewCustomerRow(customer, tableId) {
     // Append the new row to the table body
     tableBody.insertAdjacentHTML('beforeend', newRow);
     // console.log(`Customer with ID ${customer.id} added to the ${tableId}.`);
+    handleIndividualCheckboxes(tableId, 'open-return-modal');
 }
 
 // Function to update the table and manage the "No leads assigned" message
-function updateCustomerTable(customers, tbodyId, emptyMessageId, emptyMessageText) {
+function updateAssignedCustomerTable(customers, tbodyId, emptyMessageId, emptyMessageText) {
     const tableBody = document.getElementById(tbodyId);
-    let noDataRow = document.getElementById(emptyMessageId);
+    const noDataRow = document.getElementById(emptyMessageId);
 
-    // Add or update each customer row without removing existing rows
+    // Preserve the checkbox state
+    const checkboxStates = {};
+    tableBody.querySelectorAll('.select-lead').forEach(checkbox => {
+        const row = checkbox.closest('tr');
+        if (row) {
+            const id = row.getAttribute('data-id');
+            checkboxStates[id] = checkbox.checked;
+        }
+    });
+
+    // Create a Set of customer IDs from the new data
+    const customerIds = new Set(customers.map(customer => customer.id));
+
+    // Remove rows that are no longer in the new data
+    tableBody.querySelectorAll('.customer-row').forEach(row => {
+        const rowId = row.getAttribute('data-id');
+        if (!customerIds.has(parseInt(rowId, 10))) {
+            row.remove();
+        }
+    });
+
+    // Add or update rows for the current customers
     customers.forEach(customer => {
         const existingRow = tableBody.querySelector(`tr[data-id="${customer.id}"]`);
         const rowContent = `
             <td><input type="checkbox" class="form-checkbox select-lead" /></td>
             <td>${formatDateToDMY(customer.date_created)}</td>
-            <td>${customer.fullName || `${customer.first_name} ${customer.last_name}`} </td>
+            <td>${customer.fullName || `${customer.first_name} ${customer.last_name}`}</td>
+            <td>${customer.email}</td>
+            <td>${customer.address || 'N/A'}</td>
+        `;
+
+        if (existingRow) {
+            existingRow.innerHTML = rowContent;
+
+            // Restore the checkbox state if it exists
+            const checkbox = existingRow.querySelector('.select-lead');
+            if (checkbox && checkboxStates[customer.id] !== undefined) {
+                checkbox.checked = checkboxStates[customer.id];
+            }
+        } else {
+            const newRow = document.createElement('tr');
+            newRow.classList.add('customer-row');
+            newRow.setAttribute('data-id', customer.id);
+            newRow.innerHTML = rowContent;
+
+            // Restore the checkbox state for new rows
+            const checkbox = newRow.querySelector('.select-lead');
+            if (checkbox && checkboxStates[customer.id] !== undefined) {
+                checkbox.checked = checkboxStates[customer.id];
+            }
+
+            tableBody.appendChild(newRow);
+        }
+    });
+
+    // Display "No leads assigned" message only if there are no rows
+    if (customers.length === 0 && !tableBody.querySelector('.customer-row')) {
+        if (!noDataRow) {
+            const noDataRowElement = document.createElement('tr');
+            noDataRowElement.id = emptyMessageId;
+            noDataRowElement.innerHTML = `<td colspan="5" class="text-center">${emptyMessageText}</td>`;
+            tableBody.appendChild(noDataRowElement);
+        }
+    } else if (noDataRow) {
+        noDataRow.remove();
+    }
+
+    // Attach listeners to checkboxes for enabling/disabling the button
+    handleIndividualCheckboxes(tbodyId, 'unassign-leads-btn');
+}
+
+function updateReturnedCustomerTable(customers, tbodyId, emptyMessageId, emptyMessageText) {
+    const tableBody = document.getElementById(tbodyId);
+    const noDataRow = document.getElementById(emptyMessageId);
+
+    if (!tableBody) {
+        console.error(`Table body with ID "${tbodyId}" not found.`);
+        return;
+    }
+
+    // Add or update rows for the current customers
+    customers.forEach(customer => {
+        const existingRow = tableBody.querySelector(`tr[data-id="${customer.id}"]`);
+        const rowContent = `
+            <td><input type="checkbox" class="form-checkbox select-lead" /></td>
+            <td>${formatDateToDMY(customer.date_created)}</td>
+            <td>${customer.fullName || `${customer.first_name} ${customer.last_name}`}</td>
             <td>${customer.email}</td>
             <td>${customer.address || 'N/A'}</td>
         `;
@@ -147,23 +255,25 @@ function updateCustomerTable(customers, tbodyId, emptyMessageId, emptyMessageTex
             newRow.classList.add('customer-row');
             newRow.setAttribute('data-id', customer.id);
             newRow.innerHTML = rowContent;
+
             tableBody.appendChild(newRow);
         }
     });
 
-    // Display "No leads assigned" message only if there are no rows and no new customers
+    // Display "No leads returned" message only if there are no rows
     if (customers.length === 0 && !tableBody.querySelector('.customer-row')) {
         if (!noDataRow) {
-            // console.log(`Displaying "No leads assigned" message for ${tbodyId}`);
             const noDataRowElement = document.createElement('tr');
             noDataRowElement.id = emptyMessageId;
             noDataRowElement.innerHTML = `<td colspan="5" class="text-center">${emptyMessageText}</td>`;
             tableBody.appendChild(noDataRowElement);
         }
     } else if (noDataRow) {
-        // console.log(`Removing "No leads assigned" message for ${tbodyId}`);
         noDataRow.remove();
     }
+
+    // Check if handleIndividualCheckboxes is available
+    handleIndividualCheckboxes(tbodyId, 'open-reassign-modal');
 }
 
 // Utility function to format dates as `d M, Y`
@@ -180,6 +290,7 @@ window.onload = function() {
     pollForAssignedLeads();
     pollForReturnedLeads();
 };
+
 
 // Mark customer as viewed and remove the "New" label
 function markAsViewed(customerId) {

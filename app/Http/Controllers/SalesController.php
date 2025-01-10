@@ -86,24 +86,32 @@ class SalesController extends Controller
             'contact_number' => 'required|string|max:15',
             'email' => 'required|email',
             'mailing_address' => 'required|string|max:255',
-            'pack_type' => 'required|integer|exists:package_types,id',
-            'pack_sold' => 'required|integer|exists:packages,id',
+            'package_type' => 'required|string',
+            'package_sold' => 'required|string',
             'event_location' => 'required|array',
             'event_location.*' => 'exists:events,id',
             'amount' => 'required|numeric|min:0',
             'method' => 'required|string|max:50',
         ]);
 
+        // Retrieve the package_sold record based on the provided name
+        $packageSold = PackageSold::where('id', $validatedData['package_sold'])->first();
+
+        // Check if package_sold exists
+        if (!$packageSold) {
+            return redirect()->back()->withErrors(['package_sold' => 'Selected package does not exist.']);
+        }
+
         // Calculate the total price (if not handled by JavaScript in the frontend)
-        $totalPrice = $request->input('amount'); // Adjust if needed for custom calculations
+        $totalPrice =  $packageSold->price + $validatedData['amount']; // Adjust if needed for custom calculations
         $s_id = $this->generateUniqueID();
 
         // Create the Sale
         $sale = new Sale();
-        $sale->transaction_id = $s_id; // You may already have this generated
+        $sale->s_id = $s_id; // You may already have this generated
         $sale->date_sold = $validatedData['date_sold'];
-        $sale->consultant_name = $validatedData['consultant_name'];
-        $sale->authors_name = $validatedData['authors_name'];
+        $sale->consultant = $validatedData['consultant_name'];
+        $sale->author_name = $validatedData['authors_name'];
         $sale->gender = $validatedData['gender'];
         $sale->book_title = $validatedData['book_title'];
         $sale->contact_number = $validatedData['contact_number'];
@@ -113,12 +121,16 @@ class SalesController extends Controller
         $sale->pack_sold = $validatedData['package_sold'];
         $sale->amount = $validatedData['amount'];
         $sale->total_price = $totalPrice;
-        $sale->payment_method = $validatedData['method'];
+        $sale->method = $validatedData['method'];
         $sale->save();
 
-        // Attach event locations
-        if (!empty($validatedData['event_location'])) {
-            $sale->events()->attach($validatedData['event_location']);
+        if ($request->event_location) {
+            foreach ($request->event_location as $event_location_id) {
+                $sale->events()->create([
+                    's_id' => $sale->s_id, // Assuming `s_id` is required in `endorsed_event` table
+                    'event_name' => $event_location_id, // Adjust this if `event_location` is not `event_name`
+                ]);
+            }
         }
 
         // Redirect back with success message

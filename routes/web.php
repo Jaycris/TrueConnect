@@ -11,6 +11,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\PackagesController;
 use App\Http\Controllers\ServicesController;
+use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -50,7 +51,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/admin/users/{id}/update', [UserController::class, 'update'])->name('admin.users.update')->middleware('2fa');
     Route::delete('/admin/users/{id}/delete', [UserController::class, 'destroy'])->name('admin.users.delete')->middleware('2fa');
 
-    // Department
+    Route::get('/admin/2fa-recipient', [SettingsController::class, 'show'])->name('admin.2fa-recipient')->middleware('2fa');
+    Route::put('/admin/2fa-recipient-update', [SettingsController::class, 'updateAdmin'])->name('admin.updateAdmin')->middleware('2fa');
+
+    //Department
     Route::get('/admin/departments', [DepartmentController::class, 'index'])->name('admin.department')->middleware('2fa');
     Route::get('/admin/departments/create', [DepartmentController::class, 'create'])->name('admin.department.create')->middleware('2fa');
     Route::post('/admin/departments/post', [DepartmentController::class, 'store'])->name('admin.department.post')->middleware('2fa');
@@ -152,6 +156,10 @@ Route::middleware(['auth'])->group(function () {
     // 2FA routes
     Route::get('/2fa', [AuthenticatedSessionController::class, 'showTwoFactorForm'])->name('auth.2fa');
     Route::post('/verify-2fa', [AuthenticatedSessionController::class, 'verifyTwoFactor'])->name('verify.2fa'); // Ensure this matches
+
+    //Password reset
+    Route::get('/password/reset', [AuthenticatedSessionController::class, 'showPasswordResetForm'])->name('password.reset.prompt')->middleware('2fa');;
+    Route::post('/password/reset', [AuthenticatedSessionController::class, 'handlePasswordReset'])->name('password.reset.handle')->middleware('2fa');;
 });
 
 
