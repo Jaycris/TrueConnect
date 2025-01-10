@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('endorsed_event', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('s_id')->constrained('sales')->onDelete('cascade');
+            $table->string('s_id'); // Ensure this is a string to match the type in 'sales'
+            $table->foreign('s_id')->references('s_id')->on('sales')->onDelete('cascade');
             $table->string('event_name')->nullable();
             $table->timestamps();
         });

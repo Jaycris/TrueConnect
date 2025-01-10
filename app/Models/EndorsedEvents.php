@@ -14,8 +14,8 @@ class EndorsedEvents extends Model
         'event_name'
     ];
 
-    public function sales()
+    public function sale()
     {
-        return $this->belongsTo(Sale::class);
+        return $this->belongsTo(Sale::class, 's_id', 's_id'); // Match `s_id` foreign key
     }
 }

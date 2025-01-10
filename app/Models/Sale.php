@@ -28,6 +28,6 @@ class Sale extends Model
 
     public function events()
     {
-        return $this->belongsToMany(Event::class);
+        return $this->hasMany(EndorsedEvents::class, 's_id', 's_id');
     }
 }
