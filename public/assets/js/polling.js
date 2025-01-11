@@ -1,8 +1,20 @@
 // State tracking
-let previousAssignedData = []; // To track the previous data state
-let previousReturnedData = [];
-let lastCheckAssigned = new Date().toISOString();
-let lastCheckReturned = new Date().toISOString();
+// Check if the variables are already declared to avoid redeclaration
+if (typeof previousAssignedData === "undefined") {
+    var previousAssignedData = [];
+}
+
+if (typeof previousReturnedData === "undefined") {
+    var previousReturnedData = [];
+}
+
+if (typeof lastCheckAssigned === "undefined") {
+    var lastCheckAssigned = new Date().toISOString();
+}
+
+if (typeof lastCheckReturned === "undefined") {
+    var lastCheckReturned = new Date().toISOString();
+}
 
 // Polling for returned leads
 
