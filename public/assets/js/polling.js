@@ -1,15 +1,27 @@
 // State tracking
-let previousAssignedData = []; // To track the previous data state
-let previousReturnedData = [];
-let lastCheckAssigned = new Date().toISOString();
-let lastCheckReturned = new Date().toISOString();
+// Check if the variables are already declared to avoid redeclaration
+if (typeof previousAssignedData === "undefined") {
+    var previousAssignedData = [];
+}
+
+if (typeof previousReturnedData === "undefined") {
+    var previousReturnedData = [];
+}
+
+if (typeof lastCheckAssigned === "undefined") {
+    var lastCheckAssigned = new Date().toISOString();
+}
+
+if (typeof lastCheckReturned === "undefined") {
+    var lastCheckReturned = new Date().toISOString();
+}
 
 // Polling for returned leads
 
 function pollForReturnedLeads() {
     const returnedTableBody = document.getElementById('returned-leads-body');
     if (!returnedTableBody) {
-        console.warn('Returned Leads table not found. Polling for Returned Leads stopped.');
+        console.log('Returned Leads table not found. Polling for Returned Leads stopped.');
         return; // Exit if the table is not present
     }
     setInterval(() => {
@@ -42,7 +54,7 @@ function pollForReturnedLeads() {
 function pollForAssignedLeads() {
     const assignedTableBody = document.getElementById('assigned-leads-body');
     if (!assignedTableBody) {
-        console.warn('Assigned Leads table not found. Polling for Assigned Leads stopped.');
+        console.log('Assigned Leads table not found. Polling for Assigned Leads stopped.');
         return; // Exit if the table is not present
     }
 

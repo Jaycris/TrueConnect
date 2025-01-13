@@ -48,7 +48,7 @@
                                      <td>
                                         <input type="checkbox" class="form-checkbox select-lead" /></td> 
                                     <td>
-                                    {!! \Carbon\Carbon::parse($customer->date_created)->format('d M, Y') ?? 'N/A' !!}
+                                    {!! \Carbon\Carbon::parse($customer->date_created)->format('M d, Y') ?? 'N/A' !!}
                                     </td>
                                     <td>{{ $customer->fullName() }}</td>
                                     <td>{{ $customer->email }}</td>

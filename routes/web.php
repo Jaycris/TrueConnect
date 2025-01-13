@@ -100,7 +100,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/customers/return', [CustomerController::class, 'returnToLeadMiner'])->name('customers.return');    
     Route::post('/customers/reassign', [CustomerController::class, 'reassignToEmployee'])->name('customers.reassign');
 
-
     // Sales
     Route::get('/sales', [SalesController::class, 'index'])->name('sales.index')->middleware('2fa');
     Route::get('/sales/create', [SalesController::class, 'create'])->name('sales.create')->middleware('2fa');

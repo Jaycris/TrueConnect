@@ -36,7 +36,7 @@
                             <td class="whitespace-nowrap">
                                 <div class="flex items-center">
                                     <div class="avatar w-6 h-6 rounded-full overflow-hidden">
-                                    <img src="{{ asset('storage/' . $user->profile->avatar) }}" alt="Avatar" class="h-full w-full object-cover rounded-full">
+                                        <img id="profileImage" src="{{ $user->profile->avatar ? asset('storage/' . $user->profile->avatar) : asset('storage/avatars/default_photo.jpg') }}" alt="image" class="rounded-full object-cover w-full h-full" onerror="this.onerror=null;this.src='{{ asset('storage/avatars/default_photo.jpg') }}';">
                                     </div>                              
                                     <span class="ml-2">{{ $user->profile->fullname() }}</span>
                                 </div>

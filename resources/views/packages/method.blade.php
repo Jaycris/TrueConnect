@@ -22,7 +22,7 @@
                         <tr>
                             <th><input type="checkbox" class="checkAll form-checkbox" />Select All</th>
                             <th>#</th>
-                            <th>Method</th>
+                            <th>Payment Method</th>
                             <th class="text-right flex">Action</th>
                         </tr>
                     </thead>

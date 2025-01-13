@@ -8,7 +8,7 @@
         </ul>
         <div class="pt-5">
             <div class="mb-5 flex items-center justify-between">
-                <h5 class="text-lg font-semibold dark:text-white-light">Update 2fa Recipient</h5>
+                <h5 class="text-lg font-semibold dark:text-white-light">Update Two-Factor Authentication (2FA) Recipient</h5>
             </div>
             <div class="mb-5">
                 <form action="{{ route('admin.updateAdmin') }}" method="POST" enctype="multipart/form-data" class="mb-5 rounded-md border border-[#ebedf2] bg-white p-4 dark:border-[#191e3a] dark:bg-[#0e1726]">
@@ -21,7 +21,7 @@
                             <div>
                                 <label for="admin_email">Admin for 2FA</label>
                                 <select id="admin_email" name="admin_email" class="form-select text-white-dark">
-                                    <option>Select Admin for 2FA</option>
+                                    <option>Select Admin for 2FA...</option>
                                     @if($admins->isEmpty())
                                         <option value="">No Admins Available</option>
                                     @else
@@ -37,10 +37,12 @@
                                 @enderror
                                 @if($selectedAdminEmail)
                                     <p class="mt-2">
+                                    <br />
                                         <strong>Current Admin Email for 2FA:</strong> {{ $selectedAdminEmail }}
                                     </p>
                                 @else
                                     <p>
+                                    <br />
                                         <strong>Current Admin Email for 2FA:</strong> Not set yet.
                                     </p>
                                 @endif

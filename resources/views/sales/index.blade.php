@@ -34,12 +34,12 @@
                         <tr>
                             <td><input type="checkbox" class="form-checkbox" /></td>
                             <td>{{$sales->s_id}}</td>
-                            <td>{!! \Carbon\Carbon::parse($sales->date_created)->format('d M, Y') ?? 'N/A' !!}</td>
+                            <td>{!! \Carbon\Carbon::parse($sales->date_created)->format('M d, Y') ?? 'N/A' !!}</td>
                             <td>{{$sales->consultant}}</td>
                             <td>{{$sales->author_name}}</td>
                             <td>{{$sales->email}}</td>
                             <td>{{$sales->book_title}}</td>
-                            <td>{{$sales->total_price}}</td>
+                            <td>${{$sales->total_price}}</td>
                             <td class="text-center">
                                 <ul class="flex items-center gap-2">
                                     <li>
