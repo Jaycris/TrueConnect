@@ -100,7 +100,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/customers/return', [CustomerController::class, 'returnToLeadMiner'])->name('customers.return');    
     Route::post('/customers/reassign', [CustomerController::class, 'reassignToEmployee'])->name('customers.reassign');
 
-
     // Sales
     Route::get('/sales', [SalesController::class, 'index'])->name('sales.index')->middleware('2fa');
     Route::get('/sales/create', [SalesController::class, 'create'])->name('sales.create')->middleware('2fa');
@@ -128,7 +127,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/package-sold/{id}/edit', [PackagesController::class, 'editPackSold'])->name('pack-sold.edit')->middleware('2fa');
     Route::post('/package-sold/{id}/update', [PackagesController::class, 'updatePackSold'])->name('pack-sold.update')->middleware('2fa');
     Route::delete('/package-sold/{id}/delete', [PackagesController::class, 'destroyPackSold'])->name('pack-sold.delete')->middleware('2fa');
-   
+
     Route::get('/events', [PackagesController::class, 'event'])->name('events.index')->middleware('2fa');
     Route::get('/events/create', [PackagesController::class, 'createEvent'])->name('event.create')->middleware('2fa');
     Route::get('/events/view/{id}', [PackagesController::class, 'viewEvent'])->name('event.view')->middleware('2fa');
@@ -145,13 +144,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/payment-method/{id}/update', [PackagesController::class, 'updateMethod'])->name('method.update')->middleware('2fa');
     Route::get('/payment-method/view/{id}', [PackagesController::class, 'viewMethod'])->name('method.view')->middleware('2fa');
     Route::delete('/payment-method/{id}/delete', [PackagesController::class, 'destroyMethod'])->name('method.delete')->middleware('2fa');
-
-
-
-
-
-
-
 
     // 2FA routes
     Route::get('/2fa', [AuthenticatedSessionController::class, 'showTwoFactorForm'])->name('auth.2fa');

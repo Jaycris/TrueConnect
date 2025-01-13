@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function(){
         const removeContactNumberButton = document.querySelector('.remove-contact-number');
     
         if (!addContactNumberButton || !contactNumbersContainer || !removeContactNumberButton) {
-            console.error('One or more contact number elements not found');
+            console.log('One or more contact number elements not found');
             return;
         }
     
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function(){
         const removeBookButton = document.querySelector('.remove-book');
 
         if (!addBookButton || !booksContainer || !removeBookButton) {
-            console.error('One or more book elements not found');
+            console.log('One or more book elements not found');
             return;
         }
 
@@ -96,11 +96,21 @@ document.addEventListener('DOMContentLoaded', function(){
         // console.log('Leads information functionality initialized');
 
         const leadInfoBox = document.querySelector('.lead-info');
-        const detailsContainer = leadInfoBox.querySelector('.details-container');
+        let detailsContainer = null;
+
+        if (!leadInfoBox) {
+            console.log("Element 'leadInfoBox' not found.");
+        } else {
+            detailsContainer = leadInfoBox.querySelector('.details-container');
+            if (!detailsContainer) {
+                console.log("Element with class 'details-container' inside 'leadInfoBox' not found.");
+            }
+        }
+
         const editButton = document.getElementById('edit-button');
 
         if (!leadInfoBox) {
-            console.error('Lead info box not found');
+            console.log('Lead info box not found');
             return;
         }
 
@@ -124,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
             const customerId = clickedRow.getAttribute('data-id');
             if (!customerId) {
-                console.error('No customer ID found on clicked row');
+                console.log('No customer ID found on clicked row');
                 return;
             }
 
@@ -141,12 +151,12 @@ document.addEventListener('DOMContentLoaded', function(){
                     if (data.success && data.customer) {
                         displayCustomerInfo(data.customer); // Call function to display data
                     } else {
-                        console.error('Customer data not found in response');
+                        console.log('Customer data not found in response');
                         resetLeadInfo();
                     }
                 })
                 .catch(error => {
-                    console.error('Error fetching customer details:', error);
+                    console.log('Error fetching customer details:', error);
                     resetLeadInfo();
                 });
             

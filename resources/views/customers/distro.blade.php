@@ -61,7 +61,7 @@
                                     <tr class="customer-row" data-id="{{ $customer->id }}" data-name="{{ $customer->fullName() }}" data-books="{{ $customer->books->toJson() }}" data-contact-numbers="{{ $customer->contactNumbers->toJson() }}" onclick="markAsViewed({{ $customer->id }})">
                                         <td><input type="checkbox" class="form-checkbox select-lead" /></td> 
                                         <td>
-                                        {!! \Carbon\Carbon::parse($customer->date_created)->format('d M, Y') ?? 'N/A' !!}
+                                        {!! \Carbon\Carbon::parse($customer->date_created)->format('M d, Y') ?? 'N/A' !!}
                                         </td>
                                         <td>{{ $customer->fullName() }}</td>
                                         <td>{{ $customer->email }}</td>
@@ -100,7 +100,7 @@
                                     <tr class="customer-row" data-id="{{ $customer->id }}" data-name="{{ $customer->fullName() }}" data-books="{{ $customer->books->toJson() }}" data-contact-numbers="{{ $customer->contactNumbers->toJson() }}" onclick="markAsViewed({{ $customer->id }})">
                                         <td><input type="checkbox" class="form-checkbox select-lead" /></td> 
                                         <td>
-                                        {!! \Carbon\Carbon::parse($customer->date_created)->format('d M, Y') ?? 'N/A' !!}
+                                        {!! \Carbon\Carbon::parse($customer->date_created)->format('M d, Y') ?? 'N/A' !!}
                                         </td>
                                         <td>{{ $customer->fullName() }}</td>
                                         <td>{{ $customer->email }}</td>
