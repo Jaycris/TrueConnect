@@ -46,6 +46,13 @@ class SalesController extends Controller
         return view('sales.edit');
     }
 
+    public function destroy($id)
+    {
+        $sale = Sale::findOrFail($id);
+        $sale->events()->delete();
+        $sale->delete();
+        return redirect()->route('sales.index')->with('success', 'Sale endorsement deleted successfully!');
+    }
 
     public function getPackageSoldByType(Request $request)
     {
@@ -76,8 +83,6 @@ class SalesController extends Controller
 
         return response()->json($events);
     }
-
-
 
     public function store(Request $request)
     {
@@ -196,9 +201,9 @@ class SalesController extends Controller
     {
         $today = date('Yd');
         $name = "SA";
-        do{
+        do {
             $s_id = $name . $today . rand(100, 999);
-        }while(Sale::where('s_id', $s_id)->exists());
+        } while(Sale::where('s_id', $s_id)->exists());
 
         return $s_id;
     }
