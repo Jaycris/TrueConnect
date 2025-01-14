@@ -19,7 +19,7 @@
                     <thead>
                         <tr>
                             <th><input type="checkbox" id="checkAllUsers" class="checkAll form-checkbox" /></th>
-                            <th>#</th>
+                            <th>Transaction ID</th>
                             <th>Date Sold</th>
                             <th>Consultant Name</th>
                             <th>Author Name</th>
@@ -43,7 +43,7 @@
                             <td class="text-center">
                                 <ul class="flex items-center gap-2">
                                     <li>
-                                        <a href="{{ route('sales.view') }}" x-tooltip="View Profile">
+                                        <a href="{{ route('sales.view', ['id' => $sales->id]) }}" x-tooltip="View">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" viewBox="0 0 20 20" fill="currentColor">
                                                 <path fill-rule="evenodd" d="M10 12a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
                                                 <path fill-rule="evenodd" d="M2.538 10c1.905-3.507 5.366-6 7.462-6s5.557 2.493 7.462 6c-.905 3.507-3.773 6-7.462 6s-6.557-2.493-7.462-6zm7.462 4c-2.154 0-4.066-1.743-5.342-4 .73-1.38 2.147-3 5.342-3s4.612 1.62 5.342 3c-1.276 2.257-3.188 4-5.342 4zm0-6a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>

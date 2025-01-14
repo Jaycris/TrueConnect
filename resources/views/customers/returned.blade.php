@@ -48,8 +48,9 @@
                             <tbody id="returned-leads-body" class="dark:text-white-dark">
                             @forelse($returnCustomers as $customer)
                                 <tr class="customer-row" data-id="{{ $customer->id }}" data-name="{{ $customer->fullName() }}" data-books="{{ $customer->books->toJson() }}" data-contact-numbers="{{ $customer->contactNumbers->toJson() }}" data-employee-id="{{ $customer->assign_to }}" onclick="markAsViewed({{ $customer->id }})">  <!-- Add employee ID here -->                                        
-                                     <td>
-                                        <input type="checkbox" class="form-checkbox select-lead" /></td> 
+                                    <td>
+                                        <input type="checkbox" class="form-checkbox select-lead" />
+                                    </td> 
                                     <td>
                                     {!! \Carbon\Carbon::parse($customer->date_created)->format('M d, Y') ?? 'N/A' !!}
                                     </td>

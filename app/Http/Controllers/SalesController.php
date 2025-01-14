@@ -30,11 +30,16 @@ class SalesController extends Controller
         $method = PaymentMethod::all();
         return view('sales.create', compact('s_id', 'fullName', 'packageTypes', 'method'));
     }
-    
-    public function view()
+
+    public function view($id)
     {
-        return view('sales.view');
+        // Fetch the sale using the ID
+        $sale = Sale::findOrFail($id);
+
+        // Return the view with the sale details
+        return view('sales.view', compact('sale'));
     }
+
 
     public function edit()
     {
