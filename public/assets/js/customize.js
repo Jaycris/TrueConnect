@@ -200,6 +200,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const buttonMapping = {
                 'unassigned-leads-table': 'assign-leads-btn',
                 'assign-leads-table': 'unassign-leads-btn',
+                'assigned-leads-body': 'unassign-leads-btn',
                 'my-leads-table': 'return-leads-btn',  // Link `my-leads-table` with `return-leads-btn`
                 'assigned-customers-list': 'return-leads-btn',
                 'return-leads-table': 'reassign-leads-btn',

@@ -41,7 +41,7 @@ class Customer extends Model
 
     public function returnReasons()
     {
-        return $this->hasMany(CustomerReturnReason::class);
+        return $this->hasMany(CustomerReturnReason::class, 'customer_id', 'id');
     }
 
     public function fullName()

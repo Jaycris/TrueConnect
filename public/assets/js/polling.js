@@ -191,6 +191,12 @@ function updateAssignedCustomerTable(customers, tbodyId, emptyMessageId, emptyMe
         if (existingRow) {
             existingRow.innerHTML = rowContent;
 
+            // Add fade-in animation for updated rows
+            existingRow.classList.add('fade-in');
+            existingRow.addEventListener('animationend', () => {
+                existingRow.classList.remove('fade-in');
+            });
+
             // Restore the checkbox state if it exists
             const checkbox = existingRow.querySelector('.select-lead');
             if (checkbox && checkboxStates[customer.id] !== undefined) {
@@ -198,9 +204,14 @@ function updateAssignedCustomerTable(customers, tbodyId, emptyMessageId, emptyMe
             }
         } else {
             const newRow = document.createElement('tr');
-            newRow.classList.add('customer-row');
+            newRow.classList.add('customer-row', 'fade-in');
             newRow.setAttribute('data-id', customer.id);
             newRow.innerHTML = rowContent;
+
+            // Remove fade-in class after animation
+            newRow.addEventListener('animationend', () => {
+                newRow.classList.remove('fade-in');
+            });
 
             // Restore the checkbox state for new rows
             const checkbox = newRow.querySelector('.select-lead');
@@ -225,7 +236,7 @@ function updateAssignedCustomerTable(customers, tbodyId, emptyMessageId, emptyMe
     }
 
     // Attach listeners to checkboxes for enabling/disabling the button
-    handleIndividualCheckboxes(tbodyId, 'unassign-leads-btn');
+    handleIndividualCheckboxes(tbodyId, 'unassign-leads-modal');
 }
 
 function updateReturnedCustomerTable(customers, tbodyId, emptyMessageId, emptyMessageText) {
@@ -250,11 +261,22 @@ function updateReturnedCustomerTable(customers, tbodyId, emptyMessageId, emptyMe
 
         if (existingRow) {
             existingRow.innerHTML = rowContent;
+
+            // Add fade-in animation for updated rows
+            existingRow.classList.add('fade-in');
+            existingRow.addEventListener('animationend', () => {
+                existingRow.classList.remove('fade-in');
+            });
         } else {
             const newRow = document.createElement('tr');
-            newRow.classList.add('customer-row');
+            newRow.classList.add('customer-row', 'fade-in');
             newRow.setAttribute('data-id', customer.id);
             newRow.innerHTML = rowContent;
+
+            // Remove fade-in class after animation
+            newRow.addEventListener('animationend', () => {
+                newRow.classList.remove('fade-in');
+            });
 
             tableBody.appendChild(newRow);
         }

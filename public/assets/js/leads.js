@@ -152,11 +152,22 @@ document.addEventListener('DOMContentLoaded', function(){
             
         });
 
+        function isReturnLeadsPage() {
+            return window.location.pathname.includes('/customers/returned');
+        }
+
         // Display fetched customer data
         function displayCustomerInfo(customer) {
             let assignToField = '';
             if (customer.assign_to && customer.assign_to !== customer.current_user_name) {
                 assignToField = `<li><strong>Assign To:</strong> ${customer.assign_to}</li>`;
+            }
+
+            let returnReasonField = '';
+            if (isReturnLeadsPage()) {
+                returnReasonField = `
+                    <li><strong>Return Reason:</strong> ${customer.latest_return_reason || 'No reason available'}</li>
+                `;
             }
         
             detailsContainer.innerHTML = `
@@ -180,19 +191,20 @@ document.addEventListener('DOMContentLoaded', function(){
                         </ul>
                     </li>
                     ${assignToField}
+                    ${returnReasonField}
                 </ul>
             `;
         
             if (editButton) {
-                // Dynamically determine the page name (referrer) from the URL
                 const pathSegments = window.location.pathname.split('/').filter(segment => segment);
                 const referrer = pathSegments.length > 1 ? pathSegments[pathSegments.length - 1] : 'index';
         
-                // Set the Edit Button URL with the correct referrer
                 editButton.href = `/customers/${customer.id}/edit?referrer=${referrer}`;
                 editButton.style.display = 'inline-block';
             }
         }
+
+        
     })();
 
     // (function() {
