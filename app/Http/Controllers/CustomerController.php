@@ -59,7 +59,7 @@ class CustomerController extends Controller
 
     public function returnedLeads()
     {
-        $returnCustomers = Customer::with(['contactNumbers', 'books'])
+        $returnCustomers = Customer::with(['returnReasons', 'contactNumbers', 'books'])
                                 ->whereNotNull('assign_to')  // Only include customers who are assigned
                                 ->where('return_lead', true)
                                 ->get();
@@ -82,8 +82,10 @@ class CustomerController extends Controller
 
     public function show($id)
     {
-        $customer = Customer::with('contactNumbers', 'books')->findOrFail($id);
+        $customer = Customer::with('returnReasons', 'contactNumbers', 'books')->findOrFail($id);
         $currentUserName = Auth::user()->profile->fullName();
+
+        $latestReturnReason = $customer->returnReasons->sortByDesc('created_at')->first();
 
         // Retrieve the assigned employee's name based on the 'assign_to' user_id
         $assignedEmployeeName = null;
@@ -112,6 +114,8 @@ class CustomerController extends Controller
                         'link' => $book->link,
                     ];
                 }),
+                'latest_return_reason' => $latestReturnReason ? $latestReturnReason->reason : 'No reason available',
+                'return_reasons' => [], // Provide an empty array to avoid undefined errors in JS
                 'assign_to' => $assignedEmployeeName,
                 'is_viewed' => $customer->is_viewed,
                 'current_user_name' => $currentUserName,
