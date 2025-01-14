@@ -406,11 +406,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.status === 'error') {
                     modalTitle.innerText = errorMessage;
                     modalMessage.innerText = data.message;
-                    usersHeading.innerText = 'Affected users';
+                    usersHeading.innerText = 'Affected users:';
                     usersList.innerHTML = '';
                     data.profiles.forEach(profile => {
                         const li = document.createElement('li');
-                        li.innerText = `-${profile.first_name}  ${profile.last_name}`;
+                        li.innerText = `- ${profile.first_name}  ${profile.last_name}`;
                         usersList.appendChild(li);
                     });
                     okayButton.classList.remove('hidden');

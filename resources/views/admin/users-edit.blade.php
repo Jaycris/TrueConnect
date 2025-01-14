@@ -6,12 +6,12 @@
                 <a href="{{ route('admin.users') }}" class="text-primary hover:underline">Users</a>
             </li>
             <li class="before:content-['/'] ltr:before:mr-1 rtl:before:ml-1">
-                <span>Add Users</span>
+                <span>Edit User</span>
             </li>
         </ul>
         <div class="pt-5">
             <div class="mb-5 flex items-center justify-between">
-                <h5 class="text-lg font-semibold dark:text-white-light">Add Users</h5>
+                <h5 class="text-lg font-semibold dark:text-white-light">Edit User</h5>
             </div>
             <div class="mb-5">
                 <form action="{{ route('admin.users.update', $user->id) }}" method="POST" enctype="multipart/form-data" class="mb-5 rounded-md border border-[#ebedf2] bg-white p-4 dark:border-[#191e3a] dark:bg-[#0e1726]">

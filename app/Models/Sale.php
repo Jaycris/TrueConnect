@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Sale extends Model
 {
     use HasFactory;
-
+    protected $table = 'sales';
     protected $fillable = [
         's_id',
         'date_sold',
@@ -21,9 +21,13 @@ class Sale extends Model
         'mailing_address',
         'pack_type',
         'pack_sold',
-        'service_stage',
         'total_price',
         'amount',
         'method',
     ];
+
+    public function events()
+    {
+        return $this->hasMany(EndorsedEvents::class, 's_id', 's_id');
+    }
 }

@@ -6,12 +6,12 @@
                 <a href="{{ route('admin.users') }}" class="text-primary hover:underline">Users</a>
             </li>
             <li class="before:content-['/'] ltr:before:mr-1 rtl:before:ml-1">
-                <span>Add Users</span>
+                <span>Add User</span>
             </li>
         </ul>
         <div class="pt-5">
             <div class="mb-5 flex items-center justify-between">
-                <h5 class="text-lg font-semibold dark:text-white-light">Add Users</h5>
+                <h5 class="text-lg font-semibold dark:text-white-light">Add User</h5>
             </div>
             <div class="mb-5">
                 <form action="{{ route('admin.users.post') }}" method="POST" enctype="multipart/form-data" class="mb-5 rounded-md border border-[#ebedf2] bg-white p-4 dark:border-[#191e3a] dark:bg-[#0e1726]">
@@ -66,7 +66,7 @@
                             <div>
                                 <label for="gender">Gender</label>
                                 <select id="gender" name="gender" class="form-select text-white-dark">
-                                    <option>Select Gender</option>
+                                    <option>Select Gender...</option>
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
                                 </select>
@@ -77,7 +77,7 @@
                             <div>
                                 <label for="designation">Designation</label>
                                 <select id="des_id" name="des_id" class="form-select text-white-dark">
-                                    <option>Select Designation</option>
+                                    <option>Select Designation...</option>
                                     @foreach($designations as $key => $designation)
                                     <option value="{{ $designation->id }}">{{ $designation->name }}</option>
                                     @endforeach
@@ -89,7 +89,7 @@
                             <div>
                                 <label for="department">Department</label>
                                 <select id="department" name="department_id" class="form-select text-white-dark">
-                                    <option class="text-white-light">Select Department</option>
+                                    <option class="text-white-light">Select Department...</option>
                                     @foreach($departments as $key => $department)
                                     <option value="{{ $department->id }}">{{ $department->name }}</option>
                                     @endforeach
@@ -129,7 +129,7 @@
                             <div>
                                 <label for="type">User Type</label>
                                 <select id="type" name="user_type" class="form-select text-white-dark">
-                                    <option>Select Type</option>
+                                    <option>Select User Type...</option>
                                     <option value="Admin">Admin</option>
                                     <option value="Employee">Employee</option>
                                 </select>
@@ -140,7 +140,7 @@
                             <div>
                                 <label for="status">Status</label>
                                 <select id="status" name="user_status" class="form-select text-white-dark">
-                                    <option>Select Status</option>
+                                    <option>Select Status...</option>
                                     <option value="Active">Active</option>
                                     <option value="Inactive">Inactive</option>
                                 </select>

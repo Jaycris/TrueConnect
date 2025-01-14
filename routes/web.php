@@ -9,6 +9,8 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DesignationController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\SalesController;
+use App\Http\Controllers\PackagesController;
+use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
 
@@ -41,7 +43,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/employee', [EmployeeController::class, 'index'])->name('employee.dashboard')->middleware('2fa');
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
-    //User
+    // User
     Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users')->middleware('2fa');
     Route::get('/admin/users/create', [UserController::class, 'create'])->name('admin.users.create')->middleware('2fa');
     Route::post('/admin/users/post', [UserController::class, 'store'])->name('admin.users.post')->middleware('2fa');
@@ -61,7 +63,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/admin/departments/{id}/delete', [DepartmentController::class, 'destroy'])->name('admin.department.delete')->middleware('2fa');
     Route::post('/admin/departments/{id}/delete/check', [DepartmentController::class, 'checkDelete'])->name('admin.department.delete.check')->middleware('2fa');
 
-    //Designation
+    // Designation
     Route::get('/admin/designations', [DesignationController::class, 'index'])->name('admin.designations')->middleware('2fa');
     Route::get('/admin/designations/create', [DesignationController::class, 'create'])->name('admin.designation.create')->middleware('2fa');
     Route::post('/admin/designations/post', [DesignationController::class, 'store'])->name('admin.designation.post')->middleware('2fa');
@@ -70,7 +72,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/admin/designations/{id}/delete', [DesignationController::class, 'destroy'])->name('admin.designation.delete')->middleware('2fa');
     Route::post('/admin/designations/{id}/delete/check', [DesignationController::class, 'checkDesignation'])->name('admin.designation.delete.check')->middleware('2fa');
 
-    //Customer
+    // Customer
     Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index')->middleware('2fa');
     Route::get('/customers/distro', [CustomerController::class, 'distroLeads'])->name('customers.distro');
     Route::post('/customers/unassigned', [CustomerController::class, 'unassignLeads'])->name('customers.unassignLeads');
@@ -102,9 +104,54 @@ Route::middleware(['auth'])->group(function () {
     // Sales
     Route::get('/sales', [SalesController::class, 'index'])->name('sales.index')->middleware('2fa');
     Route::get('/sales/create', [SalesController::class, 'create'])->name('sales.create')->middleware('2fa');
+    Route::get('/sales/view', [SalesController::class, 'view'])->name('sales.view')->middleware('2fa');
+    Route::get('/sales/edit', [SalesController::class, 'edit'])->name('sales.edit')->middleware('2fa');
+    Route::post('/get-package-sold', [SalesController::class, 'getPackageSoldByType'])->name('getPackageSoldByType');
+    Route::post('/get-events', [SalesController::class, 'getEventsByPackageSold'])->name('getEventsByPackageSold');
+    Route::post('/sales/store', [SalesController::class, 'store'])->name('sales.store')->middleware('2fa');
     Route::get('/get-authors-suggestions', [SalesController::class, 'getAuthorSuggestions']);
     Route::get('/get-book-titles', [SalesController::class, 'getBookTitles']);
     
+    // Packages
+    Route::get('/package-type', [PackagesController::class, 'packType'])->name('pack-type.index')->middleware('2fa');
+    Route::get('/package-type/create', [PackagesController::class, 'createPackType'])->name('pack-type.create')->middleware('2fa');
+    Route::get('/package-type/view/{id}', [PackagesController::class, 'viewPackType'])->name('pack-type.view')->middleware('2fa');
+    Route::post('/package-type/post', [PackagesController::class, 'storePackType'])->name('pack-type.store')->middleware('2fa');
+    Route::get('/package-type/{id}/edit', [PackagesController::class, 'editPackType'])->name('pack-type.edit')->middleware('2fa');
+    Route::post('/package-type/{id}/update', [PackagesController::class, 'updatePackType'])->name('pack-type.update')->middleware('2fa');
+    Route::delete('/package-type/{id}/delete', [PackagesController::class, 'destroyPackType'])->name('pack-type.delete')->middleware('2fa');
+    
+    Route::get('/package-sold', [PackagesController::class, 'packSold'])->name('pack-sold.index')->middleware('2fa');
+    Route::get('/package-sold/create', [PackagesController::class, 'createPackSold'])->name('pack-sold.create')->middleware('2fa');
+    Route::get('/package-sold/view/{id}', [PackagesController::class, 'viewPackSold'])->name('pack-sold.view')->middleware('2fa');
+    Route::post('/package-sold/post', [PackagesController::class, 'storePackSold'])->name('pack-sold.store')->middleware('2fa');
+    Route::get('/package-sold/{id}/edit', [PackagesController::class, 'editPackSold'])->name('pack-sold.edit')->middleware('2fa');
+    Route::post('/package-sold/{id}/update', [PackagesController::class, 'updatePackSold'])->name('pack-sold.update')->middleware('2fa');
+    Route::delete('/package-sold/{id}/delete', [PackagesController::class, 'destroyPackSold'])->name('pack-sold.delete')->middleware('2fa');
+   
+    Route::get('/events', [PackagesController::class, 'event'])->name('events.index')->middleware('2fa');
+    Route::get('/events/create', [PackagesController::class, 'createEvent'])->name('event.create')->middleware('2fa');
+    Route::get('/events/view/{id}', [PackagesController::class, 'viewEvent'])->name('event.view')->middleware('2fa');
+    Route::post('/events/post', [PackagesController::class, 'storeEvent'])->name('event.store')->middleware('2fa');
+    Route::get('/event/{id}/edit', [PackagesController::class, 'editEvent'])->name('event.edit')->middleware('2fa');
+    Route::post('/event/{id}/update', [PackagesController::class, 'updateEvent'])->name('event.update')->middleware('2fa');
+    Route::delete('/event/{id}/delete', [PackagesController::class, 'destroyEvent'])->name('event.delete')->middleware('2fa');
+
+    //PaymentMethod
+    Route::get('/payment-method', [PackagesController::class, 'method'])->name('method.index')->middleware('2fa');
+    Route::get('/payment-method/create', [PackagesController::class, 'createMethod'])->name('method.create')->middleware('2fa');
+    Route::post('/payment-method/post', [PackagesController::class, 'storeMethod'])->name('method.store')->middleware('2fa');
+    Route::get('/payment-method/{id}/edit', [PackagesController::class, 'editMethod'])->name('method.edit')->middleware('2fa');
+    Route::post('/payment-method/{id}/update', [PackagesController::class, 'updateMethod'])->name('method.update')->middleware('2fa');
+    Route::get('/payment-method/view/{id}', [PackagesController::class, 'viewMethod'])->name('method.view')->middleware('2fa');
+    Route::delete('/payment-method/{id}/delete', [PackagesController::class, 'destroyMethod'])->name('method.delete')->middleware('2fa');
+
+
+
+
+
+
+
 
     // 2FA routes
     Route::get('/2fa', [AuthenticatedSessionController::class, 'showTwoFactorForm'])->name('auth.2fa');

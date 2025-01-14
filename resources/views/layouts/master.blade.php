@@ -21,8 +21,13 @@
     <script src="{{ asset('assets/js/perfect-scrollbar.min.js') }}"></script>
     <script defer src="{{ asset('assets/js/popper.min.js') }}"></script>
     <script defer src="{{ asset('assets/js/tippy-bundle.umd.min.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     @yield('styles')
     <script defer src="{{ asset('assets/js/sweetalert.min.js') }}"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 
 <body x-data="main" class="relative overflow-x-hidden font-nunito text-sm font-normal antialiased" :class="[ $store.app.sidebar ? 'toggle-sidebar' : '', $store.app.theme === 'dark' || $store.app.isDarkMode ?  'dark' : '', $store.app.menu, $store.app.layout, $store.app.rtlClass]">
@@ -75,7 +80,7 @@
 
             <!-- start footer section -->
             <div class="mt-auto p-6 pt-0 text-center dark:text-white-dark ltr:sm:text-left rtl:sm:text-right">
-                © <span id="footer-year">{{ date('Y') }}</span> | Bookmarc Alliance.
+                © <span id="footer-year">{{ date('Y') }}</span> | Bookmarc Alliance
             </div>
             <!-- end footer section -->
         </div>
