@@ -52,6 +52,7 @@
                         <div class="flex flex-col sm:flex-row">
                             <label for="transaction_ID" class="mt-2">Transaction ID:</label>
                             <h1 class="mb-5 text-2xl font-normal px-2">{{ $s_id }}</h1>
+                            <input type="hidden" name="s_id" value="{{ $s_id }}">
                         </div>    
                         <div class="flex flex-col sm:flex-row">
                             <div class="grid flex-1 grid-cols-1 gap-5 sm:grid-cols-2">
