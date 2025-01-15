@@ -13,7 +13,7 @@
         <div class="mb-5 grid grid-cols-1 gap-5 lg:grid-cols-3 xl:grid-cols-3">
             <div class="panel lead-info">
                 <div class="mb-5 flex items-center justify-between">
-                    <h5 class="text-lg font-semibold dark:text-white-light">Leads Information</h5>
+                    <h5 class="text-lg font-semibold dark:text-white-light">Lead Information</h5>
                     <a id="edit-button" href="#" class="btn btn-primarycolor rounded-full p-2 ltr:ml-auto rtl:mr-auto">
                         <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5">
                             <path opacity="0.5" d="M4 22H20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>

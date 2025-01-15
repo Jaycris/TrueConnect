@@ -33,7 +33,7 @@
                 <div class="mb-5">
                     <div class="mb-5 flex items-center justify-between">
                         <h5 class="text-lg font-semibold dark:text-white-light">Leads</h5>
-                        <a href="{{ route('customers.create') }}" class="btn btn-primarycolor">Add Leads</a>
+                        <a href="{{ route('customers.create') }}" class="btn btn-primarycolor">Add Lead</a>
                     </div>
                     <div class="mb-5">
                         <div class="table-responsive font-semibold text-[#515365] dark:text-white-light">

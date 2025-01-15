@@ -15,7 +15,7 @@
             <div class="flex flex-col sm:flex-row justify-center items-center w-full">
             <div class="relative mb-5 w-full sm:w-2/12 ltr:sm:mr-2 rtl:sm:ml-2 flex justify-center">
                                 <div class="relative mx-auto h-20 w-20 md:h-32 md:w-32">
-                    <img id="profileImage" src="{{ asset('assets/images/illustrations/dollar-sign.png') }}" alt="image" class="rounded-full object-cover w-full h-full">
+                    
                 </div>
             </div>
                 <div class="w-full sm:w-1/2 flex flex-col items-center">

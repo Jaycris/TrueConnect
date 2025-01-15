@@ -12,7 +12,7 @@
     <div class="panel mt-6">
         <div class="mb-5 flex items-center justify-between">
             <h5 class="text-lg font-semibold dark:text-white-light">Package Sold</h5>
-            <a href="{{ route('pack-sold.create') }}" class="btn btn-primary">Add Package</a>
+            <a href="{{ route('pack-sold.create') }}" class="btn btn-primary">Add Package Sold</a>
         </div>
         @if(session('success'))
             <p id="success-message" class="text-success 500 italic">{{ session('success') }}</p>
@@ -24,9 +24,9 @@
                         <tr>
                             <th><input type="checkbox" class="checkAll form-checkbox" />Select All</th>
                             <th>#</th>
-                            <th>Package Sold Name</th>
+                            <th>Package</th>
                             <th>Base Price</th>
-                            <th>Date</th>
+                            <th>Date added</th>
                             <th class="text-right flex">Action</th>
                         </tr>
                     </thead>

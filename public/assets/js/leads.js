@@ -91,9 +91,9 @@ document.addEventListener('DOMContentLoaded', function(){
         updateBookButtonVisibility();
     })();
 
-    // Leads information functionality
+    // Lead information functionality
     (function() {
-        // console.log('Leads information functionality initialized');
+        // console.log('Lead information functionality initialized');
 
         const leadInfoBox = document.querySelector('.lead-info');
         let detailsContainer = null;
@@ -218,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function(){
     })();
 
     // (function() {
-    //     console.log('Leads information functionality initialized');
+    //     console.log('Lead information functionality initialized');
     
     //     const leadInfoBox = document.querySelector('.lead-info');
     //     const detailsContainer = leadInfoBox.querySelector('.details-container');

@@ -23,6 +23,7 @@
                             <th><input type="checkbox" class="checkAll form-checkbox" />Select All</th>
                             <th>#</th>
                             <th>Event</th>
+                            <th>Date added</th>
                             <th class="text-right flex">Action</th>
                         </tr>
                     </thead>
@@ -30,8 +31,9 @@
                     @foreach($event as $events)
                         <tr>
                             <td><input type="checkbox" class="form-checkbox" /></td>
-                            <td>{{ $events->id }}</td>
+                            <td>{{ $loop->iteration }}</td>
                             <td>{{ $events->event_name }}</td>
+                            <td>{{ $events->created_at->format('M d, Y') }}</td>
                             <td class="text-center">
                                 <ul class="flex items-center gap-2">
                                     <li>

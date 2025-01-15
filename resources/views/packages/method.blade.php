@@ -10,7 +10,7 @@
     <div class="panel mt-6">
         <div class="mb-5 flex items-center justify-between">
             <h5 class="text-lg font-semibold dark:text-white-light">Payment Method</h5>
-            <a href="{{ route('method.create') }}" class="btn btn-primary">Add Method</a>
+            <a href="{{ route('method.create') }}" class="btn btn-primary">Add Payment Method</a>
         </div>
         @if(session('success'))
             <p id="success-message" class="text-success 500 italic">{{ session('success') }}</p>
@@ -23,6 +23,7 @@
                             <th><input type="checkbox" class="checkAll form-checkbox" />Select All</th>
                             <th>#</th>
                             <th>Payment Method</th>
+                            <th>Date added</th>
                             <th class="text-right flex">Action</th>
                         </tr>
                     </thead>
@@ -32,6 +33,7 @@
                             <td><input type="checkbox" class="form-checkbox" /></td>
                             <td>{{ $methods->id }}</td>
                             <td>{{ $methods->method_name }}</td>
+                            <td>{{ $methods->created_at->format('M d, Y') }}</td>
                             <td class="text-center">
                                 <ul class="flex items-center gap-2">
                                     <li>
@@ -54,7 +56,7 @@
                                     <form action="{{ route('method.delete', $methods->id) }}" method="POST" style="display:inline;">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" onclick="return confirm('Are you sure you want to delete this Method?')" x-tooltip="Delete" class="bg-transparent border-none p-0 m-0">
+                                        <button type="submit" onclick="return confirm('Are you sure you want to delete this Payment Method?')" x-tooltip="Delete" class="bg-transparent border-none p-0 m-0">
                                             <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-danger">
                                                 <path d="M20.5001 6H3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
                                                 <path d="M18.8334 8.5L18.3735 15.3991C18.1965 18.054 18.108 19.3815 17.243 20.1907C16.378 21 15.0476 21 12.3868 21H11.6134C8.9526 21 7.6222 21 6.75719 20.1907C5.89218 19.3815 5.80368 18.054 5.62669 15.3991L5.16675 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>

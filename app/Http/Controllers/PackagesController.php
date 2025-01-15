@@ -303,7 +303,7 @@ class PackagesController extends Controller
         $method->method_name = $request->input('method_name');
         $method->save();
 
-        return redirect()->route('method.index')->with('success', 'Payment Method updated');
+        return redirect()->route('method.index')->with('success', 'Payment Method updated successfully!');
     }
 
     public function destroyMethod(Request $request, $id)
@@ -311,11 +311,11 @@ class PackagesController extends Controller
         $method = PaymentMethod::find($id);
 
         if (!$method) {
-            return redirect()->route('method.index')->with('error', 'Method not found.');
+            return redirect()->route('method.index')->with('error', 'Payment Method not found.');
         }
 
         $method->delete();
 
-        return redirect()->route('method.index')->with('success', 'Method deleted successfully!');
+        return redirect()->route('method.index')->with('success', 'Payment Method deleted successfully!');
     }
 }
