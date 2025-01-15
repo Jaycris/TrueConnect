@@ -40,10 +40,15 @@ class SalesController extends Controller
         return view('sales.view', compact('sale'));
     }
 
-
-    public function edit()
+    public function edit($id) // Accept the sale ID
     {
-        return view('sales.edit');
+        $sale = Sale::findOrFail($id); // Fetch a single sale record or fail if not found
+        $user = Auth::user();
+        $fullName = $user->profile->fullName();
+        $packageTypes = PackageType::all();
+        $method = PaymentMethod::all();
+
+        return view('sales.edit', compact('sale', 'fullName', 'packageTypes', 'method'));
     }
 
     public function destroy($id)
@@ -88,6 +93,7 @@ class SalesController extends Controller
     {
         // Validate input data
         $validatedData = $request->validate([
+            's_id' => 'required|string',
             'date_sold' => 'required|date',
             'consultant_name' => 'required|string|max:255',
             'authors_name' => 'required|string|max:255',
@@ -114,11 +120,10 @@ class SalesController extends Controller
 
         // Calculate the total price (if not handled by JavaScript in the frontend)
         $totalPrice =  $packageSold->price + $validatedData['amount']; // Adjust if needed for custom calculations
-        $s_id = $this->generateUniqueID();
 
         // Create the Sale
         $sale = new Sale();
-        $sale->s_id = $s_id; // You may already have this generated
+        $sale->s_id =  $validatedData['s_id']; // You may already have this generated
         $sale->date_sold = $validatedData['date_sold'];
         $sale->consultant = $validatedData['consultant_name'];
         $sale->author_name = $validatedData['authors_name'];
