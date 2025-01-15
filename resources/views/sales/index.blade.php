@@ -19,7 +19,7 @@
                     <thead>
                         <tr>
                             <th><input type="checkbox" id="checkAllUsers" class="checkAll form-checkbox" /></th>
-                            <th>#</th>
+                            <th>Transaction ID</th>
                             <th>Date Sold</th>
                             <th>Consultant Name</th>
                             <th>Author Name</th>
@@ -43,7 +43,7 @@
                             <td class="text-center">
                                 <ul class="flex items-center gap-2">
                                     <li>
-                                        <a href="{{ route('sales.view') }}" x-tooltip="View Profile">
+                                        <a href="{{ route('sales.view', ['id' => $sales->id]) }}" x-tooltip="View">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" viewBox="0 0 20 20" fill="currentColor">
                                                 <path fill-rule="evenodd" d="M10 12a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
                                                 <path fill-rule="evenodd" d="M2.538 10c1.905-3.507 5.366-6 7.462-6s5.557 2.493 7.462 6c-.905 3.507-3.773 6-7.462 6s-6.557-2.493-7.462-6zm7.462 4c-2.154 0-4.066-1.743-5.342-4 .73-1.38 2.147-3 5.342-3s4.612 1.62 5.342 3c-1.276 2.257-3.188 4-5.342 4zm0-6a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
@@ -59,10 +59,10 @@
                                         </a>
                                     </li>
                                     <li>
-                                    <form action="#" method="POST" style="display:inline;">
+                                    <form action="{{ route('sales.destroy', $sales->id) }}" method="POST" style="display:inline;">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" onclick="return confirm('Are you sure you want to delete this user?')" x-tooltip="Delete" class="bg-transparent border-none p-0 m-0">
+                                        <button type="submit" onclick="return confirm('Are you sure you want to delete this item?')" x-tooltip="Delete" class="bg-transparent border-none p-0 m-0">
                                             <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-danger">
                                                 <path d="M20.5001 6H3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
                                                 <path d="M18.8334 8.5L18.3735 15.3991C18.1965 18.054 18.108 19.3815 17.243 20.1907C16.378 21 15.0476 21 12.3868 21H11.6134C8.9526 21 7.6222 21 6.75719 20.1907C5.89218 19.3815 5.80368 18.054 5.62669 15.3991L5.16675 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
