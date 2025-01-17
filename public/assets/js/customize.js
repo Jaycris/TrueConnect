@@ -463,6 +463,26 @@ document.addEventListener('DOMContentLoaded', function() {
     })();
 
     (function () {
+        // Function to show the modal
+        function showModal(modalId) {
+            document.getElementById(modalId).classList.remove('hidden');
+        }
+
+        // Function to hide the modal
+        function hideModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        // Event listener for Coming Soon links
+        document.querySelectorAll('[data-coming-soon]').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault(); // Prevent navigation
+                showModal('comingSoonModal');
+            });
+        });
+    })
+
+    (function () {
         let currentStep = 1;
         const totalSteps = 3;
     

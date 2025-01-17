@@ -86,6 +86,32 @@
         </div>
     </div>
 
+    <!-- Coming Soon Modal -->
+    
+    <div class="fixed inset-0 bg-[black]/60 z-[999] hidden overflow-y-auto" id="comingSoonModal">
+        <div class="flex items-center justify-center min-h-screen px-4" onclick="document.getElementById('comingSoonModal').classList.add('hidden')">
+            <div class="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg my-8 animate__animated animate__fadeIn" onclick="event.stopPropagation()">                
+                <div class="flex bg-[#fbfbfb] dark:bg-[#121c2c] items-center justify-between px-5 py-3">
+                    <h5 class="font-bold text-lg">Coming Soon</h5>
+                    <button type="button" class="text-white-dark hover:text-dark" onclick="document.getElementById('comingSoonModal').classList.add('hidden')">
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="border-t border-gray-300"></div>
+                <div class="p-5">
+                    <p class="dark:text-white-dark/70 text-base font-medium text-[#1f2937]">
+                        Thank you for your patience! We are working hard to bring you new and exciting features. 
+                        Stay tuned as we finalize the details and ensure everything is perfect. 
+                        We appreciate your understanding and can't wait to share this with you soon.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="{{ asset('assets/js/alpine-collaspe.min.js') }}"></script>
     <script src="{{ asset('assets/js/alpine-persist.min.js') }}"></script>
     <script defer src="{{ asset('assets/js/alpine-ui.min.js') }}"></script>
