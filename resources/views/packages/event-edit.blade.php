@@ -21,7 +21,7 @@
                         <div class="grid flex-1 grid-cols-1 gap-5 sm:grid-cols-2">
                             <!-- Input fields here -->
                             <div>
-                                <label for="event">Event</label>
+                                <label for="event">Event Name</label>
                                 <input id="event" name="event_name" type="text" placeholder="Enter Event" class="form-input" value="{{ $event->event_name }}">
                                 @error('name')
                                     <p class="text-danger 500 italic">{{ $message }}</p>

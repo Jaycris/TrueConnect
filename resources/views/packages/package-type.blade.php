@@ -26,7 +26,7 @@
                             <th><input type="checkbox" class="checkAll form-checkbox" />Select All</th>
                             <th>#</th>
                             <th>Package Type Name</th>
-                            <th>Date</th>
+                            <th>Date added</th>
                             <th class="text-right flex">Action</th>
                         </tr>
                     </thead>

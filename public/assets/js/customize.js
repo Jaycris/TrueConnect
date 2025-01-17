@@ -209,13 +209,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
             const buttonId = buttonMapping[tableId];
             if (!buttonId) {
-                console.warn(`No button mapping found for table ID "${tableId}".`);
+                console.log(`No button mapping found for table ID "${tableId}".`);
                 return; // Exit if there's no mapping for the table
             }
 
             const button = document.getElementById(buttonId);
             if (!button) {
-                console.warn(`Button with ID "${buttonId}" not found in the DOM.`);
+                console.log(`Button with ID "${buttonId}" not found in the DOM.`);
                 return; // Exit if the button is not present on the page
             }
 
@@ -529,40 +529,92 @@ document.addEventListener('DOMContentLoaded', function() {
             for (let i = 1; i <= totalSteps; i++) {
                 const stepElement = document.getElementById(`step-${i}`);
                 const connector = document.getElementById(`connector-${i - 1}`);
-    
+
+                if (!stepElement) {
+                    console.log(`Step element with ID 'step-${i}' not found.`);
+                    continue;
+                }
+
                 if (i < currentStep) {
                     stepElement.classList.add('bg-primary', 'text-white');
                     stepElement.classList.remove('bg-gray-300', 'text-gray-600');
-                    if (connector) connector.style.width = '100%';
+                    if (connector) {
+                        connector.style.width = '100%';
+                    } else {
+                        console.log(`Connector element with ID 'connector-${i - 1}' not found.`);
+                    }
                 } else if (i === currentStep) {
                     stepElement.classList.add('bg-primary', 'text-white');
                     stepElement.classList.remove('bg-gray-300', 'text-gray-600');
-                    if (connector) connector.style.width = '50%';
+                    if (connector) {
+                        connector.style.width = '50%';
+                    } else {
+                        console.log(`Connector element with ID 'connector-${i - 1}' not found.`);
+                    }
                 } else {
                     stepElement.classList.add('bg-gray-300', 'text-gray-600');
                     stepElement.classList.remove('bg-primary', 'text-white');
-                    if (connector) connector.style.width = '0%';
+                    if (connector) {
+                        connector.style.width = '0%';
+                    } else {
+                        console.log(`Connector element with ID 'connector-${i - 1}' not found.`);
+                    }
                 }
             }
+
     
             // Update button visibility
-            prevButton.disabled = currentStep === 1;
-            nextButton.classList.toggle('hidden', currentStep === totalSteps);
-            submitButton.classList.toggle('hidden', currentStep !== totalSteps);
+            if (!prevButton) {
+                console.log("Previous button element 'prevButton' not found.");
+            } else {
+                prevButton.disabled = currentStep === 1;
+            }
+
+            if (!nextButton) {
+                console.log("Next button element 'nextButton' not found.");
+            } else {
+                nextButton.classList.toggle('hidden', currentStep === totalSteps);
+            }
+
+            if (!submitButton) {
+                console.log("Submit button element 'submitButton' not found.");
+            } else {
+                submitButton.classList.toggle('hidden', currentStep !== totalSteps);
+            }
+
         }
     
         // Event listeners for navigation
-        prevButton.addEventListener('click', () => {
-            if (currentStep > 1) currentStep--;
-            updateStepUI();
-        });
-    
-        nextButton.addEventListener('click', () => {
-            if (validateStep() && currentStep < totalSteps) {
-                currentStep++;
+        // Ensure buttons exist before adding event listeners
+        if (prevButton) {
+            prevButton.addEventListener('click', () => {
+                if (typeof currentStep === 'undefined' || typeof updateStepUI !== 'function') {
+                    console.log('`currentStep` or `updateStepUI` is not properly defined.');
+                    return;
+                }
+                if (currentStep > 1) currentStep--;
                 updateStepUI();
-            }
-        });
+            });
+        } else {
+            console.log('`prevButton` element not found in the DOM.');
+        }
+
+        if (nextButton) {
+            nextButton.addEventListener('click', () => {
+                if (typeof validateStep !== 'function' || typeof currentStep === 'undefined' || typeof totalSteps === 'undefined') {
+                    console.log('`validateStep`, `currentStep`, or `totalSteps` is not properly defined.');
+                    return;
+                }
+                if (validateStep() && currentStep < totalSteps) {
+                    currentStep++;
+                    updateStepUI();
+                }
+            });
+        } else {
+            console.log('`nextButton` element not found in the DOM.');
+        }
+
+
     
         // Initial UI setup
         updateStepUI();
@@ -572,13 +624,26 @@ document.addEventListener('DOMContentLoaded', function() {
         // Author's Name Suggestions
         const authorInput = document.getElementById('authorsName');
         const authorSuggestionsBox = document.getElementById('authorsSuggestions');
-        const authorSpinner = authorSuggestionsBox.querySelector('.loading-spinner'); // Spinner inside author suggestions box
+        let authorSpinner = null;
+        if (authorSuggestionsBox) {
+            authorSpinner = authorSuggestionsBox.querySelector('.loading-spinner');
+            if (!authorSpinner) {
+                console.log("Loading spinner inside 'authorsSuggestions' not found.");
+            }
+        }
         const bookInput = document.getElementById('BookTitle');
         const bookSuggestionsBox = document.getElementById('bookSuggestions');
-        const bookSpinner = bookSuggestionsBox.querySelector('.loading-spinner'); // Spinner inside book suggestions box
+        
+        let bookSpinner = null;
+        if (bookSuggestionsBox) {
+            bookSpinner = bookSuggestionsBox.querySelector('.loading-spinner');
+            if (!bookSpinner) {
+                console.log("Loading spinner inside 'bookSuggestions' not found.");
+            }
+        }
     
         if (!authorInput || !authorSuggestionsBox || !bookInput || !bookSuggestionsBox || !authorSpinner || !bookSpinner) {
-            console.error('Required elements not found in the DOM.');
+            console.log('Required elements not found in the DOM.');
             return;
         }
     
