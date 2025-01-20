@@ -28,7 +28,7 @@
                 <svg class="hidden h-5 w-4 flex-none" viewbox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="5" y1="12" x2="19" y2="12"></line>
                 </svg>
-                <span class="bmaColortext">Client and Sales</span>
+                <span class="bmaColortext">Leads and Sales</span>
             </h2>
             <li class="menu nav-item">
                 <a class="nav-link group {{ request()->is('sales') ? 'active' : '' }}" href="{{ route('sales.index') }}">                    
@@ -41,7 +41,7 @@
                     </div>
                 </a>
             </li>
-            <li class="menu nav-item" x-data="{ activeDropdown: '{{ (request()->is('customers','customers/distro','customers/returned', 'admin/departments/create') || request()->is('admin/designations', 'admin/designations/create', 'admin/designations/*/edit')) || request()->is('mycustomers', 'sales/create') ? 'settings' : '' }}' }">
+            <li class="menu nav-item" x-data="{ activeDropdown: '{{ (request()->is('customers','customers/distro','customers/returned') || request()->is('mycustomers', 'sales/create')) ? 'settings' : '' }}' }">
                 <button type="button" class="nav-link group" :class="{'active' : activeDropdown === 'settings'}" @click="activeDropdown = (activeDropdown === 'settings' ? null : 'settings')">
                     <div class="flex items-center">
                     <svg class="shrink-0 group-hover:!text-primary" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -86,9 +86,6 @@
                     </li>
                     <li>
                         <a class="{{ request()->is('customers/returned') ? 'active' : '' }}" href="{{ route('customers.returned') }}">Returned Leads</a>                    
-                    </li>
-                    <li>
-                        <a class="{{ request()->is('admin/designations', 'admin/designations/create', 'admin/designations/*/edit') ? 'active' : '' }}" href="{{ route('admin.designations') }}">Clients</a>
                     </li>
                 @endif
                     <li>
@@ -176,7 +173,7 @@
                     </div>
                 </a>
             </li>
-            <li class="menu nav-item" x-data="{ activeDropdown: '{{ (request()->is('admin/departments', 'admin/departments/create') || request()->is('admin/designations', 'admin/designations/create', 'admin/designations/*/edit')) ? 'settings' : null; }}' }">
+            <li class="menu nav-item" x-data="{ activeDropdown: '{{ (request()->is('admin/departments', 'admin/departments/create') || request()->is('admin/designations', 'admin/designations/create', 'admin/designations/*/edit') || request()->is('admin/2fa-recipient')) ? 'settings' : null; }}' }">
                 <button type="button" class="nav-link group" :class="{'active' : activeDropdown === 'settings'}" @click="activeDropdown = (activeDropdown === 'settings' ? null : 'settings')">
                     <div class="flex items-center">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -199,7 +196,7 @@
                         <a class="{{ request()->is('admin/designations', 'admin/designations/create', 'admin/designations/*/edit') ? 'active' : '' }}" href="{{ route('admin.designations') }}">Designation</a>
                     </li>
                     <li>
-                        <a class="{{ request()->is('/admin/2fa-recipient') ? 'active' : '' }}" href="{{ route('admin.2fa-recipient') }}">2FA Recipient</a>
+                        <a class="{{ request()->is('admin/2fa-recipient') ? 'active' : '' }}" href="{{ route('admin.2fa-recipient') }}">2FA Recipient</a>
                     </li>
                 </ul>
             </li>

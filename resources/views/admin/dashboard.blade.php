@@ -7,6 +7,19 @@
     </li>
 </ul>
 
+<div class="alert-container">
+    <div id="sample-data-alert" class="alert bg-yellow-100 border border-yellow-300 text-yellow-900 px-4 py-3 rounded relative" role="alert" style="margin-bottom: 1px;">
+        <strong class="font-bold">Notice:</strong>
+        <span class="block sm:inline">The data you see in this dashboard is only sample data and not real. We are still developing the system.</span>
+        <span id="dismiss-alert" class="absolute top-0 bottom-0 right-0 px-4 py-3 cursor-pointer">
+            <svg class="fill-current h-6 w-6 text-yellow-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                <title>Close</title>
+                <path d="M14.348 14.849a1 1 0 01-1.414 0L10 11.914l-2.934 2.935a1 1 0 01-1.414-1.415l2.935-2.934-2.935-2.934a1 1 0 011.414-1.415L10 8.586l2.934-2.935a1 1 0 111.414 1.415L11.414 10l2.935 2.934a1 1 0 010 1.415z"/>
+            </svg>
+        </span>
+    </div>
+</div>
+
 <div class="pt-5">
     <div class="mb-2 grid gap-6 xl:grid-cols-3">
         <div class="panel h-full xl:col-span-2">
@@ -449,6 +462,22 @@
         // Initialize with daily sales
         updateTotalSales(chart.data.datasets[0].data);
     });
+
+    // JavaScript to handle dismissing the alert
+    document.getElementById("dismiss-alert").addEventListener("click", function () {
+        document.getElementById("sample-data-alert").style.display = "none";
+    });
 </script>
+
+<style>
+    /* Optional: Styling for alert */
+    .alert {
+        display: block;
+        transition: all 0.3s ease;
+    }
+    .alert.hidden {
+        display: none;
+    }
+</style>
 
 @endsection
