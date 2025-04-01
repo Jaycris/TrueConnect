@@ -69,7 +69,7 @@
                                         <input type="text" name="books[0][title]" class="form-input" placeholder="Enter Book Title" required>
                                         <input type="url"  name="books[0][link]" class="form-input" placeholder="Enter Book Link (optional)">
                                     </div>
-                                    @error('contact_numbers.*')
+                                    @error('books.*')
                                         <p class="text-danger italic">{{ $message }}</p>
                                     @enderror
                                 </div>
@@ -94,7 +94,7 @@
                                 </div>
                             </div>
                             <div class="mt-3 sm:col-span-2">
-                                <button type="submit" class="btn btn-primary">Save</button>
+                                <button type="submit" class="btn primary-button">Save</button>
                             </div>
                         </div>
                     </div>

@@ -49,7 +49,7 @@
                             </div>
                             <!-- Display current admin email -->
                             <div class="mt-3 sm:col-span-2">
-                                <button type="submit" class="btn btn-primary">Update</button>
+                                <button type="submit" class="btn primary-button">Update</button>
                             </div>
                         </div>
                     </div>

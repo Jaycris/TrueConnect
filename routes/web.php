@@ -73,32 +73,38 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/admin/designations/{id}/delete/check', [DesignationController::class, 'checkDesignation'])->name('admin.designation.delete.check')->middleware('2fa');
 
     // Customer
-    Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index')->middleware('2fa');
+    Route::get('/customers/download-template-file', [CustomerController::class, 'downloadTemplate'])->name('customers.download-template-file');    
     Route::get('/customers/distro', [CustomerController::class, 'distroLeads'])->name('customers.distro');
-    Route::post('/customers/unassigned', [CustomerController::class, 'unassignLeads'])->name('customers.unassignLeads');
-    Route::get('/customers/returned', [CustomerController::class, 'returnedLeads'])->name('customers.returned');   
-    Route::get('/mycustomers', [CustomerController::class, 'userCustomer'])->name('employee.mycustomer')->middleware('2fa');
     Route::get('/customers/create', [CustomerController::class, 'create'])->name('customers.create')->middleware('2fa');
+    Route::get('/customers/returned', [CustomerController::class, 'returnedLeads'])->name('customers.returned');   
     Route::get('/customers/{id}/edit', [CustomerController::class, 'edit'])->name('customers.edit');
-    Route::get('/customers/{id}', [CustomerController::class, 'show']);
-    Route::post('/customers', [CustomerController::class, 'store'])->name('customers.store','checkRole');
+    Route::get('/customers/{customer}/assign', [CustomerController::class, 'showAssignForm'])->name('customers.assign');
+
+    Route::post('/customers/import', [CustomerController::class, 'importLeads'])->name('customers.import');
+    Route::post('/customers/assign', [CustomerController::class, 'assignEmployees'])->name('customers.assignEmployees');
+    Route::post('/customers/reassign', [CustomerController::class, 'reassignToEmployee'])->name('customers.reassign');
+    Route::post('/customers/return', [CustomerController::class, 'returnToLeadMiner'])->name('customers.return');    
+    Route::post('/customers/unassigned', [CustomerController::class, 'unassignLeads'])->name('customers.unassignLeads');
+    Route::post('/update-status', [CustomerController::class, 'updateStatus'])->name('update.status');
     Route::post('/customers/{id}/update', [CustomerController::class, 'update'])->name('customers.update',);
     Route::put('/customers/{id}/update', [CustomerController::class, 'update'])->name('customers.update');
+    Route::post('/customers/{id}/view', [CustomerController::class, 'markAsViewed']);
+    Route::post('/customers', [CustomerController::class, 'store'])->name('customers.store','checkRole');
+
+    Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index')->middleware('2fa');
+    Route::get('/customers/{id}/status', [CustomerController::class, 'getCustomerData'])->name('customers.data');
+    Route::get('/mycustomers', [CustomerController::class, 'userCustomer'])->name('employee.mycustomer')->middleware('2fa');
+    Route::get('/assigned-leads', [CustomerController::class, 'fetchAssignedLeads'])->name('customers.fetchAssigned');    
+    Route::get('/my-assigned-leads', [CustomerController::class, 'fetchEmployeeAssignedLeads'])->name('customers.fetchEmployeeAssigned');
+    Route::get('/verified-leads', [CustomerController::class, 'fetchVerifiedLeads'])->name('customers.VerifiedLeads');
+    Route::get('/returned-leads', [CustomerController::class, 'fetchReturnedLeads'])->name('customers.fetchReturned');    
     Route::get('/check-new-leads', [CustomerController::class, 'checkNewLeads']);
     Route::get('/check-verified-leads', [CustomerController::class, 'checkVerifiedLeads']);
     Route::get('/check-assigned-leads', [CustomerController::class, 'checkAssignedLeads']);
-    Route::get('/my-assigned-leads', [CustomerController::class, 'fetchEmployeeAssignedLeads'])->name('customers.fetchEmployeeAssigned');
-    Route::get('/assigned-leads', [CustomerController::class, 'fetchAssignedLeads'])->name('customers.fetchAssigned');    
-    Route::get('/verified-leads', [CustomerController::class, 'fetchVerifiedLeads'])->name('customers.VerifiedLeads');
-    Route::get('/returned-leads', [CustomerController::class, 'fetchReturnedLeads'])->name('customers.fetchReturned');    
     Route::get('/check-return-leads', [CustomerController::class, 'checkReturnLeads']);
-    Route::get('/customers/{id}/status', [CustomerController::class, 'getCustomerData'])->name('customers.data');
-    Route::post('/update-status', [CustomerController::class, 'updateStatus'])->name('update.status');
-    Route::post('/customers/{id}/view', [CustomerController::class, 'markAsViewed']);
-    Route::get('/customers/{customer}/assign', [CustomerController::class, 'showAssignForm'])->name('customers.assign');
-    Route::post('/customers/assign', [CustomerController::class, 'assignEmployees'])->name('customers.assignEmployees');
-    Route::post('/customers/return', [CustomerController::class, 'returnToLeadMiner'])->name('customers.return');    
-    Route::post('/customers/reassign', [CustomerController::class, 'reassignToEmployee'])->name('customers.reassign');
+
+    Route::get('/customers/{id}', [CustomerController::class, 'show']);
+
 
     // Sales
     Route::get('/sales', [SalesController::class, 'index'])->name('sales.index')->middleware('2fa');
@@ -150,12 +156,15 @@ Route::middleware(['auth'])->group(function () {
 
     // 2FA routes
     Route::get('/2fa', [AuthenticatedSessionController::class, 'showTwoFactorForm'])->name('auth.2fa');
+    Route::post('/resend-2fa', [AuthenticatedSessionController::class, 'resendTwoFactorCode'])->name('resend.2fa');
     Route::post('/verify-2fa', [AuthenticatedSessionController::class, 'verifyTwoFactor'])->name('verify.2fa'); // Ensure this matches
 
     //Password reset
     Route::get('/password/reset', [AuthenticatedSessionController::class, 'showPasswordResetForm'])->name('password.reset.prompt')->middleware('2fa');;
     Route::post('/password/reset', [AuthenticatedSessionController::class, 'handlePasswordReset'])->name('password.reset.handle')->middleware('2fa');;
 });
+
+
 
 
 Route::middleware(['auth'])->group(function () {

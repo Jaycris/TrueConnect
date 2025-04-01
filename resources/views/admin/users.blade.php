@@ -9,7 +9,7 @@
     <div class="panel mt-6">
         <div class="mb-5 flex items-center justify-between">
             <h5 class="text-lg font-semibold dark:text-white-light">Users</h5>
-            <a href="{{ route('admin.users.create') }}" class="btn btn-primary">Add User</a>
+            <a href="{{ route('admin.users.create') }}" class="btn primary-button">Add User</a>
         </div>
         @if(session('success'))
             <p id="success-message" class="text-success 500 italic">{{ session('success') }}</p>

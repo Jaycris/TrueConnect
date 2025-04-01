@@ -7,6 +7,10 @@ use App\Models\ContactNumber;
 use App\Models\CustomerReturnReason;
 use App\Models\Book;
 use App\Models\User;
+use App\Imports\LeadsImport;
+use App\Exports\LeadsTemplateExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Carbon\Carbon;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
@@ -19,7 +23,7 @@ class CustomerController extends Controller
         $customers = Customer::with(['contactNumbers', 'books']) // Eager load relationships
                             ->whereHas('contactNumbers', function($query) {
                         $query->where('status', 'Not Verified');
-                        })->get();        
+                        })->get();
 
         
         return view('customers.index', compact('customers'));
@@ -143,11 +147,16 @@ class CustomerController extends Controller
             'notes' => 'nullable|string|max:255',
             'verified_by' => 'nullable|string|max:255',
             'assign_to' => 'nullable|string|max:255',
-            'contact_numbers' => 'required|array',
-            'contact_numbers.*' => 'nullable|string|max:255',
-            'books' => 'nullable|array',
+            'contact_numbers' => 'required|array|min:1',
+            'contact_numbers.*' => 'required|string|max:255',
+            'books' => 'required|array',
             'books.*.title' => 'required|string|max:255',
-            'books.*.link' => 'nullable|url|max:255'
+            'books.*.link' => 'nullable|url|max:255',
+        ],[
+            'contact_numbers.required' => 'Please provide at least one contact number.',
+            'contact_numbers.min' => 'Please provide at least one contact number.',
+            'contact_numbers.*.required' => 'Please provide at least one contact number.',
+            'books.*.title.required' => 'Please provide at least one Book Title.',
         ]);
 
         try {
@@ -207,6 +216,10 @@ class CustomerController extends Controller
                 'comment' => $request->comment,
     
             ]);
+
+            $contactNumbers = array_filter($request->contact_numbers, function ($contact) {
+                return !is_null($contact) && $contact !== '';
+            });
 
             foreach ($request->contact_numbers as $contact_number) {
                 $customers->contactNumbers()->create(['contact_number' => $contact_number, 'status' => 'Not Verified']);
@@ -583,5 +596,25 @@ class CustomerController extends Controller
                                     ->get();
 
         return response()->json(['assigned_customers' => $assignedCustomers]);
+    }
+
+    public function importLeads(Request $request)
+    {
+        $request->validate([
+            'excel_file'    => 'required|mimes:xlsx,xls,csv|max:2048',
+        ]);
+
+        try {
+            Excel::import(new LeadsImport, $request->file('excel_file'));
+
+            return redirect()->route('customers.index')->with('success', 'Leads imported successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to import leads: ' . $e->getMessage());
+        }
+    }
+
+    public function downloadTemplate(): BinaryFileResponse
+    {
+        return Excel::download(new LeadsTemplateExport, 'leads_template.xlsx');
     }
 }
