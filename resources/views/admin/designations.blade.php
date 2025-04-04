@@ -12,7 +12,7 @@
     <div class="panel mt-6">
         <div class="mb-5 flex items-center justify-between">
             <h5 class="text-lg font-semibold dark:text-white-light">Designation</h5>
-            <a href="{{ route('admin.designation.create') }}" class="btn btn-primary">Add Designation</a>
+            <a href="{{ route('admin.designation.create') }}" class="btn primary-button">Add Designation</a>
         </div>
         @if(session('success'))
             <p id="success-message" class="text-success 500 italic">{{ session('success') }}</p>

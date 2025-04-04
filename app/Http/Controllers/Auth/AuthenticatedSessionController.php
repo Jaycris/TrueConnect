@@ -139,6 +139,17 @@ class AuthenticatedSessionController extends Controller
         return back()->withErrors(['two_factor_code' => 'Invalid 2FA code.']);
     }
 
+    public function resendTwoFactorCode()
+    {
+        $user = Auth::user();
+        
+        if ($user->sendTwoFactorCode() !== false) { // Ensure it returns success
+            return response()->json(['success' => true, 'message' => 'New code sent!']);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Please wait before requesting a new code.'], 429);
+    }
+
     public function showPasswordResetForm()
     {
         return view('auth.password_reset');

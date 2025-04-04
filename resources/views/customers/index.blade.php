@@ -27,14 +27,20 @@
                         <li>No data selected</li>
                     </ul>
                 </div>
-                <button id="update-status-button" class="btn btn-primarycolor btn-sm hidden">Update Status</button>
+                <button id="update-status-button" class="btn primary-button btn-sm hidden">Update Status</button>
             </div>
             <div class="panel lg:col-span-2 xl:col-span-10 ">
                 <div class="mb-5">
                     <div class="mb-5 flex items-center justify-between">
                         <h5 class="text-lg font-semibold dark:text-white-light">Leads</h5>
-                        <a href="{{ route('customers.create') }}" class="btn btn-primarycolor">Add Lead</a>
+                        
+                        <!-- Buttons Wrapper -->
+                        <div class="flex space-x-2">
+                            <button class="btn primary-button" onclick="openModal()">Upload Leads</button>
+                            <a href="{{ route('customers.create') }}" class="btn primary-button">Add Lead</a>
+                        </div>
                     </div>
+
                     <div class="mb-5">
                         <div class="table-responsive font-semibold text-[#515365] dark:text-white-light">
                             <table id="leads-table" class="whitespace-nowrap">
@@ -108,13 +114,48 @@
 
                             <div class="flex justify-end items-center mt-8">
                                 <button type="button" class="btn btn-outline-danger" @click="document.getElementById('open-status-modal').classList.add('hidden')">Cancel</button>
-                                <button type="submit" class="btn btn-primary ltr:ml-4 rtl:mr-4">Update Status</button>
+                                <button type="submit" class="btn primary-button ltr:ml-4 rtl:mr-4">Update Status</button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
+
+        <div class="fixed inset-0 bg-[black]/60 z-[999] hidden overflow-y-auto" id="upload-leads">
+            <div class="flex items-center justify-center min-h-screen px-4" onclick="closeModal(event)">
+                <div class="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg my-8 animate__animated animate__fadeIn">
+                    <div class="flex bg-[#fbfbfb] dark:bg-[#121c2c] items-center justify-between px-5 py-3">
+                        <h5 class="font-bold text-lg">Upload Leads</h5>
+                        <button type="button" class="text-white-dark hover:text-dark" onclick="closeModal()">
+                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>                            
+                        </button>
+                    </div>
+                    <div class="p-5">
+                        <!-- Bulk Upload Form -->
+                        <form action="{{ route('customers.import') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <div class="mb-4">
+                                <label for="excel_file" class="block text-sm font-medium text-gray-700">Upload Excel File</label>
+                                <input type="file" id="excel_file" name="excel_file" accept=".xlsx, .xls, .csv" required class="form-input mt-1 block w-full">
+                                <p class="text-xs text-gray-500 mt-1">
+                                    Upload only <strong>.csv</strong> and <strong>.xls</strong> formats.  
+                                    <a href="{{ route('customers.download-template-file') }}" class="text-blue-500 hover:underline">Download the template</a>
+                                </p>
+                            </div>
+                            <div class="flex justify-end items-center mt-8">
+                                <button type="button" class="btn btn-outline-danger" onclick="closeModal()">Cancel</button>
+                                <button type="submit" class="btn primary-button ltr:ml-4 rtl:mr-4">Upload Leads</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -125,5 +166,21 @@
             pollForAssignedLeads();  // Start polling for assigned leads for admin
             pollForReturnedLeads();  // Start polling for returned leads for admin
         };
+
+        function openModal() {
+        document.getElementById('upload-leads').classList.remove('hidden');
+        }
+
+        function closeModal(event) {
+            if (!event || event.target === document.getElementById('upload-leads')) {
+                document.getElementById('upload-leads').classList.add('hidden');
+            }
+        }
+
+        // function downloadTemplate(event) {
+        //     event.preventDefault(); // Prevents the form from submitting
+        //     window.location.href = "{{ route('customers.download-template-file') }}"; // Redirects to the download route
+        // }
+
     </script>
 @endsection

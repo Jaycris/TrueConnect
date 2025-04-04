@@ -1,15 +1,11 @@
 @extends('layouts.app')
 @section('content')
-<div class="relative flex min-h-screen items-center justify-center bg-[url(../images/auth/map.png)] bg-cover bg-center bg-no-repeat px-6 py-10 dark:bg-[#060818] sm:px-16">
-    <img src="assets/images/auth/coming-soon-object1.png" alt="image" class="absolute left-0 top-1/2 h-full max-h-[893px] -translate-y-1/2">
-    <img src="assets/images/auth/coming-soon-object2.png" alt="image" class="absolute left-24 top-0 h-40 md:left-[30%]">
-    <img src="assets/images/auth/coming-soon-object3.png" alt="image" class="absolute right-0 top-0 h-[300px]">
-    <img src="assets/images/auth/polygon-object.svg" alt="image" class="absolute bottom-0 end-[28%]">
+<div class="relative flex min-h-screen items-center justify-center bg-cover bg-center bg-no-repeat px-6 py-10 dark:bg-[#060818] sm:px-16">
     <div class="relative w-full max-w-[870px] rounded-md bg-[linear-gradient(45deg,#fff9f9_0%,rgba(255,255,255,0)_25%,rgba(255,255,255,0)_75%,_#fff9f9_100%)] p-2 dark:bg-[linear-gradient(52.22deg,#0E1726_0%,rgba(14,23,38,0)_18.66%,rgba(14,23,38,0)_51.04%,rgba(14,23,38,0)_80.07%,#0E1726_100%)]">
         <div class="relative flex flex-col justify-center items-center rounded-md bg-white/60 backdrop-blur-lg dark:bg-black/50 px-6 lg:min-h-[758px] py-20">
-            <img src="{{ asset('assets/images/bma-vertical-logo.png') }}" alt="image" class="w-32 h-auto mb-4">
+            <img src="{{ asset('assets/images/page-chronicles-logo.png') }}" alt="image" class="login-logo h-auto mb-1">
             <div class="text-center mb-10">
-                <h1 class="text-3xl font-extrabold uppercase !leading-snug text-primary md:text-4xl">Two Factor Authentication</h1>
+                <h1 class="text-3xl font-extrabold uppercase !leading-snug primary-text md:text-4xl">Two Factor Authentication</h1>
                 <p class="text-base font-bold leading-normal text-white-dark">Enter the code sent to your email</p>
             </div>
             <div class="mx-auto w-full max-w-[440px]">
@@ -26,14 +22,68 @@
                                 </svg>
                             </span>
                         </div>
+                        <p id="resend-message" class="text-sm text-gray-500 mt-2 font-bold">
+                            You can resend the code after <span id="countdown">60</span> seconds.
+                        </p>
+
+                        <a id="resend-link" href="#" onclick="resendCode()" class="text-blue-500 hover:underline hidden font-bold mt-2">
+                            Resend Code
+                        </a>
                         @error('two_factor_code')
                             <span class="text-danger-500">{{ $message }}</span>
                         @enderror
                     </div>
-                    <button type="submit" class="btn btn-primary w-full">Verify</button>
+                    <button type="submit" class="btn secondary-button w-full">Verify</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let countdown = 60; // Countdown time
+        const countdownElement = document.getElementById("countdown");
+        const resendMessage = document.getElementById("resend-message");
+        const resendLink = document.getElementById("resend-link");
+
+        const timer = setInterval(() => {
+            countdown--;
+            countdownElement.textContent = countdown;
+
+            if (countdown <= 0) {
+                clearInterval(timer);
+                resendMessage.classList.add("hidden"); // Hide the countdown message
+                resendLink.classList.remove("hidden"); // Show the "Resend Code" link
+            }
+        }, 1000);
+    });
+
+    function resendCode() {
+        fetch("{{ route('resend.2fa') }}", {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                "Content-Type": "application/json"
+            }
+        })
+        .then(response => response.json()) // Convert response to JSON
+        .then(data => {
+            console.log("API Response:", data); // Debug response
+
+            if (data.success) {
+                alert("A new code has been sent to your email.");
+                location.reload(); // Reload to update UI
+            } else {
+                console.error("Error resending code:", data.message);
+                document.getElementById("resend-message").innerHTML = data.message;
+            }
+        })
+        .catch(error => {
+            console.error("Fetch error:", error);
+            alert("Error contacting server.");
+        });
+    }
+</script>
 @endsection

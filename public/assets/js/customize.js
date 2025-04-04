@@ -614,8 +614,6 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('`nextButton` element not found in the DOM.');
         }
 
-
-    
         // Initial UI setup
         updateStepUI();
     })();

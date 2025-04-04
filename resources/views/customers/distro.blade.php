@@ -27,7 +27,7 @@
                         <li>No data selected</li>
                     </ul>
                 </div>
-                <button id="update-status-button" class="btn btn-primarycolor btn-sm hidden">Update Status</button>
+                <button id="update-status-button" class="btn primary-button btn-sm hidden">Update Status</button>
             </div>
             <div class="panel lg:col-span-2 xl:col-span-10 ">
                 <div class="mb-5">
@@ -74,7 +74,7 @@
                                 @endforelse
                             </table>
                             <hr>
-                            <button id="unassign-leads-btn" class="btn btn-primarycolor btn-sm mt-3" data-modal-target="unassign-leads-modal" disabled>Unassign Leads</button>
+                            <button id="unassign-leads-btn" class="btn primary-button btn-sm mt-3" data-modal-target="unassign-leads-modal" disabled>Unassign Leads</button>
                         </div>
                     </div>
                 </div>
@@ -113,7 +113,7 @@
                                 @endforelse
                             </table>
                             <hr>
-                            <button id="assign-leads-btn" class="btn btn-primarycolor btn-sm mt-3" data-modal-target="open-assign-modal" disabled>Assign Leads</button>
+                            <button id="assign-leads-btn" class="btn primary-button btn-sm mt-3" data-modal-target="open-assign-modal" disabled>Assign Leads</button>
                         </div>
                     </div>
                 </div>
@@ -156,7 +156,7 @@
 
                             <div class="flex justify-end items-center mt-8">
                                 <button type="button" class="btn btn-outline-danger" @click="document.getElementById('open-status-modal').classList.add('hidden')">Cancel</button>
-                                <button type="submit" class="btn btn-primary ltr:ml-4 rtl:mr-4">Update Status</button>
+                                <button type="submit" class="btn primary-button ltr:ml-4 rtl:mr-4">Update Status</button>
                             </div>
                         </form>
                     </div>
@@ -200,7 +200,7 @@
                             
                             <div class="flex justify-end items-center mt-8">
                                 <button type="button" class="btn btn-outline-danger" @click="document.getElementById('open-assign-modal').classList.add('hidden')">Cancel</button>
-                                <button type="submit" class="btn btn-primary ltr:ml-4 rtl:mr-4">Assign Leads</button>
+                                <button type="submit" class="btn primary-button ltr:ml-4 rtl:mr-4">Assign Leads</button>
                             </div>
                         </form>
                     </div>
@@ -232,7 +232,7 @@
 
                         <div class="flex justify-end items-center mt-8">
                             <button type="button" class="btn btn-outline-danger" @click="document.getElementById('unassign-leads-modal').classList.add('hidden')">Cancel</button>
-                            <button type="submit" class="btn btn-primary ltr:ml-4 rtl:mr-4">Assign Leads</button>    
+                            <button type="submit" class="btn primary-button ltr:ml-4 rtl:mr-4">Assign Leads</button>    
                         </div>
                     </form>
                     </div>
@@ -241,6 +241,8 @@
         </div>
     </div>
 </div>
+
+<script src="{{ asset('assets/js/polling.js') }}"></script>
 
     <!-- <script>
         // Start polling when the page loads

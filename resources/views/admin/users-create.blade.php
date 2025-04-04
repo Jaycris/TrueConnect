@@ -165,7 +165,7 @@
                                 @enderror
                             </div>
                             <div class="mt-3 sm:col-span-2">
-                                <button type="submit" class="btn btn-primary">Save</button>
+                                <button type="submit" class="btn primary-button">Save</button>
                             </div>
                         </div>
                     </div>

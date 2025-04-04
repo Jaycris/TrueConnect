@@ -50,7 +50,7 @@ class VerifyDeviceEmail extends Notification implements ShouldQueue
                     ->line('Your Verification code is: ' . $this->code)
                     ->line('This code will expire in 10 minutes.')
                     ->line('Thank you!')
-                    ->salutation('Regards,  ' . PHP_EOL . 'Bookmarc Alliance Team');
+                    ->salutation('Regards,  ' . PHP_EOL . 'Page Chronicles Team');
     }
 
     /**

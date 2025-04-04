@@ -27,13 +27,14 @@
                         <li>No data selected</li>
                     </ul>
                 </div>
-                <button id="update-status-button" class="btn btn-primarycolor btn-sm hidden">Update Status</button>
+                <button id="update-status-button" class="btn primary-button btn-sm hidden">Update Status</button>
             </div>
             <div class="panel lg:col-span-2 xl:col-span-10">
                 <div class="mb-5">
                     <div class="mb-5 flex items-center justify-between">
                         <h5 class="text-lg font-semibold dark:text-white-light">Leads</h5>
-                        <a href="{{ route('sales.create') }}" class="btn btn-primarycolor">Endorse Sale</a>
+                        <!-- <a href="{{ route('sales.create') }}" class="btn primary-button">Endorse Sale</a> -->
+                        <a href="#" class="btn primary-button" data-coming-soon>Endorse Sale</a>
                     </div>
                     <div class="table-responsive font-semibold text-[#515365] dark:text-white-light">
                         <table id="my-leads-table" class="whitespace-nowrap">
@@ -48,10 +49,11 @@
                             </thead>
                             <tbody id="assigned-customers-list" class="dark:text-white-dark">
                             @forelse($assignedCustomers as $customer)
-                                <tr class="customer-row" data-id="{{ $customer->id }}" data-name="{{ $customer->fullName() }}" data-books="{{ $customer->books->toJson() }}" data-contact-numbers="{{ $customer->contactNumbers->toJson() }}" onclick="markAsViewed({{ $customer->id }})">
+                                <!-- <tr class="customer-row" data-id="{{ $customer->id }}" data-name="{{ $customer->fullName() }}" data-books="{{ $customer->books->toJson() }}" data-contact-numbers="{{ $customer->contactNumbers->toJson() }}" onclick="markAsViewed({{ $customer->id }})"> -->
+                                <tr class="customer-row" data-id="{{ $customer->id }}" data-name="{{ $customer->fullName() }}" data-books="{{ $customer->books->toJson() }}" data-contact-numbers="{{ $customer->contactNumbers->toJson() }}">
                                     <td><input type="checkbox" class="form-checkbox select-lead" /></td>  
                                     <td>
-                                        {!! \Carbon\Carbon::parse($customer->date_created)->format('M d, Y') ?? 'N/A' !!}
+                                        {!! \Carbon\Carbon::parse($customer->date_created)->format('d M, Y') ?? 'N/A' !!}
                                     </td>
                                     <td>{{ $customer->fullName() }}
                                         @if (!$customer->is_viewed)
@@ -69,7 +71,7 @@
                             </tbody>
                         </table>
                         <hr>
-                        <button id="return-leads-btn" class="btn btn-primarycolor btn-sm mt-3" data-modal-target="open-return-modal" disabled>Return Leads</button>
+                        <button id="return-leads-btn" class="btn primary-button btn-sm mt-3" data-modal-target="open-return-modal" disabled>Return Leads</button>
                     </div>
                 </div>
             </div>
@@ -106,7 +108,7 @@
 
                             <div class="flex justify-end items-center mt-8">
                                 <button type="button" class="btn btn-outline-danger" @click="document.getElementById('open-return-modal').classList.add('hidden')">Cancel</button>
-                                <button type="submit" class="btn btn-primary ltr:ml-4 rtl:mr-4">Return Leads</button>
+                                <button type="submit" class="btn primary-button ltr:ml-4 rtl:mr-4">Return Leads</button>
                             </div>
                         </form>
                     </div>

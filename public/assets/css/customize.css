@@ -1,3 +1,58 @@
+.login-logo
+{
+    width: 16rem;
+}
+
+.dash-logo
+{
+    width: 11rem;
+}
+
+.svg-hover circle,
+    .svg-hover path,
+    .svg-hover svg circle,
+    .svg-hover svg ellipse {
+        transition: fill 0.3s ease, stroke 0.3s ease;
+    }
+
+    .svg-hover:hover circle,
+    .svg-hover:hover path,
+    .svg-hover:hover svg ellipse {
+        fill: #eed173 !important;
+        stroke: #eed173 !important;
+    }
+
+.primary-text
+{
+    color: #4e1015;
+}
+
+.secondary-text
+{
+    color: #eed173;
+}
+
+.primary-button
+{
+    border-color: #4e1015;
+    background-color: #4e1015;
+    color: #fff
+}
+
+.primary-button:hover 
+{
+    border-color: #eed173;
+    background-color: #eed173;
+    color: #4e1015
+}
+
+.secondary-button
+{
+    border-color: #eed173;
+    background-color: #eed173!important;
+    color: #4e1015;
+}
+
 .dropdown-menu {
     position: absolute;
     background-color: white;
@@ -156,7 +211,7 @@
 .tab-link.active {
     color: #fff;
     border-radius: 6px 6px 0px 0px;
-    background-color: #46425c;
+    background-color: #4e1015;
 }
 
 .tab-content {

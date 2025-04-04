@@ -38,7 +38,7 @@
                         </div>
                         <div class="flex-1">
                             <div class="mb-2 flex font-semibold text-primary">
-                                <h6>Jette Greenfield</h6>
+                                <h6>Leia Hall</h6>
                                 <p class="ltr:ml-auto rtl:mr-auto"><strong>$60,000 / $60,000</strong></p>
                             </div>
                             <div class="h-2 w-full rounded-full bg-dark-light shadow dark:bg-[#1b2e4b]">
@@ -55,7 +55,7 @@
                         </div>
                         <div class="flex-1">
                             <div class="mb-2 flex font-semibold text-primary">
-                                <h6>Simon Jenkins</h6>
+                                <h6>Jace Cullen</h6>
                                 <p class="ltr:ml-auto rtl:mr-auto"><strong>$53,000 / $60,000</strong></p>
                             </div>
                             <div class="h-2 w-full rounded-full bg-dark-light shadow dark:bg-[#1b2e4b]">
@@ -72,7 +72,7 @@
                         </div>
                         <div class="flex-1">
                             <div class="mb-2 flex font-semibold text-primary">
-                                <h6>Clark Franklin</h6>
+                                <h6>Mark Johnson</h6>
                                 <p class="ltr:ml-auto rtl:mr-auto"><strong>$49,000 / $60,000</strong></p>
                             </div>
                             <div class="h-2 w-full rounded-full bg-dark-light shadow dark:bg-[#1b2e4b]">
@@ -95,91 +95,6 @@
                             <div class="h-2 w-full rounded-full bg-dark-light shadow dark:bg-[#1b2e4b]">
                                 <div class="h-full w-full rounded-full bg-gradient-to-r from-[#3cba92] to-[#0ba360]"
                                     style="width: 70%"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center">
-                        <div class="h-9 w-9 ltr:mr-3 rtl:ml-3">
-                            <img class="h-8 w-8 rounded-md object-cover ltr:mr-3 rtl:ml-3"
-                                src="assets/images/profile-6.jpeg" alt="avatar">
-                        </div>
-                        <div class="flex-1">
-                            <div class="mb-2 flex font-semibold text-primary">
-                                <h6>Donna Fergie</h6>
-                                <p class="ltr:ml-auto rtl:mr-auto"><strong>$35,000 / $60,000</strong></p>
-                            </div>
-                            <div class="h-2 w-full rounded-full bg-dark-light shadow dark:bg-[#1b2e4b]">
-                                <div class="h-full w-full rounded-full bg-gradient-to-r from-[#3cba92] to-[#0ba360]"
-                                    style="width: 50%"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center">
-                        <div class="h-9 w-9 ltr:mr-3 rtl:ml-3">
-                            <img class="h-8 w-8 rounded-md object-cover ltr:mr-3 rtl:ml-3"
-                                src="assets/images/profile-1.jpeg" alt="avatar">
-                        </div>
-                        <div class="flex-1">
-                            <div class="mb-2 flex font-semibold text-primary">
-                                <h6>Emily Mcknight</h6>
-                                <p class="ltr:ml-auto rtl:mr-auto"><strong>$30,000 / $60,000</strong></p>
-                            </div>
-                            <div class="h-2 w-full rounded-full bg-dark-light shadow dark:bg-[#1b2e4b]">
-                                <div class="h-full w-full rounded-full bg-gradient-to-r from-[#3cba92] to-[#0ba360]"
-                                    style="width: 48%"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center">
-                        <div class="h-9 w-9 ltr:mr-3 rtl:ml-3">
-                            <img class="h-8 w-8 rounded-md object-cover ltr:mr-3 rtl:ml-3"
-                                src="assets/images/profile-9.jpeg" alt="avatar">
-                        </div>
-                        <div class="flex-1">
-                            <div class="mb-2 flex font-semibold text-primary">
-                                <h6>Beatrice Green</h6>
-                                <p class="ltr:ml-auto rtl:mr-auto"><strong>$27,000 / $60,000</strong></p>
-                            </div>
-                            <div class="h-2 w-full rounded-full bg-dark-light shadow dark:bg-[#1b2e4b]">
-                                <div class="h-full w-full rounded-full bg-gradient-to-r from-[#3cba92] to-[#0ba360]"
-                                    style="width: 44%"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center">
-                        <div class="h-9 w-9 ltr:mr-3 rtl:ml-3">
-                            <img class="h-8 w-8 rounded-md object-cover ltr:mr-3 rtl:ml-3"
-                                src="assets/images/profile-3.jpeg" alt="avatar">
-                        </div>
-                        <div class="flex-1">
-                            <div class="mb-2 flex font-semibold text-primary">
-                                <h6>Francesco Cline</h6>
-                                <p class="ltr:ml-auto rtl:mr-auto"><strong>$21,000 / $60,000</strong></p>
-                            </div>
-                            <div class="h-2 w-full rounded-full bg-dark-light shadow dark:bg-[#1b2e4b]">
-                                <div class="h-full w-full rounded-full bg-gradient-to-r from-[#3cba92] to-[#0ba360]"
-                                    style="width: 41%"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center">
-                        <div class="h-9 w-9 ltr:mr-3 rtl:ml-3">
-                            <img class="h-8 w-8 rounded-md object-cover ltr:mr-3 rtl:ml-3"
-                                src="assets/images/profile-4.jpeg" alt="avatar">
-                        </div>
-                        <div class="flex-1">
-                            <div class="mb-2 flex font-semibold text-primary">
-                                <h6>Betty Calhoun</h6>
-                                <p class="ltr:ml-auto rtl:mr-auto"><strong>$19,000 / $60,000</strong></p>
-                            </div>
-                            <div class="h-2 w-full rounded-full bg-dark-light shadow dark:bg-[#1b2e4b]">
-                                <div class="h-full w-full rounded-full bg-gradient-to-r from-[#3cba92] to-[#0ba360]"
-                                    style="width: 39%"></div>
                             </div>
                         </div>
                     </div>
