@@ -25,6 +25,28 @@ class LeadsImport implements ToModel
             return null;
         }
 
+        // Check for required 'email' field
+        // if (empty($row[3])) {
+        //     throw ValidationException::withMessages([
+        //         'error' => "Missing email for lead {$row[0]} {$row[2]}",
+        //     ]);
+        // }
+
+        
+        // Validate email format
+        // if (!filter_var($row[3], FILTER_VALIDATE_EMAIL)) {
+        //     throw ValidationException::withMessages([
+        //         'error' => "Invalid email format: {$row[3]}",
+        //     ]);
+        // }
+        
+        // Check for duplicate email
+        // if (Customer::where('email', $row[3])->exists()) {
+        //     throw ValidationException::withMessages([
+        //         'error' => "Email {$row[3]} already exists.",
+        //     ]);
+        // }
+
         // Check if lead already exists
         $existingCustomer = Customer::where('first_name', $row[0])
                                     ->where('last_name', $row[2])
@@ -32,7 +54,7 @@ class LeadsImport implements ToModel
 
         if ($existingCustomer) {
             throw ValidationException::withMessages([
-                'error' => "Lead {$row[0]} {$row[2]} already exists.",
+                'error' => "<br>Lead {$row[0]} {$row[2]} already exists.",
             ]);
         }
 
@@ -41,7 +63,7 @@ class LeadsImport implements ToModel
             'first_name'        => $row[0],
             'middle_name'       => $row[1] ?? null,
             'last_name'         => $row[2],
-            'email'             => $row[3] ?? null,
+            'email'             => $row[3],
             'address'           => $row[4] ?? null,
             'website'           => $row[5] ?? null,
             'date_created'      => now(),
